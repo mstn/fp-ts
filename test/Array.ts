@@ -261,7 +261,7 @@ describe('Array', () => {
 
   const optionStringEq = O.getEq(eqString)
   const multipleOf3: Predicate<number> = (x: number) => x % 3 === 0
-  const multipleOf3AsString = (x: number) => O.option.map(O.fromPredicate(multipleOf3)(x), x => `${x}`)
+  const multipleOf3AsString = (x: number) => O.map(O.fromPredicate(multipleOf3)(x), x => `${x}`)
 
   it('`findFirstMap(arr, fun)` is equivalent to map and `head(mapOption(arr, fun)`', () => {
     fc.assert(

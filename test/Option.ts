@@ -14,13 +14,13 @@ const p = (n: number): boolean => n > 2
 
 describe('Option', () => {
   it('zero', () => {
-    assert.strictEqual(O.option.zero(), O.none)
+    assert.strictEqual(O.zero(), O.none)
   })
 
-  it('fold', () => {
+  it('fold$', () => {
     const f = () => 'none'
     const g = (s: string) => `some${s.length}`
-    const fold = O.fold(f, g)
+    const fold = O.fold$(f, g)
     assert.strictEqual(fold(O.none), 'none')
     assert.strictEqual(fold(O.some('abc')), 'some3')
   })
@@ -35,18 +35,18 @@ describe('Option', () => {
     assert.strictEqual(O.toUndefined(O.some(1)), 1)
   })
 
-  it('getOrElse', () => {
+  it('getOrElse$', () => {
     assert.strictEqual(
       pipe(
         O.some(1),
-        O.getOrElse(() => 0)
+        O.getOrElse$(() => 0)
       ),
       1
     )
     assert.strictEqual(
       pipe(
         O.none,
-        O.getOrElse(() => 0)
+        O.getOrElse$(() => 0)
       ),
       0
     )
@@ -64,8 +64,8 @@ describe('Option', () => {
 
   it('map', () => {
     const f = (n: number) => n * 2
-    assert.deepStrictEqual(O.option.map(O.some(2), f), O.some(4))
-    assert.deepStrictEqual(O.option.map(O.none, f), O.none)
+    assert.deepStrictEqual(O.map(O.some(2), f), O.some(4))
+    assert.deepStrictEqual(O.map(O.none, f), O.none)
   })
 
   it('getEq', () => {
@@ -87,7 +87,7 @@ describe('Option', () => {
     assert.deepStrictEqual(OS.compare(O.some('b'), O.some('a')), 1)
   })
 
-  it('mapNullable', () => {
+  it('mapNullable$', () => {
     interface X {
       a?: {
         b?: {
@@ -103,27 +103,27 @@ describe('Option', () => {
     assert.deepStrictEqual(
       pipe(
         O.fromNullable(x1.a),
-        O.mapNullable(x => x.b),
-        O.mapNullable(x => x.c),
-        O.mapNullable(x => x.d)
+        O.mapNullable$(x => x.b),
+        O.mapNullable$(x => x.c),
+        O.mapNullable$(x => x.d)
       ),
       O.none
     )
     assert.deepStrictEqual(
       pipe(
         O.fromNullable(x2.a),
-        O.mapNullable(x => x.b),
-        O.mapNullable(x => x.c),
-        O.mapNullable(x => x.d)
+        O.mapNullable$(x => x.b),
+        O.mapNullable$(x => x.c),
+        O.mapNullable$(x => x.d)
       ),
       O.none
     )
     assert.deepStrictEqual(
       pipe(
         O.fromNullable(x3.a),
-        O.mapNullable(x => x.b),
-        O.mapNullable(x => x.c),
-        O.mapNullable(x => x.d)
+        O.mapNullable$(x => x.b),
+        O.mapNullable$(x => x.c),
+        O.mapNullable$(x => x.d)
       ),
       O.some(1)
     )
@@ -131,19 +131,19 @@ describe('Option', () => {
 
   it('ap', () => {
     const f = (n: number) => n * 2
-    assert.deepStrictEqual(O.option.ap(O.some(f), O.some(2)), O.some(4))
-    assert.deepStrictEqual(O.option.ap(O.some(f), O.none), O.none)
-    assert.deepStrictEqual(O.option.ap(O.none, O.some(2)), O.none)
-    assert.deepStrictEqual(O.option.ap(O.none, O.none), O.none)
+    assert.deepStrictEqual(O.ap(O.some(f), O.some(2)), O.some(4))
+    assert.deepStrictEqual(O.ap(O.some(f), O.none), O.none)
+    assert.deepStrictEqual(O.ap(O.none, O.some(2)), O.none)
+    assert.deepStrictEqual(O.ap(O.none, O.none), O.none)
   })
 
   it('chain', () => {
     const f = (n: number) => O.some(n * 2)
     const g = () => O.none
-    assert.deepStrictEqual(O.option.chain(O.some(1), f), O.some(2))
-    assert.deepStrictEqual(O.option.chain(O.none, f), O.none)
-    assert.deepStrictEqual(O.option.chain(O.some(1), g), O.none)
-    assert.deepStrictEqual(O.option.chain(O.none, g), O.none)
+    assert.deepStrictEqual(O.chain(O.some(1), f), O.some(2))
+    assert.deepStrictEqual(O.chain(O.none, f), O.none)
+    assert.deepStrictEqual(O.chain(O.some(1), g), O.none)
+    assert.deepStrictEqual(O.chain(O.none, g), O.none)
   })
 
   it('getMonoid', () => {
@@ -156,16 +156,16 @@ describe('Option', () => {
   })
 
   it('alt', () => {
-    assert.deepStrictEqual(O.option.alt(O.some(1), () => O.some(2)), O.some(1))
-    assert.deepStrictEqual(O.option.alt(O.some(2), () => O.none), O.some(2))
-    assert.deepStrictEqual(O.option.alt(O.none, () => O.some(1)), O.some(1))
-    assert.deepStrictEqual(O.option.alt(O.none, () => O.none), O.none)
+    assert.deepStrictEqual(O.alt(O.some(1), () => O.some(2)), O.some(1))
+    assert.deepStrictEqual(O.alt(O.some(2), () => O.none), O.some(2))
+    assert.deepStrictEqual(O.alt(O.none, () => O.some(1)), O.some(1))
+    assert.deepStrictEqual(O.alt(O.none, () => O.none), O.none)
   })
 
   it('extend', () => {
-    const f = O.getOrElse(() => 0)
-    assert.deepStrictEqual(O.option.extend(O.some(2), f), O.some(2))
-    assert.deepStrictEqual(O.option.extend(O.none, f), O.none)
+    const f = O.getOrElse$(() => 0)
+    assert.deepStrictEqual(O.extend(O.some(2), f), O.some(2))
+    assert.deepStrictEqual(O.extend(O.none, f), O.none)
   })
 
   it('fromNullable', () => {
@@ -186,23 +186,23 @@ describe('Option', () => {
   })
 
   it('traverse', () => {
-    assert.deepStrictEqual(O.option.traverse(array)(O.some('hello'), () => []), [])
-    assert.deepStrictEqual(O.option.traverse(array)(O.some('hello'), s => [s.length]), [O.some(5)])
-    assert.deepStrictEqual(O.option.traverse(array)(O.none, s => [s]), [O.none])
+    assert.deepStrictEqual(O.traverse(array)(O.some('hello'), () => []), [])
+    assert.deepStrictEqual(O.traverse(array)(O.some('hello'), s => [s.length]), [O.some(5)])
+    assert.deepStrictEqual(O.traverse(array)(O.none, s => [s]), [O.none])
   })
 
   it('sequence', () => {
-    assert.deepStrictEqual(O.option.sequence(array)(O.some([1, 2])), [O.some(1), O.some(2)])
-    assert.deepStrictEqual(O.option.sequence(array)(O.none), [O.none])
+    assert.deepStrictEqual(O.sequence(array)(O.some([1, 2])), [O.some(1), O.some(2)])
+    assert.deepStrictEqual(O.sequence(array)(O.none), [O.none])
   })
 
   it('reduce', () => {
-    assert.strictEqual(O.option.reduce(O.none, 2, (b, a) => b + a), 2)
-    assert.strictEqual(O.option.reduce(O.some(3), 2, (b, a) => b + a), 5)
+    assert.strictEqual(O.reduce(O.none, 2, (b, a) => b + a), 2)
+    assert.strictEqual(O.reduce(O.some(3), 2, (b, a) => b + a), 5)
   })
 
   it('foldMap', () => {
-    const foldMap = O.option.foldMap(monoidString)
+    const foldMap = O.foldMap(monoidString)
     const x1 = O.some('a')
     const f1 = identity
     assert.strictEqual(foldMap(x1, f1), 'a')
@@ -211,7 +211,7 @@ describe('Option', () => {
   })
 
   it('reduceRight', () => {
-    const reduceRight = O.option.reduceRight
+    const reduceRight = O.reduceRight
     const x1 = O.some('a')
     const init1 = ''
     const f1 = (a: string, acc: string) => acc + a
@@ -268,26 +268,26 @@ describe('Option', () => {
     assert.deepStrictEqual(O.isSome(O.some(1)), true)
   })
 
-  it('exists', () => {
+  it('exists$', () => {
     const predicate = (a: number) => a === 2
     assert.deepStrictEqual(
       pipe(
         O.none,
-        O.exists(predicate)
+        O.exists$(predicate)
       ),
       false
     )
     assert.deepStrictEqual(
       pipe(
         O.some(1),
-        O.exists(predicate)
+        O.exists$(predicate)
       ),
       false
     )
     assert.deepStrictEqual(
       pipe(
         O.some(2),
-        O.exists(predicate)
+        O.exists$(predicate)
       ),
       true
     )
@@ -299,46 +299,46 @@ describe('Option', () => {
   })
 
   it('compact', () => {
-    assert.deepStrictEqual(O.option.compact(O.none), O.none)
-    assert.deepStrictEqual(O.option.compact(O.some(O.none)), O.none)
-    assert.deepStrictEqual(O.option.compact(O.some(O.some('123'))), O.some('123'))
+    assert.deepStrictEqual(O.compact(O.none), O.none)
+    assert.deepStrictEqual(O.compact(O.some(O.none)), O.none)
+    assert.deepStrictEqual(O.compact(O.some(O.some('123'))), O.some('123'))
   })
 
   it('separate', () => {
-    assert.deepStrictEqual(O.option.separate(O.none), { left: O.none, right: O.none })
-    assert.deepStrictEqual(O.option.separate(O.some(left('123'))), { left: O.some('123'), right: O.none })
-    assert.deepStrictEqual(O.option.separate(O.some(right('123'))), { left: O.none, right: O.some('123') })
+    assert.deepStrictEqual(O.separate(O.none), { left: O.none, right: O.none })
+    assert.deepStrictEqual(O.separate(O.some(left('123'))), { left: O.some('123'), right: O.none })
+    assert.deepStrictEqual(O.separate(O.some(right('123'))), { left: O.none, right: O.some('123') })
   })
 
   it('filter', () => {
     const predicate = (a: number) => a === 2
-    assert.deepStrictEqual(O.option.filter(O.none, predicate), O.none)
-    assert.deepStrictEqual(O.option.filter(O.some(1), predicate), O.none)
-    assert.deepStrictEqual(O.option.filter(O.some(2), predicate), O.some(2))
+    assert.deepStrictEqual(O.filter(O.none, predicate), O.none)
+    assert.deepStrictEqual(O.filter(O.some(1), predicate), O.none)
+    assert.deepStrictEqual(O.filter(O.some(2), predicate), O.some(2))
   })
 
   it('filterMap', () => {
     const f = (n: number) => (p(n) ? O.some(n + 1) : O.none)
-    assert.deepStrictEqual(O.option.filterMap(O.none, f), O.none)
-    assert.deepStrictEqual(O.option.filterMap(O.some(1), f), O.none)
-    assert.deepStrictEqual(O.option.filterMap(O.some(3), f), O.some(4))
+    assert.deepStrictEqual(O.filterMap(O.none, f), O.none)
+    assert.deepStrictEqual(O.filterMap(O.some(1), f), O.none)
+    assert.deepStrictEqual(O.filterMap(O.some(3), f), O.some(4))
   })
 
   it('partition', () => {
-    assert.deepStrictEqual(O.option.partition(O.none, p), { left: O.none, right: O.none })
-    assert.deepStrictEqual(O.option.partition(O.some(1), p), { left: O.some(1), right: O.none })
-    assert.deepStrictEqual(O.option.partition(O.some(3), p), { left: O.none, right: O.some(3) })
+    assert.deepStrictEqual(O.partition(O.none, p), { left: O.none, right: O.none })
+    assert.deepStrictEqual(O.partition(O.some(1), p), { left: O.some(1), right: O.none })
+    assert.deepStrictEqual(O.partition(O.some(3), p), { left: O.none, right: O.some(3) })
   })
 
   it('partitionMap', () => {
     const f = (n: number) => (p(n) ? right(n + 1) : left(n - 1))
-    assert.deepStrictEqual(O.option.partitionMap(O.none, f), { left: O.none, right: O.none })
-    assert.deepStrictEqual(O.option.partitionMap(O.some(1), f), { left: O.some(0), right: O.none })
-    assert.deepStrictEqual(O.option.partitionMap(O.some(3), f), { left: O.none, right: O.some(4) })
+    assert.deepStrictEqual(O.partitionMap(O.none, f), { left: O.none, right: O.none })
+    assert.deepStrictEqual(O.partitionMap(O.some(1), f), { left: O.some(0), right: O.none })
+    assert.deepStrictEqual(O.partitionMap(O.some(3), f), { left: O.none, right: O.some(4) })
   })
 
   it('wither', () => {
-    const witherIdentity = O.option.wither(I.identity)
+    const witherIdentity = O.wither(I.identity)
     const f = (n: number) => I.identity.of(p(n) ? O.some(n + 1) : O.none)
     assert.deepStrictEqual(witherIdentity(O.none, f), I.identity.of(O.none))
     assert.deepStrictEqual(witherIdentity(O.some(1), f), I.identity.of(O.none))
@@ -346,7 +346,7 @@ describe('Option', () => {
   })
 
   it('wilt', () => {
-    const wiltIdentity = O.option.wilt(I.identity)
+    const wiltIdentity = O.wilt(I.identity)
     const f = (n: number) => I.identity.of(p(n) ? right(n + 1) : left(n - 1))
     assert.deepStrictEqual(wiltIdentity(O.none, f), I.identity.of({ left: O.none, right: O.none }))
     assert.deepStrictEqual(wiltIdentity(O.some(1), f), I.identity.of({ left: O.some(0), right: O.none }))

@@ -6,7 +6,7 @@ import {
 } from './Applicative'
 import { HKT, Type, Type2, URIS, URIS2 } from './HKT'
 import { Monad, Monad1, Monad2 } from './Monad'
-import { fold, none, Option, option, some, URI } from './Option'
+import { fold$, none, Option, some, URI, option } from './Option'
 
 /**
  * @since 2.0.0
@@ -77,10 +77,10 @@ export function getOptionM<M>(M: Monad<M>): OptionM<M> {
 
   return {
     ...A,
-    chain: (ma, f) => M.chain(ma, fold(() => fnone, f)),
-    alt: (fx, fy) => M.chain(fx, fold(fy, a => M.of(some(a)))),
-    fold: (onNone, onSome) => ma => M.chain(ma, fold(onNone, onSome)),
-    getOrElse: onNone => ma => M.chain(ma, fold(onNone, M.of)),
+    chain: (ma, f) => M.chain(ma, fold$(() => fnone, f)),
+    alt: (fx, fy) => M.chain(fx, fold$(fy, a => M.of(some(a)))),
+    fold: (onNone, onSome) => ma => M.chain(ma, fold$(onNone, onSome)),
+    getOrElse: onNone => ma => M.chain(ma, fold$(onNone, M.of)),
     fromM: ma => M.map(ma, some),
     fromOption: M.of,
     none: () => fnone

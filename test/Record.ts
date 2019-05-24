@@ -3,7 +3,7 @@ import * as R from '../src/Record'
 import { semigroupSum, getLastSemigroup, getFirstSemigroup } from '../src/Semigroup'
 import { monoidString } from '../src/Monoid'
 import { identity } from '../src/function'
-import { option, some, none, Option, getOrElse } from '../src/Option'
+import { some, none, Option, getOrElse$, option } from '../src/Option'
 import { eqNumber } from '../src/Eq'
 import { array, zip } from '../src/Array'
 import { left, right } from '../src/Either'
@@ -109,7 +109,7 @@ describe('Record', () => {
     const t1 = R.traverseWithIndex(option)(d1, (k, n): Option<number> => (k !== 'k1' ? some(n) : none))
     assert.deepStrictEqual(t1, none)
     const t2 = R.traverseWithIndex(option)(R.empty, (): Option<number> => none)
-    assert.strictEqual(getOrElse((): Record<string, number> => R.empty)(t2), R.empty)
+    assert.strictEqual(getOrElse$((): Record<string, number> => R.empty)(t2), R.empty)
   })
 
   it('size', () => {
