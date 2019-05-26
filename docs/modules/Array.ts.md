@@ -16,8 +16,12 @@ Adapted from https://github.com/purescript/purescript-arrays
 - [URI (constant)](#uri-constant)
 - [array (constant)](#array-constant)
 - [empty (constant)](#empty-constant)
+- [alt (function)](#alt-function)
+- [ap (function)](#ap-function)
+- [chain (function)](#chain-function)
 - [chop (function)](#chop-function)
 - [chunksOf (function)](#chunksof-function)
+- [compact (function)](#compact-function)
 - [comprehension (function)](#comprehension-function)
 - [cons (function)](#cons-function)
 - [copy (function)](#copy-function)
@@ -27,6 +31,11 @@ Adapted from https://github.com/purescript/purescript-arrays
 - [dropRight (function)](#dropright-function)
 - [dropWhile (function)](#dropwhile-function)
 - [elem (function)](#elem-function)
+- [extend (function)](#extend-function)
+- [filter (function)](#filter-function)
+- [filterMap (function)](#filtermap-function)
+- [filterMapWithIndex (function)](#filtermapwithindex-function)
+- [filterWithIndex (function)](#filterwithindex-function)
 - [findFirst (function)](#findfirst-function)
 - [findFirstMap (function)](#findfirstmap-function)
 - [findIndex (function)](#findindex-function)
@@ -35,6 +44,8 @@ Adapted from https://github.com/purescript/purescript-arrays
 - [findLastMap (function)](#findlastmap-function)
 - [flatten (function)](#flatten-function)
 - [fold (function)](#fold-function)
+- [foldMap (function)](#foldmap-function)
+- [foldMapWithIndex (function)](#foldmapwithindex-function)
 - [foldRight (function)](#foldright-function)
 - [getEq (function)](#geteq-function)
 - [getMonoid (function)](#getmonoid-function)
@@ -50,14 +61,27 @@ Adapted from https://github.com/purescript/purescript-arrays
 - [lefts (function)](#lefts-function)
 - [lookup (function)](#lookup-function)
 - [makeBy (function)](#makeby-function)
+- [map (function)](#map-function)
+- [mapWithIndex (function)](#mapwithindex-function)
 - [modifyAt (function)](#modifyat-function)
+- [of (function)](#of-function)
+- [partition (function)](#partition-function)
+- [partitionMap (function)](#partitionmap-function)
+- [partitionMapWithIndex (function)](#partitionmapwithindex-function)
+- [partitionWithIndex (function)](#partitionwithindex-function)
 - [range (function)](#range-function)
+- [reduce (function)](#reduce-function)
+- [reduceRight (function)](#reduceright-function)
+- [reduceRightWithIndex (function)](#reducerightwithindex-function)
+- [reduceWithIndex (function)](#reducewithindex-function)
 - [replicate (function)](#replicate-function)
 - [reverse (function)](#reverse-function)
 - [rights (function)](#rights-function)
 - [rotate (function)](#rotate-function)
 - [scan (function)](#scan-function)
 - [scanRight (function)](#scanright-function)
+- [separate (function)](#separate-function)
+- [sequence (function)](#sequence-function)
 - [snoc (function)](#snoc-function)
 - [sort (function)](#sort-function)
 - [sortBy (function)](#sortby-function)
@@ -67,6 +91,8 @@ Adapted from https://github.com/purescript/purescript-arrays
 - [take (function)](#take-function)
 - [takeRight (function)](#takeright-function)
 - [takeWhile (function)](#takewhile-function)
+- [traverse (function)](#traverse-function)
+- [traverseWithIndex (function)](#traversewithindex-function)
 - [union (function)](#union-function)
 - [uniq (function)](#uniq-function)
 - [unsafeDeleteAt (function)](#unsafedeleteat-function)
@@ -74,6 +100,9 @@ Adapted from https://github.com/purescript/purescript-arrays
 - [unsafeUpdateAt (function)](#unsafeupdateat-function)
 - [unzip (function)](#unzip-function)
 - [updateAt (function)](#updateat-function)
+- [wilt (function)](#wilt-function)
+- [wither (function)](#wither-function)
+- [zero (function)](#zero-function)
 - [zip (function)](#zip-function)
 - [zipWith (function)](#zipwith-function)
 
@@ -105,7 +134,6 @@ export const array: Monad1<URI> &
   Unfoldable1<URI> &
   TraversableWithIndex1<URI, number> &
   Alternative1<URI> &
-  Plus1<URI> &
   Extend1<URI> &
   Compactable1<URI> &
   FilterableWithIndex1<URI, number> &
@@ -124,6 +152,36 @@ An empty array
 
 ```ts
 export const empty: Array<never> = ...
+```
+
+Added in v2.0.0
+
+# alt (function)
+
+**Signature**
+
+```ts
+export const alt: Alternative1<URI>['alt'] = (fx, f) => ...
+```
+
+Added in v2.0.0
+
+# ap (function)
+
+**Signature**
+
+```ts
+export const ap: Monad1<URI>['ap'] = (mab, ma) => flatten(map(mab, f => ...
+```
+
+Added in v2.0.0
+
+# chain (function)
+
+**Signature**
+
+```ts
+export const chain: Monad1<URI>['chain'] = (ma, f) => ...
 ```
 
 Added in v2.0.0
@@ -181,6 +239,16 @@ export function chunksOf<A>(n: number, as: Array<A>): Array<Array<A>> { ... }
 import { chunksOf } from 'fp-ts/lib/Array'
 
 assert.deepStrictEqual(chunksOf(2, [1, 2, 3, 4, 5]), [[1, 2], [3, 4], [5]])
+```
+
+Added in v2.0.0
+
+# compact (function)
+
+**Signature**
+
+```ts
+export const compact: Compactable1<URI>['compact'] = as => ...
 ```
 
 Added in v2.0.0
@@ -389,6 +457,62 @@ assert.strictEqual(elem(eqNumber)(4, [1, 2, 3]), false)
 
 Added in v2.0.0
 
+# extend (function)
+
+**Signature**
+
+```ts
+export const extend: Extend1<URI>['extend'] = (fa, f) => fa.map((_, i, as) => ...
+```
+
+Added in v2.0.0
+
+# filter (function)
+
+**Signature**
+
+```ts
+export const filter: Filterable1<URI>['filter'] = <A>(as: Array<A>, predicate: Predicate<A>): Array<A> => ...
+```
+
+Added in v2.0.0
+
+# filterMap (function)
+
+**Signature**
+
+```ts
+export const filterMap: Filterable1<URI>['filterMap'] = (as, f) => filterMapWithIndex(as, (_, a) => ...
+```
+
+Added in v2.0.0
+
+# filterMapWithIndex (function)
+
+**Signature**
+
+```ts
+export const filterMapWithIndex: FilterableWithIndex1<URI, number>['filterMapWithIndex'] = <A, B>(
+  fa: Array<A>,
+  f: (i: number, a: A) => Option<B>
+): Array<B> => ...
+```
+
+Added in v2.0.0
+
+# filterWithIndex (function)
+
+**Signature**
+
+```ts
+export const filterWithIndex: FilterableWithIndex1<URI, number>['filterWithIndex'] = <A>(
+  fa: Array<A>,
+  predicateWithIndex: (i: number, a: A) => boolean
+): Array<A> => ...
+```
+
+Added in v2.0.0
+
 # findFirst (function)
 
 Find the first element which satisfies a predicate (or a refinement) function
@@ -577,6 +701,27 @@ import { fold } from 'fp-ts/lib/Array'
 
 const len = <A>(as: Array<A>): number => fold(as, () => 0, (_, tail) => 1 + len(tail))
 assert.strictEqual(len([1, 2, 3]), 3)
+```
+
+Added in v2.0.0
+
+# foldMap (function)
+
+**Signature**
+
+```ts
+export const foldMap: Foldable1<URI>['foldMap'] = M => ...
+```
+
+Added in v2.0.0
+
+# foldMapWithIndex (function)
+
+**Signature**
+
+```ts
+export const foldMapWithIndex: FoldableWithIndex1<URI, number>['foldMapWithIndex'] = M => (fa, f) =>
+  fa.reduce((b, a, i) => ...
 ```
 
 Added in v2.0.0
@@ -881,6 +1026,26 @@ assert.deepStrictEqual(makeBy(5, double), [0, 2, 4, 6, 8])
 
 Added in v2.0.0
 
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Monad1<URI>['map'] = (ma, f) => ma.map(a => ...
+```
+
+Added in v2.0.0
+
+# mapWithIndex (function)
+
+**Signature**
+
+```ts
+export const mapWithIndex: FunctorWithIndex1<URI, number>['mapWithIndex'] = (fa, f) => fa.map((a, i) => ...
+```
+
+Added in v2.0.0
+
 # modifyAt (function)
 
 Apply a function to the element at the specified index, creating a new array, or returning `None` if the index is out
@@ -905,6 +1070,65 @@ assert.deepStrictEqual(modifyAt(1, [], double), none)
 
 Added in v2.0.0
 
+# of (function)
+
+**Signature**
+
+```ts
+export const of: Monad1<URI>['of'] = a => ...
+```
+
+Added in v2.0.0
+
+# partition (function)
+
+**Signature**
+
+```ts
+export const partition: Filterable1<URI>['partition'] = <A>(
+  fa: Array<A>,
+  predicate: Predicate<A>
+): Separated<Array<A>, Array<A>> => ...
+```
+
+Added in v2.0.0
+
+# partitionMap (function)
+
+**Signature**
+
+```ts
+export const partitionMap: Filterable1<URI>['partitionMap'] = (fa, f) => partitionMapWithIndex(fa, (_, a) => ...
+```
+
+Added in v2.0.0
+
+# partitionMapWithIndex (function)
+
+**Signature**
+
+```ts
+export const partitionMapWithIndex: FilterableWithIndex1<URI, number>['partitionMapWithIndex'] = <RL, RR, A>(
+  fa: Array<A>,
+  f: (i: number, a: A) => Either<RL, RR>
+): Separated<Array<RL>, Array<RR>> => ...
+```
+
+Added in v2.0.0
+
+# partitionWithIndex (function)
+
+**Signature**
+
+```ts
+export const partitionWithIndex: FilterableWithIndex1<URI, number>['partitionWithIndex'] = <A>(
+  fa: Array<A>,
+  predicateWithIndex: (i: number, a: A) => boolean
+): Separated<Array<A>, Array<A>> => ...
+```
+
+Added in v2.0.0
+
 # range (function)
 
 Create an array containing a range of integers, including both endpoints
@@ -921,6 +1145,48 @@ export function range(start: number, end: number): Array<number> { ... }
 import { range } from 'fp-ts/lib/Array'
 
 assert.deepStrictEqual(range(1, 5), [1, 2, 3, 4, 5])
+```
+
+Added in v2.0.0
+
+# reduce (function)
+
+**Signature**
+
+```ts
+export const reduce: Foldable1<URI>['reduce'] = (fa, b, f) => reduceWithIndex(fa, b, (_, b, a) => ...
+```
+
+Added in v2.0.0
+
+# reduceRight (function)
+
+**Signature**
+
+```ts
+export const reduceRight: Foldable1<URI>['reduceRight'] = (fa, b, f) =>
+  reduceRightWithIndex(fa, b, (_, a, b) => ...
+```
+
+Added in v2.0.0
+
+# reduceRightWithIndex (function)
+
+**Signature**
+
+```ts
+export const reduceRightWithIndex: FoldableWithIndex1<URI, number>['reduceRightWithIndex'] = (fa, b, f) =>
+  fa.reduceRight((b, a, i) => ...
+```
+
+Added in v2.0.0
+
+# reduceWithIndex (function)
+
+**Signature**
+
+```ts
+export const reduceWithIndex: FoldableWithIndex1<URI, number>['reduceWithIndex'] = (fa, b, f) => ...
 ```
 
 Added in v2.0.0
@@ -1040,6 +1306,30 @@ export function scanRight<A, B>(as: Array<A>, b: B, f: (a: A, b: B) => B): Array
 import { scanRight } from 'fp-ts/lib/Array'
 
 assert.deepStrictEqual(scanRight([1, 2, 3], 10, (a, b) => b - a), [4, 5, 7, 10])
+```
+
+Added in v2.0.0
+
+# separate (function)
+
+**Signature**
+
+```ts
+export const separate: Compactable1<URI>['separate'] = <RL, RR>(
+  fa: Array<Either<RL, RR>>
+): Separated<Array<RL>, Array<RR>> => ...
+```
+
+Added in v2.0.0
+
+# sequence (function)
+
+**Signature**
+
+```ts
+export const sequence: Traversable1<URI>['sequence'] = <F>(F: Applicative<F>) => <A>(
+  ta: Array<HKT<F, A>>
+): HKT<F, Array<A>> => ...
 ```
 
 Added in v2.0.0
@@ -1251,6 +1541,34 @@ assert.deepStrictEqual(takeWhile([2, 4, 3, 6], n => n % 2 === 0), [2, 4])
 
 Added in v2.0.0
 
+# traverse (function)
+
+**Signature**
+
+```ts
+export const traverse: Traversable1<URI>['traverse'] = <F>(
+  F: Applicative<F>
+): (<A, B>(ta: Array<A>, f: (a: A) => HKT<F, B>) => HKT<F, Array<B>>) => ...
+```
+
+Added in v2.0.0
+
+# traverseWithIndex (function)
+
+**Signature**
+
+```ts
+export const traverseWithIndex: TraversableWithIndex1<URI, number>['traverseWithIndex'] = <F>(F: Applicative<F>) => <
+  A,
+  B
+>(
+  ta: Array<A>,
+  f: (i: number, a: A) => HKT<F, B>
+): HKT<F, Array<B>> => ...
+```
+
+Added in v2.0.0
+
 # union (function)
 
 Creates an array of unique values, in order, from all given arrays using a `Eq` for equality comparisons
@@ -1361,6 +1679,40 @@ import { some, none } from 'fp-ts/lib/Option'
 
 assert.deepStrictEqual(updateAt(1, 1, [1, 2, 3]), some([1, 1, 3]))
 assert.deepStrictEqual(updateAt(1, 1, []), none)
+```
+
+Added in v2.0.0
+
+# wilt (function)
+
+**Signature**
+
+```ts
+export const wilt: Witherable1<URI>['wilt'] = <F>(
+  F: Applicative<F>
+): (<RL, RR, A>(wa: Array<A>, f: (a: A) => HKT<F, Either<RL, RR>>) => HKT<F, Separated<Array<RL>, Array<RR>>>) => ...
+```
+
+Added in v2.0.0
+
+# wither (function)
+
+**Signature**
+
+```ts
+export const wither: Witherable1<URI>['wither'] = <F>(
+  F: Applicative<F>
+): (<A, B>(ta: Array<A>, f: (a: A) => HKT<F, Option<B>>) => HKT<F, Array<B>>) => ...
+```
+
+Added in v2.0.0
+
+# zero (function)
+
+**Signature**
+
+```ts
+export const zero: Alternative1<URI>['zero'] = () => ...
 ```
 
 Added in v2.0.0

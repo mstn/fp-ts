@@ -17,12 +17,14 @@ import { Monoid } from './Monoid'
 import { NonEmptyArray } from './NonEmptyArray'
 import { none, Option, some, isSome } from './Option'
 import { fromCompare, getSemigroup, Ord, ordNumber } from './Ord'
-import { Plus1 } from './Plus'
 import { Eq, fromEquals } from './Eq'
 import { Show } from './Show'
 import { TraversableWithIndex1 } from './TraversableWithIndex'
 import { Unfoldable1 } from './Unfoldable'
 import { Witherable1 } from './Witherable'
+import { Traversable1 } from './Traversable'
+import { Filterable1 } from './Filterable'
+import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT<A> {
@@ -138,8 +140,6 @@ export function getOrd<A>(O: Ord<A>): Ord<Array<A>> {
  * @since 2.0.0
  */
 export const empty: Array<never> = []
-
-const zero = <A>(): Array<A> => empty
 
 const unfold = <A, B>(b: B, f: (b: B) => Option<[A, B]>): Array<A> => {
   const ret: Array<A> = []
@@ -1252,28 +1252,35 @@ export function difference<A>(E: Eq<A>): (xs: Array<A>, ys: Array<A>) => Array<A
   return (xs, ys) => xs.filter(a => !elemE(a, ys))
 }
 
-const map = <A, B>(fa: Array<A>, f: (a: A) => B): Array<B> => {
-  return fa.map(a => f(a))
-}
+/**
+ * @since 2.0.0
+ */
+export const map: Monad1<URI>['map'] = (ma, f) => ma.map(a => f(a))
 
-const mapWithIndex = <A, B>(fa: Array<A>, f: (index: number, a: A) => B): Array<B> => {
-  return fa.map((a, i) => f(i, a))
-}
+/**
+ * @since 2.0.0
+ */
+export const mapWithIndex: FunctorWithIndex1<URI, number>['mapWithIndex'] = (fa, f) => fa.map((a, i) => f(i, a))
 
-const of = <A>(a: A): Array<A> => {
-  return [a]
-}
+/**
+ * @since 2.0.0
+ */
+export const of: Monad1<URI>['of'] = a => [a]
 
-const ap = <A, B>(fab: Array<(a: A) => B>, fa: Array<A>): Array<B> => {
-  return flatten(map(fab, f => map(fa, f)))
-}
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad1<URI>['ap'] = (mab, ma) => flatten(map(mab, f => map(ma, f)))
 
-const chain = <A, B>(fa: Array<A>, f: (a: A) => Array<B>): Array<B> => {
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad1<URI>['chain'] = (ma, f) => {
   let resLen = 0
-  const l = fa.length
+  const l = ma.length
   const temp = new Array(l)
   for (let i = 0; i < l; i++) {
-    const e = fa[i]
+    const e = ma[i]
     const arr = f(e)
     resLen += arr.length
     temp[i] = arr
@@ -1291,20 +1298,44 @@ const chain = <A, B>(fa: Array<A>, f: (a: A) => Array<B>): Array<B> => {
   return r
 }
 
-const reduce = <A, B>(fa: Array<A>, b: B, f: (b: B, a: A) => B): B => {
-  return reduceWithIndex(fa, b, (_, b, a) => f(b, a))
-}
+/**
+ * @since 2.0.0
+ */
+export const extend: Extend1<URI>['extend'] = (fa, f) => fa.map((_, i, as) => f(as.slice(i)))
 
-const foldMap = <M>(M: Monoid<M>): (<A>(fa: Array<A>, f: (a: A) => M) => M) => {
+/**
+ * @since 2.0.0
+ */
+export const alt: Alternative1<URI>['alt'] = (fx, f) => concat(fx, f())
+
+/**
+ * @since 2.0.0
+ */
+export const zero: Alternative1<URI>['zero'] = () => empty
+
+/**
+ * @since 2.0.0
+ */
+export const reduce: Foldable1<URI>['reduce'] = (fa, b, f) => reduceWithIndex(fa, b, (_, b, a) => f(b, a))
+
+/**
+ * @since 2.0.0
+ */
+export const foldMap: Foldable1<URI>['foldMap'] = M => {
   const foldMapWithIndexM = foldMapWithIndex(M)
   return (fa, f) => foldMapWithIndexM(fa, (_, a) => f(a))
 }
 
-const reduceRight = <A, B>(fa: Array<A>, b: B, f: (a: A, b: B) => B): B => {
-  return reduceRightWithIndex(fa, b, (_, a, b) => f(a, b))
-}
+/**
+ * @since 2.0.0
+ */
+export const reduceRight: Foldable1<URI>['reduceRight'] = (fa, b, f) =>
+  reduceRightWithIndex(fa, b, (_, a, b) => f(a, b))
 
-const reduceWithIndex = <A, B>(fa: Array<A>, b: B, f: (i: number, b: B, a: A) => B): B => {
+/**
+ * @since 2.0.0
+ */
+export const reduceWithIndex: FoldableWithIndex1<URI, number>['reduceWithIndex'] = (fa, b, f) => {
   const l = fa.length
   let r = b
   for (let i = 0; i < l; i++) {
@@ -1313,42 +1344,48 @@ const reduceWithIndex = <A, B>(fa: Array<A>, b: B, f: (i: number, b: B, a: A) =>
   return r
 }
 
-const foldMapWithIndex = <M>(M: Monoid<M>) => <A>(fa: Array<A>, f: (i: number, a: A) => M): M => {
-  return fa.reduce((b, a, i) => M.concat(b, f(i, a)), M.empty)
-}
+/**
+ * @since 2.0.0
+ */
+export const foldMapWithIndex: FoldableWithIndex1<URI, number>['foldMapWithIndex'] = M => (fa, f) =>
+  fa.reduce((b, a, i) => M.concat(b, f(i, a)), M.empty)
 
-const reduceRightWithIndex = <A, B>(fa: Array<A>, b: B, f: (i: number, a: A, b: B) => B): B => {
-  return fa.reduceRight((b, a, i) => f(i, a, b), b)
-}
+/**
+ * @since 2.0.0
+ */
+export const reduceRightWithIndex: FoldableWithIndex1<URI, number>['reduceRightWithIndex'] = (fa, b, f) =>
+  fa.reduceRight((b, a, i) => f(i, a, b), b)
 
-function traverse<F>(F: Applicative<F>): <A, B>(ta: Array<A>, f: (a: A) => HKT<F, B>) => HKT<F, Array<B>> {
+/**
+ * @since 2.0.0
+ */
+export const traverse: Traversable1<URI>['traverse'] = <F>(
+  F: Applicative<F>
+): (<A, B>(ta: Array<A>, f: (a: A) => HKT<F, B>) => HKT<F, Array<B>>) => {
   const traverseWithIndexF = traverseWithIndex(F)
   return (ta, f) => traverseWithIndexF(ta, (_, a) => f(a))
 }
 
-const sequence = <F>(F: Applicative<F>) => <A>(ta: Array<HKT<F, A>>): HKT<F, Array<A>> => {
+/**
+ * @since 2.0.0
+ */
+export const sequence: Traversable1<URI>['sequence'] = <F>(F: Applicative<F>) => <A>(
+  ta: Array<HKT<F, A>>
+): HKT<F, Array<A>> => {
   return reduce(ta, F.of(zero()), (fas, fa) => F.ap(F.map(fas, as => (a: A) => snoc(as, a)), fa))
 }
 
-const compact = <A>(as: Array<Option<A>>): Array<A> => filterMap(as, identity)
+/**
+ * @since 2.0.0
+ */
+export const compact: Compactable1<URI>['compact'] = as => filterMap(as, identity)
 
-const filter = <A>(as: Array<A>, predicate: Predicate<A>): Array<A> => {
-  return as.filter(predicate)
-}
-
-const filterMap = <A, B>(as: Array<A>, f: (a: A) => Option<B>): Array<B> => {
-  return filterMapWithIndex(as, (_, a) => f(a))
-}
-
-const partition = <A>(fa: Array<A>, predicate: Predicate<A>): Separated<Array<A>, Array<A>> => {
-  return partitionWithIndex(fa, (_, a) => predicate(a))
-}
-
-const partitionMap = <A, L, R>(fa: Array<A>, f: (a: A) => Either<L, R>): Separated<Array<L>, Array<R>> => {
-  return partitionMapWithIndex(fa, (_, a) => f(a))
-}
-
-const separate = <RL, RR>(fa: Array<Either<RL, RR>>): Separated<Array<RL>, Array<RR>> => {
+/**
+ * @since 2.0.0
+ */
+export const separate: Compactable1<URI>['separate'] = <RL, RR>(
+  fa: Array<Either<RL, RR>>
+): Separated<Array<RL>, Array<RR>> => {
   const left: Array<RL> = []
   const right: Array<RR> = []
   for (const e of fa) {
@@ -1364,19 +1401,60 @@ const separate = <RL, RR>(fa: Array<Either<RL, RR>>): Separated<Array<RL>, Array
   }
 }
 
-const wither = <F>(F: Applicative<F>): (<A, B>(ta: Array<A>, f: (a: A) => HKT<F, Option<B>>) => HKT<F, Array<B>>) => {
+/**
+ * @since 2.0.0
+ */
+export const filter: Filterable1<URI>['filter'] = <A>(as: Array<A>, predicate: Predicate<A>): Array<A> => {
+  return as.filter(predicate)
+}
+
+/**
+ * @since 2.0.0
+ */
+export const filterMap: Filterable1<URI>['filterMap'] = (as, f) => filterMapWithIndex(as, (_, a) => f(a))
+
+/**
+ * @since 2.0.0
+ */
+export const partition: Filterable1<URI>['partition'] = <A>(
+  fa: Array<A>,
+  predicate: Predicate<A>
+): Separated<Array<A>, Array<A>> => {
+  return partitionWithIndex(fa, (_, a) => predicate(a))
+}
+
+/**
+ * @since 2.0.0
+ */
+export const partitionMap: Filterable1<URI>['partitionMap'] = (fa, f) => partitionMapWithIndex(fa, (_, a) => f(a))
+
+/**
+ * @since 2.0.0
+ */
+export const wither: Witherable1<URI>['wither'] = <F>(
+  F: Applicative<F>
+): (<A, B>(ta: Array<A>, f: (a: A) => HKT<F, Option<B>>) => HKT<F, Array<B>>) => {
   const traverseF = traverse(F)
   return (wa, f) => F.map(traverseF(wa, f), compact)
 }
 
-const wilt = <F>(
+/**
+ * @since 2.0.0
+ */
+export const wilt: Witherable1<URI>['wilt'] = <F>(
   F: Applicative<F>
 ): (<RL, RR, A>(wa: Array<A>, f: (a: A) => HKT<F, Either<RL, RR>>) => HKT<F, Separated<Array<RL>, Array<RR>>>) => {
   const traverseF = traverse(F)
   return (wa, f) => F.map(traverseF(wa, f), separate)
 }
 
-const traverseWithIndex = <F>(F: Applicative<F>) => <A, B>(
+/**
+ * @since 2.0.0
+ */
+export const traverseWithIndex: TraversableWithIndex1<URI, number>['traverseWithIndex'] = <F>(F: Applicative<F>) => <
+  A,
+  B
+>(
   ta: Array<A>,
   f: (i: number, a: A) => HKT<F, B>
 ): HKT<F, Array<B>> => {
@@ -1385,27 +1463,37 @@ const traverseWithIndex = <F>(F: Applicative<F>) => <A, B>(
   )
 }
 
-const partitionMapWithIndex = <RL, RR, A>(
+/**
+ * @since 2.0.0
+ */
+export const filterWithIndex: FilterableWithIndex1<URI, number>['filterWithIndex'] = <A>(
   fa: Array<A>,
-  f: (i: number, a: A) => Either<RL, RR>
-): Separated<Array<RL>, Array<RR>> => {
-  const left: Array<RL> = []
-  const right: Array<RR> = []
-  for (let i = 0; i < fa.length; i++) {
-    const e = f(i, fa[i])
-    if (e._tag === 'Left') {
-      left.push(e.left)
-    } else {
-      right.push(e.right)
-    }
-  }
-  return {
-    left,
-    right
-  }
+  predicateWithIndex: (i: number, a: A) => boolean
+): Array<A> => {
+  return fa.filter((a, i) => predicateWithIndex(i, a))
 }
 
-const partitionWithIndex = <A>(
+/**
+ * @since 2.0.0
+ */
+export const filterMapWithIndex: FilterableWithIndex1<URI, number>['filterMapWithIndex'] = <A, B>(
+  fa: Array<A>,
+  f: (i: number, a: A) => Option<B>
+): Array<B> => {
+  const result: Array<B> = []
+  for (let i = 0; i < fa.length; i++) {
+    const optionB = f(i, fa[i])
+    if (isSome(optionB)) {
+      result.push(optionB.value)
+    }
+  }
+  return result
+}
+
+/**
+ * @since 2.0.0
+ */
+export const partitionWithIndex: FilterableWithIndex1<URI, number>['partitionWithIndex'] = <A>(
   fa: Array<A>,
   predicateWithIndex: (i: number, a: A) => boolean
 ): Separated<Array<A>, Array<A>> => {
@@ -1425,23 +1513,27 @@ const partitionWithIndex = <A>(
   }
 }
 
-const filterMapWithIndex = <A, B>(fa: Array<A>, f: (i: number, a: A) => Option<B>): Array<B> => {
-  const result: Array<B> = []
+/**
+ * @since 2.0.0
+ */
+export const partitionMapWithIndex: FilterableWithIndex1<URI, number>['partitionMapWithIndex'] = <RL, RR, A>(
+  fa: Array<A>,
+  f: (i: number, a: A) => Either<RL, RR>
+): Separated<Array<RL>, Array<RR>> => {
+  const left: Array<RL> = []
+  const right: Array<RR> = []
   for (let i = 0; i < fa.length; i++) {
-    const optionB = f(i, fa[i])
-    if (isSome(optionB)) {
-      result.push(optionB.value)
+    const e = f(i, fa[i])
+    if (e._tag === 'Left') {
+      left.push(e.left)
+    } else {
+      right.push(e.right)
     }
   }
-  return result
-}
-
-const filterWithIndex = <A>(fa: Array<A>, predicateWithIndex: (i: number, a: A) => boolean): Array<A> => {
-  return fa.filter((a, i) => predicateWithIndex(i, a))
-}
-
-const extend = <A, B>(fa: Array<A>, f: (fa: Array<A>) => B): Array<B> => {
-  return fa.map((_, i, as) => f(as.slice(i)))
+  return {
+    left,
+    right
+  }
 }
 
 /**
@@ -1452,7 +1544,6 @@ export const array: Monad1<URI> &
   Unfoldable1<URI> &
   TraversableWithIndex1<URI, number> &
   Alternative1<URI> &
-  Plus1<URI> &
   Extend1<URI> &
   Compactable1<URI> &
   FilterableWithIndex1<URI, number> &
@@ -1478,7 +1569,7 @@ export const array: Monad1<URI> &
   traverse,
   sequence,
   zero,
-  alt: (fx, f) => concat(fx, f()),
+  alt,
   extend,
   wither,
   wilt,
@@ -1490,4 +1581,64 @@ export const array: Monad1<URI> &
   partitionWithIndex,
   filterMapWithIndex,
   filterWithIndex
+}
+
+const {
+  alt$,
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  duplicate,
+  extend$,
+  filter$,
+  filterMap$,
+  foldMap$,
+  map$,
+  partition$,
+  partitionMap$,
+  reduce$,
+  reduceRight$,
+  filterMapWithIndex$,
+  filterWithIndex$,
+  foldMapWithIndex$,
+  mapWithIndex$,
+  partitionMapWithIndex$,
+  partitionWithIndex$,
+  reduceRightWithIndex$,
+  reduceWithIndex$
+} = augment(array)
+
+export {
+  alt$,
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  duplicate,
+  extend$,
+  filter$,
+  filterMap$,
+  foldMap$,
+  map$,
+  partition$,
+  partitionMap$,
+  reduce$,
+  reduceRight$,
+  filterMapWithIndex$,
+  filterWithIndex$,
+  foldMapWithIndex$,
+  mapWithIndex$,
+  partitionMapWithIndex$,
+  partitionWithIndex$,
+  reduceRightWithIndex$,
+  reduceWithIndex$
 }
