@@ -18,12 +18,16 @@ If you want to represent an asynchronous computation that may fail, please see `
 - [URI (constant)](#uri-constant)
 - [task (constant)](#task-constant)
 - [taskSeq (constant)](#taskseq-constant)
+- [ap (function)](#ap-function)
+- [chain (function)](#chain-function)
 - [delay (function)](#delay-function)
 - [fromIO (function)](#fromio-function)
 - [getMonoid (function)](#getmonoid-function)
 - [getRaceMonoid (function)](#getracemonoid-function)
 - [getSemigroup (function)](#getsemigroup-function)
+- [map (function)](#map-function)
 - [never (function)](#never-function)
+- [of (function)](#of-function)
 
 ---
 
@@ -81,6 +85,26 @@ export const taskSeq: typeof task = ...
 
 Added in v2.0.0
 
+# ap (function)
+
+**Signature**
+
+```ts
+export const ap: Monad1<URI>['ap'] = (mab, ma) => () => Promise.all([mab(), ma()]).then(([f, a]) => ...
+```
+
+Added in v2.0.0
+
+# chain (function)
+
+**Signature**
+
+```ts
+export const chain: Monad1<URI>['chain'] = (ma, f) => () => ma().then(a => ...
+```
+
+Added in v2.0.0
+
 # delay (function)
 
 **Signature**
@@ -131,12 +155,32 @@ export function getSemigroup<A>(S: Semigroup<A>): Semigroup<Task<A>> { ... }
 
 Added in v2.0.0
 
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Monad1<URI>['map'] = (ma, f) => () => ...
+```
+
+Added in v2.0.0
+
 # never (function)
 
 **Signature**
 
 ```ts
 export const never: Task<never> = () => new Promise(_ => ...
+```
+
+Added in v2.0.0
+
+# of (function)
+
+**Signature**
+
+```ts
+export const of: Monad1<URI>['of'] = a => () => ...
 ```
 
 Added in v2.0.0

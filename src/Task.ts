@@ -8,6 +8,7 @@ import { MonadIO1 } from './MonadIO'
 import { MonadTask1 } from './MonadTask'
 import { Monoid } from './Monoid'
 import { Semigroup } from './Semigroup'
+import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT<A> {
@@ -103,6 +104,26 @@ export function fromIO<A>(ma: IO<A>): Task<A> {
   return () => Promise.resolve(ma())
 }
 
+/**
+ * @since 2.0.0
+ */
+export const map: Monad1<URI>['map'] = (ma, f) => () => ma().then(f)
+
+/**
+ * @since 2.0.0
+ */
+export const of: Monad1<URI>['of'] = a => () => Promise.resolve(a)
+
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad1<URI>['ap'] = (mab, ma) => () => Promise.all([mab(), ma()]).then(([f, a]) => f(a))
+
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad1<URI>['chain'] = (ma, f) => () => ma().then(a => f(a)())
+
 const identity = <A>(a: A): A => a
 
 /**
@@ -110,13 +131,17 @@ const identity = <A>(a: A): A => a
  */
 export const task: Monad1<URI> & MonadIO1<URI> & MonadTask1<URI> = {
   URI,
-  map: (ma, f) => () => ma().then(f),
-  of: a => () => Promise.resolve(a),
-  ap: (mab, ma) => () => Promise.all([mab(), ma()]).then(([f, a]) => f(a)),
-  chain: (ma, f) => () => ma().then(a => f(a)()),
+  map,
+  of,
+  ap,
+  chain,
   fromIO,
   fromTask: identity
 }
+
+const { ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$, map$ } = augment(task)
+
+export { ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$, map$ }
 
 /**
  * Like `Task` but `ap` is sequential
