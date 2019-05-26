@@ -277,16 +277,13 @@ export function getRight<L, A>(ma: Either<L, A>): Option<A> {
  * Returns a refinement from a prism.
  * This function ensures that a custom type guard definition is type-safe.
  *
- * ```ts
- * import { some, none, getRefinement } from 'fp-ts/lib/Option'
- *
+ * @example
  * type A = { type: 'A' }
  * type B = { type: 'B' }
  * type C = A | B
  *
- * const isA = (c: C): c is A => c.type === 'B' // <= typo but typescript doesn't complain
- * const isA = getRefinement<C, A>(c => (c.type === 'B' ? some(c) : none)) // static error: Type '"B"' is not assignable to type '"A"'
- * ```
+ * export const isA = (c: C): c is A => c.type === 'B' // <= typo but typescript doesn't complain
+ * // export const isA = getRefinement<C, A>(c => (c.type === 'B' ? some(c) : none)) // static error: Type '"B"' is not assignable to type '"A"'
  *
  * @since 2.0.0
  */
