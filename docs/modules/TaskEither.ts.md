@@ -16,12 +16,19 @@ error of type `E`. If you want to represent an asynchronous computation that nev
 - [TaskEither (interface)](#taskeither-interface)
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
+- [alt (constant)](#alt-constant)
+- [ap (constant)](#ap-constant)
+- [bimap (constant)](#bimap-constant)
+- [chain (constant)](#chain-constant)
 - [fold (constant)](#fold-constant)
 - [fromEither (constant)](#fromeither-constant)
 - [fromIOEither (constant)](#fromioeither-constant)
 - [getOrElse (constant)](#getorelse-constant)
 - [left (constant)](#left-constant)
 - [leftTask (constant)](#lefttask-constant)
+- [map (constant)](#map-constant)
+- [mapLeft (constant)](#mapleft-constant)
+- [of (constant)](#of-constant)
 - [orElse (constant)](#orelse-constant)
 - [right (constant)](#right-constant)
 - [rightTask (constant)](#righttask-constant)
@@ -30,12 +37,16 @@ error of type `E`. If you want to represent an asynchronous computation that nev
 - [taskEitherSeq (constant)](#taskeitherseq-constant)
 - [bracket (function)](#bracket-function)
 - [filterOrElse (function)](#filterorelse-function)
+- [filterOrElse\$ (function)](#filterorelse-function)
+- [fold\$ (function)](#fold-function)
 - [fromOption (function)](#fromoption-function)
 - [fromPredicate (function)](#frompredicate-function)
 - [getApplyMonoid (function)](#getapplymonoid-function)
 - [getApplySemigroup (function)](#getapplysemigroup-function)
+- [getOrElse\$ (function)](#getorelse-function)
 - [getSemigroup (function)](#getsemigroup-function)
 - [leftIO (function)](#leftio-function)
+- [orElse\$ (function)](#orelse-function)
 - [rightIO (function)](#rightio-function)
 - [taskify (function)](#taskify-function)
 - [tryCatch (function)](#trycatch-function)
@@ -72,15 +83,52 @@ export const URI = ...
 
 Added in v2.0.0
 
+# alt (constant)
+
+**Signature**
+
+```ts
+export const alt: Alt2<URI>['alt'] = ...
+```
+
+Added in v2.0.0
+
+# ap (constant)
+
+**Signature**
+
+```ts
+export const ap: Monad2<URI>['ap'] = ...
+```
+
+Added in v2.0.0
+
+# bimap (constant)
+
+**Signature**
+
+```ts
+export const bimap: Bifunctor2<URI>['bimap'] = ...
+```
+
+Added in v2.0.0
+
+# chain (constant)
+
+**Signature**
+
+```ts
+export const chain: Monad2<URI>['chain'] = ...
+```
+
+Added in v2.0.0
+
 # fold (constant)
 
 **Signature**
 
 ```ts
-export const fold: <E, A, R>(
-  onLeft: (e: E) => Task<R>,
-  onRight: (a: A) => Task<R>
-) => (ma: TaskEither<E, A>) => Task<R> = ...
+export const  = ...
 ```
 
 Added in v2.0.0
@@ -110,7 +158,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const getOrElse: <E, A>(f: (e: E) => Task<A>) => (ma: TaskEither<E, A>) => Task<A> = ...
+export const getOrElse: <E, A>(ma: TaskEither<E, A>, f: (e: E) => Task<A>) => Task<A> = ...
 ```
 
 Added in v2.0.0
@@ -135,12 +183,42 @@ export const leftTask: <E>(me: Task<E>) => TaskEither<E, never> = ...
 
 Added in v2.0.0
 
+# map (constant)
+
+**Signature**
+
+```ts
+export const map: Monad2<URI>['map'] = ...
+```
+
+Added in v2.0.0
+
+# mapLeft (constant)
+
+**Signature**
+
+```ts
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = ...
+```
+
+Added in v2.0.0
+
+# of (constant)
+
+**Signature**
+
+```ts
+export const of: Monad2<URI>['of'] = ...
+```
+
+Added in v2.0.0
+
 # orElse (constant)
 
 **Signature**
 
 ```ts
-export const orElse: <E, A, M>(f: (e: E) => TaskEither<M, A>) => (ma: TaskEither<E, A>) => TaskEither<M, A> = ...
+export const orElse: <E, A, M>(ma: TaskEither<E, A>, f: (e: E) => TaskEither<M, A>) => TaskEither<M, A> = ...
 ```
 
 Added in v2.0.0
@@ -221,13 +299,45 @@ Added in v2.0.0
 
 ```ts
 export function filterOrElse<E, A, B extends A>(
+  ma: TaskEither<E, A>,
+  refinement: Refinement<A, B>,
+  onFalse: (a: A) => E
+): TaskEither<E, B>
+export function filterOrElse<E, A>(
+  ma: TaskEither<E, A>,
+  predicate: Predicate<A>,
+  onFalse: (a: A) => E
+): TaskEither<E, A> { ... }
+```
+
+Added in v2.0.0
+
+# filterOrElse\$ (function)
+
+**Signature**
+
+```ts
+export function filterOrElse$<E, A, B extends A>(
   refinement: Refinement<A, B>,
   onFalse: (a: A) => E
 ): (ma: TaskEither<E, A>) => TaskEither<E, B>
-export function filterOrElse<E, A>(
+export function filterOrElse$<E, A>(
   predicate: Predicate<A>,
   onFalse: (a: A) => E
 ): (ma: TaskEither<E, A>) => TaskEither<E, A> { ... }
+```
+
+Added in v2.0.0
+
+# fold\$ (function)
+
+**Signature**
+
+```ts
+export function fold$<E, A, R>(
+  onLeft: (e: E) => Task<R>,
+  onRight: (a: A) => Task<R>
+): (ma: TaskEither<E, A>) => Task<R> { ... }
 ```
 
 Added in v2.0.0
@@ -276,6 +386,16 @@ export function getApplySemigroup<E, A>(S: Semigroup<A>): Semigroup<TaskEither<E
 
 Added in v2.0.0
 
+# getOrElse\$ (function)
+
+**Signature**
+
+```ts
+export function getOrElse$<E, A>(f: (e: E) => Task<A>): (ma: TaskEither<E, A>) => Task<A> { ... }
+```
+
+Added in v2.0.0
+
 # getSemigroup (function)
 
 **Signature**
@@ -292,6 +412,16 @@ Added in v2.0.0
 
 ```ts
 export function leftIO<E>(me: IO<E>): TaskEither<E, never> { ... }
+```
+
+Added in v2.0.0
+
+# orElse\$ (function)
+
+**Signature**
+
+```ts
+export function orElse$<E, A, M>(f: (e: E) => TaskEither<M, A>): (ma: TaskEither<E, A>) => TaskEither<M, A> { ... }
 ```
 
 Added in v2.0.0

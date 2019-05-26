@@ -35,11 +35,15 @@ error of type `E`. If you want to represent a synchronous computation that never
 - [swap (constant)](#swap-constant)
 - [bracket (function)](#bracket-function)
 - [filterOrElse (function)](#filterorelse-function)
+- [filterOrElse\$ (function)](#filterorelse-function)
+- [fold\$ (function)](#fold-function)
 - [fromOption (function)](#fromoption-function)
 - [fromPredicate (function)](#frompredicate-function)
 - [getApplyMonoid (function)](#getapplymonoid-function)
 - [getApplySemigroup (function)](#getapplysemigroup-function)
+- [getOrElse\$ (function)](#getorelse-function)
 - [getSemigroup (function)](#getsemigroup-function)
+- [orElse\$ (function)](#orelse-function)
 - [tryCatch (function)](#trycatch-function)
 
 ---
@@ -119,7 +123,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const  = ...
+export const fold: <E, A, R>(ma: IOEither<E, A>, onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>) => IO<R> = ...
 ```
 
 Added in v2.0.0
@@ -139,7 +143,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const getOrElse: <E, A>(f: (e: E) => IO<A>) => (ma: IOEither<E, A>) => IO<A> = ...
+export const getOrElse: <E, A>(ma: IOEither<E, A>, f: (e: E) => IO<A>) => IO<A> = ...
 ```
 
 Added in v2.0.0
@@ -209,7 +213,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const orElse: <E, A, M>(f: (e: E) => IOEither<M, A>) => (ma: IOEither<E, A>) => IOEither<M, A> = ...
+export const orElse: <E, A, M>(ma: IOEither<E, A>, f: (e: E) => IOEither<M, A>) => IOEither<M, A> = ...
 ```
 
 Added in v2.0.0
@@ -268,13 +272,38 @@ Added in v2.0.0
 
 ```ts
 export function filterOrElse<E, A, B extends A>(
+  ma: IOEither<E, A>,
+  refinement: Refinement<A, B>,
+  onFalse: (a: A) => E
+): IOEither<E, B>
+export function filterOrElse<E, A>(ma: IOEither<E, A>, predicate: Predicate<A>, onFalse: (a: A) => E): IOEither<E, A> { ... }
+```
+
+Added in v2.0.0
+
+# filterOrElse\$ (function)
+
+**Signature**
+
+```ts
+export function filterOrElse$<E, A, B extends A>(
   refinement: Refinement<A, B>,
   onFalse: (a: A) => E
 ): (ma: IOEither<E, A>) => IOEither<E, B>
-export function filterOrElse<E, A>(
+export function filterOrElse$<E, A>(
   predicate: Predicate<A>,
-  zeonFalsero: (a: A) => E
+  onFalse: (a: A) => E
 ): (ma: IOEither<E, A>) => IOEither<E, A> { ... }
+```
+
+Added in v2.0.0
+
+# fold\$ (function)
+
+**Signature**
+
+```ts
+export function fold$<E, A, R>(onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>): (ma: IOEither<E, A>) => IO<R> { ... }
 ```
 
 Added in v2.0.0
@@ -323,12 +352,32 @@ export function getApplySemigroup<E, A>(S: Semigroup<A>): Semigroup<IOEither<E, 
 
 Added in v2.0.0
 
+# getOrElse\$ (function)
+
+**Signature**
+
+```ts
+export function getOrElse$<E, A>(f: (e: E) => IO<A>): (ma: IOEither<E, A>) => IO<A> { ... }
+```
+
+Added in v2.0.0
+
 # getSemigroup (function)
 
 **Signature**
 
 ```ts
 export function getSemigroup<E, A>(S: Semigroup<A>): Semigroup<IOEither<E, A>> { ... }
+```
+
+Added in v2.0.0
+
+# orElse\$ (function)
+
+**Signature**
+
+```ts
+export function orElse$<E, A, M>(f: (e: E) => IOEither<M, A>): (ma: IOEither<E, A>) => IOEither<M, A> { ... }
 ```
 
 Added in v2.0.0

@@ -18,6 +18,7 @@ import { Option } from './Option'
 import { IO } from './IO'
 
 import Either = E.Either
+import { augment } from './augment'
 
 const T = getEitherM(task)
 
@@ -109,38 +110,81 @@ export function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => 
 /**
  * @since 2.0.0
  */
-export const fold: <E, A, R>(
+export const fold: <E, A, R>(ma: TaskEither<E, A>, onLeft: (e: E) => Task<R>, onRight: (a: A) => Task<R>) => Task<R> =
+  T.fold
+
+/**
+ * @since 2.0.0
+ */
+export function fold$<E, A, R>(
   onLeft: (e: E) => Task<R>,
   onRight: (a: A) => Task<R>
-) => (ma: TaskEither<E, A>) => Task<R> = T.fold
-
-/**
- * @since 2.0.0
- */
-export const getOrElse: <E, A>(f: (e: E) => Task<A>) => (ma: TaskEither<E, A>) => Task<A> = T.getOrElse
-
-/**
- * @since 2.0.0
- */
-export function filterOrElse<E, A, B extends A>(
-  refinement: Refinement<A, B>,
-  onFalse: (a: A) => E
-): (ma: TaskEither<E, A>) => TaskEither<E, B>
-export function filterOrElse<E, A>(
-  predicate: Predicate<A>,
-  onFalse: (a: A) => E
-): (ma: TaskEither<E, A>) => TaskEither<E, A>
-export function filterOrElse<E, A>(
-  predicate: Predicate<A>,
-  onFalse: (a: A) => E
-): (ma: TaskEither<E, A>) => TaskEither<E, A> {
-  return ma => task.map(ma, E.filterOrElse$(predicate, onFalse))
+): (ma: TaskEither<E, A>) => Task<R> {
+  return ma => fold(ma, onLeft, onRight)
 }
 
 /**
  * @since 2.0.0
  */
-export const orElse: <E, A, M>(f: (e: E) => TaskEither<M, A>) => (ma: TaskEither<E, A>) => TaskEither<M, A> = T.orElse
+export const getOrElse: <E, A>(ma: TaskEither<E, A>, f: (e: E) => Task<A>) => Task<A> = T.getOrElse
+
+/**
+ * @since 2.0.0
+ */
+export function getOrElse$<E, A>(f: (e: E) => Task<A>): (ma: TaskEither<E, A>) => Task<A> {
+  return ma => getOrElse(ma, f)
+}
+
+/**
+ * @since 2.0.0
+ */
+export function filterOrElse<E, A, B extends A>(
+  ma: TaskEither<E, A>,
+  refinement: Refinement<A, B>,
+  onFalse: (a: A) => E
+): TaskEither<E, B>
+export function filterOrElse<E, A>(
+  ma: TaskEither<E, A>,
+  predicate: Predicate<A>,
+  onFalse: (a: A) => E
+): TaskEither<E, A>
+export function filterOrElse<E, A>(
+  ma: TaskEither<E, A>,
+  predicate: Predicate<A>,
+  onFalse: (a: A) => E
+): TaskEither<E, A> {
+  return task.map(ma, E.filterOrElse$(predicate, onFalse))
+}
+
+/**
+ * @since 2.0.0
+ */
+export function filterOrElse$<E, A, B extends A>(
+  refinement: Refinement<A, B>,
+  onFalse: (a: A) => E
+): (ma: TaskEither<E, A>) => TaskEither<E, B>
+export function filterOrElse$<E, A>(
+  predicate: Predicate<A>,
+  onFalse: (a: A) => E
+): (ma: TaskEither<E, A>) => TaskEither<E, A>
+export function filterOrElse$<E, A>(
+  predicate: Predicate<A>,
+  onFalse: (a: A) => E
+): (ma: TaskEither<E, A>) => TaskEither<E, A> {
+  return ma => filterOrElse(ma, predicate, onFalse)
+}
+
+/**
+ * @since 2.0.0
+ */
+export const orElse: <E, A, M>(ma: TaskEither<E, A>, f: (e: E) => TaskEither<M, A>) => TaskEither<M, A> = T.orElse
+
+/**
+ * @since 2.0.0
+ */
+export function orElse$<E, A, M>(f: (e: E) => TaskEither<M, A>): (ma: TaskEither<E, A>) => TaskEither<M, A> {
+  return ma => orElse(ma, f)
+}
 
 /**
  * @since 2.0.0
@@ -255,18 +299,70 @@ export function taskify<L, R>(f: Function): () => TaskEither<L, R> {
 /**
  * @since 2.0.0
  */
+export const map: Monad2<URI>['map'] = T.map
+
+/**
+ * @since 2.0.0
+ */
+export const of: Monad2<URI>['of'] = T.of
+
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad2<URI>['ap'] = T.ap
+
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad2<URI>['chain'] = T.chain
+
+/**
+ * @since 2.0.0
+ */
+export const bimap: Bifunctor2<URI>['bimap'] = T.bimap
+
+/**
+ * @since 2.0.0
+ */
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = T.mapLeft
+
+/**
+ * @since 2.0.0
+ */
+export const alt: Alt2<URI>['alt'] = T.alt
+
+/**
+ * @since 2.0.0
+ */
 export const taskEither: Monad2<URI> & Bifunctor2<URI> & Alt2<URI> & MonadIO2<URI> & MonadTask2<URI> = {
   URI,
-  bimap: T.bimap,
-  mapLeft: T.mapLeft,
-  map: T.map,
-  of: right,
-  ap: T.ap,
-  chain: T.chain,
-  alt: T.alt,
+  map,
+  of,
+  ap,
+  chain,
+  bimap,
+  mapLeft,
+  alt,
   fromIO: rightIO,
   fromTask: rightTask
 }
+
+const {
+  alt$,
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  map$,
+  bimap$,
+  mapLeft$
+} = augment(taskEither)
+
+export { alt$, ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$, map$, bimap$, mapLeft$ }
 
 /**
  * Like `TaskEither` but `ap` is sequential

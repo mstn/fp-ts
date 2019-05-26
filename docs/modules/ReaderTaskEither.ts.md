@@ -26,17 +26,20 @@ parent: Modules
 - [alt (function)](#alt-function)
 - [bimap (function)](#bimap-function)
 - [fold (function)](#fold-function)
+- [fold\$ (function)](#fold-function)
 - [fromEither (function)](#fromeither-function)
 - [fromIOEither (function)](#fromioeither-function)
 - [fromOption (function)](#fromoption-function)
 - [fromPredicate (function)](#frompredicate-function)
 - [getOrElse (function)](#getorelse-function)
+- [getOrElse\$ (function)](#getorelse-function)
 - [left (function)](#left-function)
 - [leftIO (function)](#leftio-function)
 - [leftReader (function)](#leftreader-function)
 - [leftTask (function)](#lefttask-function)
 - [mapLeft (function)](#mapleft-function)
 - [orElse (function)](#orelse-function)
+- [orElse\$ (function)](#orelse-function)
 - [rightIO (function)](#rightio-function)
 - [rightTask (function)](#righttask-function)
 - [run (function)](#run-function)
@@ -223,6 +226,20 @@ Added in v2.0.0
 
 ```ts
 export function fold<R, E, A, B>(
+  ma: ReaderTaskEither<R, E, A>,
+  onLeft: (e: E) => Reader<R, Task<B>>,
+  onRight: (a: A) => Reader<R, Task<B>>
+): Reader<R, Task<B>> { ... }
+```
+
+Added in v2.0.0
+
+# fold\$ (function)
+
+**Signature**
+
+```ts
+export function fold$<R, E, A, B>(
   onLeft: (e: E) => Reader<R, Task<B>>,
   onRight: (a: A) => Reader<R, Task<B>>
 ): (ma: ReaderTaskEither<R, E, A>) => Reader<R, Task<B>> { ... }
@@ -283,6 +300,19 @@ Added in v2.0.0
 
 ```ts
 export function getOrElse<R, E, A>(
+  ma: ReaderTaskEither<R, E, A>,
+  onLeft: (e: E) => Reader<R, Task<A>>
+): Reader<R, Task<A>> { ... }
+```
+
+Added in v2.0.0
+
+# getOrElse\$ (function)
+
+**Signature**
+
+```ts
+export function getOrElse$<R, E, A>(
   onLeft: (e: E) => Reader<R, Task<A>>
 ): (ma: ReaderTaskEither<R, E, A>) => Reader<R, Task<A>> { ... }
 ```
@@ -345,6 +375,19 @@ Added in v2.0.0
 
 ```ts
 export function orElse<R, E, A, M>(
+  ma: ReaderTaskEither<R, E, A>,
+  f: (e: E) => ReaderTaskEither<R, M, A>
+): ReaderTaskEither<R, M, A> { ... }
+```
+
+Added in v2.0.0
+
+# orElse\$ (function)
+
+**Signature**
+
+```ts
+export function orElse$<R, E, A, M>(
   f: (e: E) => ReaderTaskEither<R, M, A>
 ): (ma: ReaderTaskEither<R, E, A>) => ReaderTaskEither<R, M, A> { ... }
 ```

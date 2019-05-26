@@ -18,41 +18,55 @@ describe('IOEither', () => {
     )
   })
 
-  it('filterOrElse', () => {
+  it('fold$', () => {
+    assert.deepStrictEqual(_.fold$(() => io.of('left'), () => io.of('right'))(_.of(1))(), 'right')
+    assert.deepStrictEqual(_.fold$(() => io.of('left'), () => io.of('right'))(_.left(1))(), 'left')
+  })
+
+  it('getOrElse$', () => {
+    assert.deepStrictEqual(_.getOrElse$(() => io.of(2))(_.of(1))(), 1)
+    assert.deepStrictEqual(_.getOrElse$(() => io.of(2))(_.left(1))(), 2)
+  })
+
+  it('orElse$', () => {
+    assert.deepStrictEqual(_.orElse$(() => _.of(2))(_.of(1))(), E.right(1))
+  })
+
+  it('filterOrElse$', () => {
     const isNumber = (u: string | number): u is number => typeof u === 'number'
 
     assert.deepStrictEqual(
       pipe(
         _.right(12),
-        _.filterOrElse(n => n > 10, () => 'bar')
+        _.filterOrElse$(n => n > 10, () => 'bar')
       )(),
       E.right(12)
     )
     assert.deepStrictEqual(
       pipe(
         _.right(7),
-        _.filterOrElse(n => n > 10, () => 'bar')
+        _.filterOrElse$(n => n > 10, () => 'bar')
       )(),
       E.left('bar')
     )
     assert.deepStrictEqual(
       pipe(
         _.left('foo'),
-        _.filterOrElse(n => n > 10, () => 'bar')
+        _.filterOrElse$(n => n > 10, () => 'bar')
       )(),
       E.left('foo')
     )
     assert.deepStrictEqual(
       pipe(
         _.right(7),
-        _.filterOrElse(n => n > 10, n => `invalid ${n}`)
+        _.filterOrElse$(n => n > 10, n => `invalid ${n}`)
       )(),
       E.left('invalid 7')
     )
     assert.deepStrictEqual(
       pipe(
         _.right(12),
-        _.filterOrElse(isNumber, () => 'not a number')
+        _.filterOrElse$(isNumber, () => 'not a number')
       )(),
       E.right(12)
     )

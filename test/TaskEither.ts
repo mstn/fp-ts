@@ -4,13 +4,82 @@ import * as E from '../src/Either'
 import { io } from '../src/IO'
 import { monoidString } from '../src/Monoid'
 import { semigroupSum } from '../src/Semigroup'
-import * as T from '../src/Task'
+import { Task, delay as taskDelay, task } from '../src/Task'
 import * as _ from '../src/TaskEither'
 import { pipeOp as pipe } from '../src/function'
 
-const delay = <A>(millis: number, a: A): T.Task<A> => T.delay(millis, T.task.of(a))
+const delay = <A>(millis: number, a: A): Task<A> => taskDelay(millis, task.of(a))
 
 describe('TaskEither', () => {
+  it('fold$', async () => {
+    const e1 = await pipe(
+      _.right(1),
+      _.fold$(() => task.of('left'), () => task.of('right'))
+    )()
+    assert.deepStrictEqual(e1, 'right')
+    const e2 = await pipe(
+      _.left(1),
+      _.fold$(() => task.of('left'), () => task.of('right'))
+    )()
+    assert.deepStrictEqual(e2, 'left')
+  })
+
+  it('fold$', async () => {
+    const e1 = await pipe(
+      _.right(1),
+      _.getOrElse$(() => task.of(2))
+    )()
+    assert.deepStrictEqual(e1, 1)
+    const e2 = await pipe(
+      _.left(1),
+      _.getOrElse$(() => task.of(2))
+    )()
+    assert.deepStrictEqual(e2, 2)
+  })
+
+  it('orElse$', async () => {
+    const e1 = await pipe(
+      _.left('foo'),
+      _.orElse$(l => _.right(l.length))
+    )()
+    assert.deepStrictEqual(e1, E.right(3))
+    const e2 = await pipe(
+      _.right(1),
+      _.orElse$(() => _.right(2))
+    )()
+    assert.deepStrictEqual(e2, E.right(1))
+  })
+
+  it('filterOrElse$', async () => {
+    const isNumber = (u: string | number): u is number => typeof u === 'number'
+
+    const e1 = await pipe(
+      _.right(12),
+      _.filterOrElse$(n => n > 10, () => 'bar')
+    )()
+    assert.deepStrictEqual(e1, E.right(12))
+    const e2 = await pipe(
+      _.right(7),
+      _.filterOrElse$(n => n > 10, () => 'bar')
+    )()
+    assert.deepStrictEqual(e2, E.left('bar'))
+    const e3 = await pipe(
+      _.left('foo'),
+      _.filterOrElse$(n => n > 10, () => 'bar')
+    )()
+    assert.deepStrictEqual(e3, E.left('foo'))
+    const e4 = await pipe(
+      _.right(7),
+      _.filterOrElse$(n => n > 10, n => `invalid ${n}`)
+    )()
+    assert.deepStrictEqual(e4, E.left('invalid 7'))
+    const e5 = await pipe(
+      _.right(12),
+      _.filterOrElse$(isNumber, () => 'not a number')
+    )()
+    assert.deepStrictEqual(e5, E.right(12))
+  })
+
   describe('Monad', () => {
     it('map', async () => {
       const double = (n: number): number => n * 2
@@ -103,19 +172,6 @@ describe('TaskEither', () => {
       const e = await _.taskEither.mapLeft(_.left(1), double)()
       assert.deepStrictEqual(e, E.left(2))
     })
-  })
-
-  it('orElse', async () => {
-    const e1 = await pipe(
-      _.left('foo'),
-      _.orElse(l => _.right(l.length))
-    )()
-    assert.deepStrictEqual(e1, E.right(3))
-    const e2 = await pipe(
-      _.right(1),
-      _.orElse(() => _.right(2))
-    )()
-    assert.deepStrictEqual(e2, E.right(1))
   })
 
   it('leftIO', async () => {
@@ -243,36 +299,6 @@ describe('TaskEither', () => {
     const x = await sequenceSeries([t1, t2])()
     assert.deepStrictEqual(x, E.right([2, 4]))
     assert.deepStrictEqual(log, ['start 1', 'end 1', 'start 2', 'end 2'])
-  })
-
-  it('filterOrElse', async () => {
-    const isNumber = (u: string | number): u is number => typeof u === 'number'
-
-    const e1 = await pipe(
-      _.right(12),
-      _.filterOrElse(n => n > 10, () => 'bar')
-    )()
-    assert.deepStrictEqual(e1, E.right(12))
-    const e2 = await pipe(
-      _.right(7),
-      _.filterOrElse(n => n > 10, () => 'bar')
-    )()
-    assert.deepStrictEqual(e2, E.left('bar'))
-    const e3 = await pipe(
-      _.left('foo'),
-      _.filterOrElse(n => n > 10, () => 'bar')
-    )()
-    assert.deepStrictEqual(e3, E.left('foo'))
-    const e4 = await pipe(
-      _.right(7),
-      _.filterOrElse(n => n > 10, n => `invalid ${n}`)
-    )()
-    assert.deepStrictEqual(e4, E.left('invalid 7'))
-    const e5 = await pipe(
-      _.right(12),
-      _.filterOrElse(isNumber, () => 'not a number')
-    )()
-    assert.deepStrictEqual(e5, E.right(12))
   })
 
   describe('MonadIO', () => {

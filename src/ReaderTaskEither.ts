@@ -1,7 +1,8 @@
 import { Alt3 } from './Alt'
+import { augment } from './augment'
 import { Bifunctor3 } from './Bifunctor'
 import { Either } from './Either'
-import { pipeOp, Predicate, Refinement } from './function'
+import { Predicate, Refinement } from './function'
 import { IO } from './IO'
 import { IOEither } from './IOEither'
 import { Monad3 } from './Monad'
@@ -14,7 +15,6 @@ import { Task } from './Task'
 import * as TE from './TaskEither'
 
 import TaskEither = TE.TaskEither
-import { augment } from './augment'
 
 const T = getReaderM(TE.taskEither)
 
@@ -149,28 +149,59 @@ export function fromPredicate<E, A>(
  * @since 2.0.0
  */
 export function fold<R, E, A, B>(
+  ma: ReaderTaskEither<R, E, A>,
+  onLeft: (e: E) => Reader<R, Task<B>>,
+  onRight: (a: A) => Reader<R, Task<B>>
+): Reader<R, Task<B>> {
+  return r => TE.fold(ma(r), e => onLeft(e)(r), a => onRight(a)(r))
+}
+
+/**
+ * @since 2.0.0
+ */
+export function fold$<R, E, A, B>(
   onLeft: (e: E) => Reader<R, Task<B>>,
   onRight: (a: A) => Reader<R, Task<B>>
 ): (ma: ReaderTaskEither<R, E, A>) => Reader<R, Task<B>> {
-  return ma => r => pipeOp(ma(r), TE.fold(e => onLeft(e)(r), a => onRight(a)(r)))
+  return ma => fold(ma, onLeft, onRight)
 }
 
 /**
  * @since 2.0.0
  */
 export function getOrElse<R, E, A>(
+  ma: ReaderTaskEither<R, E, A>,
+  onLeft: (e: E) => Reader<R, Task<A>>
+): Reader<R, Task<A>> {
+  return r => TE.getOrElse(ma(r), e => onLeft(e)(r))
+}
+
+/**
+ * @since 2.0.0
+ */
+export function getOrElse$<R, E, A>(
   onLeft: (e: E) => Reader<R, Task<A>>
 ): (ma: ReaderTaskEither<R, E, A>) => Reader<R, Task<A>> {
-  return ma => r => TE.getOrElse<E, A>(e => onLeft(e)(r))(ma(r))
+  return ma => getOrElse(ma, onLeft)
 }
 
 /**
  * @since 2.0.0
  */
 export function orElse<R, E, A, M>(
+  ma: ReaderTaskEither<R, E, A>,
+  f: (e: E) => ReaderTaskEither<R, M, A>
+): ReaderTaskEither<R, M, A> {
+  return r => TE.orElse(ma(r), e => f(e)(r))
+}
+
+/**
+ * @since 2.0.0
+ */
+export function orElse$<R, E, A, M>(
   f: (e: E) => ReaderTaskEither<R, M, A>
 ): (ma: ReaderTaskEither<R, E, A>) => ReaderTaskEither<R, M, A> {
-  return ma => r => TE.orElse<E, A, M>(e => f(e)(r))(ma(r))
+  return ma => orElse(ma, f)
 }
 
 /**

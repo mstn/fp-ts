@@ -88,36 +88,69 @@ export function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => 
 /**
  * @since 2.0.0
  */
-export const fold: <E, A, R>(onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>) => (ma: IOEither<E, A>) => IO<R> =
-  T.fold
+export const fold: <E, A, R>(ma: IOEither<E, A>, onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>) => IO<R> = T.fold
 
 /**
  * @since 2.0.0
  */
-export const getOrElse: <E, A>(f: (e: E) => IO<A>) => (ma: IOEither<E, A>) => IO<A> = T.getOrElse
-
-/**
- * @since 2.0.0
- */
-export function filterOrElse<E, A, B extends A>(
-  refinement: Refinement<A, B>,
-  onFalse: (a: A) => E
-): (ma: IOEither<E, A>) => IOEither<E, B>
-export function filterOrElse<E, A>(
-  predicate: Predicate<A>,
-  zeonFalsero: (a: A) => E
-): (ma: IOEither<E, A>) => IOEither<E, A>
-export function filterOrElse<E, A>(
-  predicate: Predicate<A>,
-  onFalse: (a: A) => E
-): (ma: IOEither<E, A>) => IOEither<E, A> {
-  return ma => io.map(ma, E.filterOrElse$(predicate, onFalse))
+export function fold$<E, A, R>(onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>): (ma: IOEither<E, A>) => IO<R> {
+  return ma => fold(ma, onLeft, onRight)
 }
 
 /**
  * @since 2.0.0
  */
-export const orElse: <E, A, M>(f: (e: E) => IOEither<M, A>) => (ma: IOEither<E, A>) => IOEither<M, A> = T.orElse
+export const getOrElse: <E, A>(ma: IOEither<E, A>, f: (e: E) => IO<A>) => IO<A> = T.getOrElse
+
+/**
+ * @since 2.0.0
+ */
+export function getOrElse$<E, A>(f: (e: E) => IO<A>): (ma: IOEither<E, A>) => IO<A> {
+  return ma => getOrElse(ma, f)
+}
+
+/**
+ * @since 2.0.0
+ */
+export function filterOrElse<E, A, B extends A>(
+  ma: IOEither<E, A>,
+  refinement: Refinement<A, B>,
+  onFalse: (a: A) => E
+): IOEither<E, B>
+export function filterOrElse<E, A>(ma: IOEither<E, A>, predicate: Predicate<A>, onFalse: (a: A) => E): IOEither<E, A>
+export function filterOrElse<E, A>(ma: IOEither<E, A>, predicate: Predicate<A>, onFalse: (a: A) => E): IOEither<E, A> {
+  return io.map(ma, E.filterOrElse$(predicate, onFalse))
+}
+
+/**
+ * @since 2.0.0
+ */
+export function filterOrElse$<E, A, B extends A>(
+  refinement: Refinement<A, B>,
+  onFalse: (a: A) => E
+): (ma: IOEither<E, A>) => IOEither<E, B>
+export function filterOrElse$<E, A>(
+  predicate: Predicate<A>,
+  onFalse: (a: A) => E
+): (ma: IOEither<E, A>) => IOEither<E, A>
+export function filterOrElse$<E, A>(
+  predicate: Predicate<A>,
+  onFalse: (a: A) => E
+): (ma: IOEither<E, A>) => IOEither<E, A> {
+  return ma => filterOrElse(ma, predicate, onFalse)
+}
+
+/**
+ * @since 2.0.0
+ */
+export const orElse: <E, A, M>(ma: IOEither<E, A>, f: (e: E) => IOEither<M, A>) => IOEither<M, A> = T.orElse
+
+/**
+ * @since 2.0.0
+ */
+export function orElse$<E, A, M>(f: (e: E) => IOEither<M, A>): (ma: IOEither<E, A>) => IOEither<M, A> {
+  return ma => orElse(ma, f)
+}
 
 /**
  * @since 2.0.0
