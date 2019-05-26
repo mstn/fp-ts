@@ -15,6 +15,7 @@ import { Option } from './Option'
 import { Semigroup } from './Semigroup'
 
 import Either = E.Either
+import { augment } from './augment'
 
 const T = getEitherM(io)
 
@@ -176,14 +177,66 @@ export function bracket<E, A, B>(
 /**
  * @since 2.0.0
  */
+export const map: Monad2<URI>['map'] = T.map
+
+/**
+ * @since 2.0.0
+ */
+export const of: Monad2<URI>['of'] = T.of
+
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad2<URI>['ap'] = T.ap
+
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad2<URI>['chain'] = T.chain
+
+/**
+ * @since 2.0.0
+ */
+export const alt: Alt2<URI>['alt'] = T.alt
+
+/**
+ * @since 2.0.0
+ */
+export const bimap: Bifunctor2<URI>['bimap'] = T.bimap
+
+/**
+ * @since 2.0.0
+ */
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = T.mapLeft
+
+/**
+ * @since 2.0.0
+ */
 export const ioEither: Monad2<URI> & Bifunctor2<URI> & Alt2<URI> & MonadIO2<URI> = {
   URI,
-  bimap: T.bimap,
-  mapLeft: T.mapLeft,
-  map: T.map,
-  of: right,
-  ap: T.ap,
-  chain: T.chain,
-  alt: T.alt,
+  map,
+  of,
+  ap,
+  chain,
+  alt,
+  bimap,
+  mapLeft,
   fromIO: rightIO
 }
+
+const {
+  alt$,
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  map$,
+  bimap$,
+  mapLeft$
+} = augment(ioEither)
+
+export { alt$, ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$, map$, bimap$, mapLeft$ }

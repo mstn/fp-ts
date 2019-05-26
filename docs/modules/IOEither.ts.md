@@ -16,12 +16,19 @@ error of type `E`. If you want to represent a synchronous computation that never
 - [IOEither (interface)](#ioeither-interface)
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
+- [alt (constant)](#alt-constant)
+- [ap (constant)](#ap-constant)
+- [bimap (constant)](#bimap-constant)
+- [chain (constant)](#chain-constant)
 - [fold (constant)](#fold-constant)
 - [fromEither (constant)](#fromeither-constant)
 - [getOrElse (constant)](#getorelse-constant)
 - [ioEither (constant)](#ioeither-constant)
 - [left (constant)](#left-constant)
 - [leftIO (constant)](#leftio-constant)
+- [map (constant)](#map-constant)
+- [mapLeft (constant)](#mapleft-constant)
+- [of (constant)](#of-constant)
 - [orElse (constant)](#orelse-constant)
 - [right (constant)](#right-constant)
 - [rightIO (constant)](#rightio-constant)
@@ -63,6 +70,46 @@ Added in v2.0.0
 
 ```ts
 export const URI = ...
+```
+
+Added in v2.0.0
+
+# alt (constant)
+
+**Signature**
+
+```ts
+export const alt: Alt2<URI>['alt'] = ...
+```
+
+Added in v2.0.0
+
+# ap (constant)
+
+**Signature**
+
+```ts
+export const ap: Monad2<URI>['ap'] = ...
+```
+
+Added in v2.0.0
+
+# bimap (constant)
+
+**Signature**
+
+```ts
+export const bimap: Bifunctor2<URI>['bimap'] = ...
+```
+
+Added in v2.0.0
+
+# chain (constant)
+
+**Signature**
+
+```ts
+export const chain: Monad2<URI>['chain'] = ...
 ```
 
 Added in v2.0.0
@@ -123,6 +170,36 @@ Added in v2.0.0
 
 ```ts
 export const leftIO: <E>(me: IO<E>) => IOEither<E, never> = ...
+```
+
+Added in v2.0.0
+
+# map (constant)
+
+**Signature**
+
+```ts
+export const map: Monad2<URI>['map'] = ...
+```
+
+Added in v2.0.0
+
+# mapLeft (constant)
+
+**Signature**
+
+```ts
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = ...
+```
+
+Added in v2.0.0
+
+# of (constant)
+
+**Signature**
+
+```ts
+export const of: Monad2<URI>['of'] = ...
 ```
 
 Added in v2.0.0

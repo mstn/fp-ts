@@ -629,7 +629,9 @@ const {
   foldMap$,
   map$,
   reduce$,
-  reduceRight$
+  reduceRight$,
+  bimap$,
+  mapLeft$
 } = augment(either)
 
 export {
@@ -647,5 +649,7 @@ export {
   foldMap$,
   map$,
   reduce$,
-  reduceRight$
+  reduceRight$,
+  bimap$,
+  mapLeft$
 }
