@@ -90,11 +90,11 @@
  * computation() // returns { name: 'Aristotle', age: 60 }
  * ```
  */
-import { identity } from './function'
 import { Monad1 } from './Monad'
 import { MonadIO1 } from './MonadIO'
 import { Monoid } from './Monoid'
 import { Semigroup } from './Semigroup'
+import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT<A> {
@@ -141,11 +141,37 @@ export function getMonoid<A>(M: Monoid<A>): Monoid<IO<A>> {
 /**
  * @since 2.0.0
  */
+export const map: Monad1<URI>['map'] = (ma, f) => () => f(ma())
+
+/**
+ * @since 2.0.0
+ */
+export const of: Monad1<URI>['of'] = a => () => a
+
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad1<URI>['ap'] = (mab, ma) => () => mab()(ma())
+
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad1<URI>['chain'] = (ma, f) => () => f(ma())()
+
+const identity = <A>(a: A): A => a
+
+/**
+ * @since 2.0.0
+ */
 export const io: Monad1<URI> & MonadIO1<URI> = {
   URI,
-  map: (ma, f) => () => f(ma()),
-  of: a => () => a,
-  ap: (mab, ma) => () => mab()(ma()),
-  chain: (ma, f) => () => f(ma())(),
+  map,
+  of,
+  ap,
+  chain,
   fromIO: identity
 }
+
+const { ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$, map$ } = augment(io)
+
+export { ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$, map$ }

@@ -103,8 +103,12 @@ computation() // returns { name: 'Aristotle', age: 60 }
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
 - [io (constant)](#io-constant)
+- [ap (function)](#ap-function)
+- [chain (function)](#chain-function)
 - [getMonoid (function)](#getmonoid-function)
 - [getSemigroup (function)](#getsemigroup-function)
+- [map (function)](#map-function)
+- [of (function)](#of-function)
 
 ---
 
@@ -150,6 +154,26 @@ export const io: Monad1<URI> & MonadIO1<URI> = ...
 
 Added in v2.0.0
 
+# ap (function)
+
+**Signature**
+
+```ts
+export const ap: Monad1<URI>['ap'] = (mab, ma) => () => ...
+```
+
+Added in v2.0.0
+
+# chain (function)
+
+**Signature**
+
+```ts
+export const chain: Monad1<URI>['chain'] = (ma, f) => () => ...
+```
+
+Added in v2.0.0
+
 # getMonoid (function)
 
 **Signature**
@@ -166,6 +190,26 @@ Added in v2.0.0
 
 ```ts
 export function getSemigroup<A>(S: Semigroup<A>): Semigroup<IO<A>> { ... }
+```
+
+Added in v2.0.0
+
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Monad1<URI>['map'] = (ma, f) => () => ...
+```
+
+Added in v2.0.0
+
+# of (function)
+
+**Signature**
+
+```ts
+export const of: Monad1<URI>['of'] = a => () => ...
 ```
 
 Added in v2.0.0
