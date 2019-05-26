@@ -1,6 +1,7 @@
 import * as assert from 'assert'
 import { sequenceT, sequenceS } from '../src/Apply'
-import { either, left, right, getValidationApplicative } from '../src/Either'
+import { either, left, right } from '../src/Either'
+import { getApplicative } from '../src/Validation'
 import { none, option, some, isSome, isNone } from '../src/Option'
 import * as fc from 'fast-check'
 import { getSome } from './property-test/Option'
@@ -42,7 +43,7 @@ describe('Apply', () => {
     assert.deepStrictEqual(adoEither({ a: right(1), b: right(2) }), right({ a: 1, b: 2 }))
     assert.deepStrictEqual(adoEither({ a: right(1), b: left('error') }), left('error'))
 
-    const adoValidation = sequenceS(getValidationApplicative(getMonoid<string>()))
+    const adoValidation = sequenceS(getApplicative(getMonoid<string>()))
     assert.deepStrictEqual(adoValidation({ a: right(1) }), right({ a: 1 }))
     assert.deepStrictEqual(adoValidation({ a: right(1), b: right(2) }), right({ a: 1, b: 2 }))
     assert.deepStrictEqual(adoValidation({ a: right(1), b: left(['error']) }), left(['error']))
