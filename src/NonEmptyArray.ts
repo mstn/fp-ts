@@ -13,6 +13,9 @@ import { Option, some, none } from './Option'
 import { Eq } from './Eq'
 import { Predicate, Refinement } from './function'
 import { Show } from './Show'
+import { Foldable1 } from './Foldable'
+import { Traversable1 } from './Traversable'
+import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT<A> {
@@ -324,9 +327,85 @@ export function filterWithIndex<A>(
   return fromArray(nea.filter((a, i) => predicate(i, a)))
 }
 
-const mapWithIndex = <A, B>(fa: NonEmptyArray<A>, f: (i: number, a: A) => B): NonEmptyArray<B> => {
-  return fa.map((a, i) => f(i, a))
-}
+/**
+ * @since 2.0.0
+ */
+export const map: Monad1<URI>['map'] = A.map as any
+
+/**
+ * @since 2.0.0
+ */
+export const mapWithIndex: FunctorWithIndex1<URI, number>['mapWithIndex'] = A.mapWithIndex as any
+
+/**
+ * @since 2.0.0
+ */
+export const of: Monad1<URI>['of'] = A.of as any
+
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad1<URI>['ap'] = A.ap as any
+
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad1<URI>['chain'] = A.chain as any
+
+/**
+ * @since 2.0.0
+ */
+export const extend: Comonad1<URI>['extend'] = A.extend as any
+
+/**
+ * @since 2.0.0
+ */
+export const extract: Comonad1<URI>['extract'] = head
+
+/**
+ * @since 2.0.0
+ */
+export const reduce: Foldable1<URI>['reduce'] = A.reduce
+
+/**
+ * @since 2.0.0
+ */
+export const foldMap: Foldable1<URI>['foldMap'] = A.foldMap
+
+/**
+ * @since 2.0.0
+ */
+export const reduceRight: Foldable1<URI>['reduceRight'] = A.reduceRight
+
+/**
+ * @since 2.0.0
+ */
+export const reduceWithIndex: FoldableWithIndex1<URI, number>['reduceWithIndex'] = A.reduceWithIndex
+
+/**
+ * @since 2.0.0
+ */
+export const foldMapWithIndex: FoldableWithIndex1<URI, number>['foldMapWithIndex'] = A.foldMapWithIndex
+
+/**
+ * @since 2.0.0
+ */
+export const reduceRightWithIndex: FoldableWithIndex1<URI, number>['reduceRightWithIndex'] = A.reduceRightWithIndex
+
+/**
+ * @since 2.0.0
+ */
+export const traverse: Traversable1<URI>['traverse'] = A.traverse
+
+/**
+ * @since 2.0.0
+ */
+export const sequence: Traversable1<URI>['sequence'] = A.sequence
+
+/**
+ * @since 2.0.0
+ */
+export const traverseWithIndex: TraversableWithIndex1<URI, number>['traverseWithIndex'] = A.traverseWithIndex
 
 /**
  * @since 2.0.0
@@ -337,20 +416,62 @@ export const nonEmptyArray: Monad1<URI> &
   FunctorWithIndex1<URI, number> &
   FoldableWithIndex1<URI, number> = {
   URI,
-  map: A.array.map as any,
+  map,
   mapWithIndex,
-  of: A.array.of as any,
-  ap: A.array.ap as any,
-  chain: A.array.chain as any,
-  extend: A.array.extend as any,
-  extract: head,
-  reduce: A.array.reduce,
-  foldMap: A.array.foldMap,
-  reduceRight: A.array.reduceRight,
-  traverse: A.array.traverse as any,
-  sequence: A.array.sequence as any,
-  reduceWithIndex: A.array.reduceWithIndex,
-  foldMapWithIndex: A.array.foldMapWithIndex,
-  reduceRightWithIndex: A.array.reduceRightWithIndex,
-  traverseWithIndex: A.array.traverseWithIndex as any
+  of,
+  ap,
+  chain,
+  extend,
+  extract,
+  reduce,
+  foldMap,
+  reduceRight,
+  traverse,
+  sequence,
+  reduceWithIndex,
+  foldMapWithIndex,
+  reduceRightWithIndex,
+  traverseWithIndex
+}
+
+const {
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  duplicate,
+  extend$,
+  foldMap$,
+  map$,
+  reduce$,
+  reduceRight$,
+  foldMapWithIndex$,
+  mapWithIndex$,
+  reduceRightWithIndex$,
+  reduceWithIndex$
+} = augment(nonEmptyArray)
+
+export {
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  duplicate,
+  extend$,
+  foldMap$,
+  map$,
+  reduce$,
+  reduceRight$,
+  foldMapWithIndex$,
+  mapWithIndex$,
+  reduceRightWithIndex$,
+  reduceWithIndex$
 }

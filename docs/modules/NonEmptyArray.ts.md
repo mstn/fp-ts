@@ -15,12 +15,28 @@ Data structure which represents non-empty arrays
 - [NonEmptyArray (interface)](#nonemptyarray-interface)
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
+- [ap (constant)](#ap-constant)
+- [chain (constant)](#chain-constant)
 - [cons (constant)](#cons-constant)
 - [copy (constant)](#copy-constant)
+- [extend (constant)](#extend-constant)
+- [extract (constant)](#extract-constant)
+- [foldMap (constant)](#foldmap-constant)
+- [foldMapWithIndex (constant)](#foldmapwithindex-constant)
 - [getEq (constant)](#geteq-constant)
+- [map (constant)](#map-constant)
+- [mapWithIndex (constant)](#mapwithindex-constant)
 - [nonEmptyArray (constant)](#nonemptyarray-constant)
+- [of (constant)](#of-constant)
+- [reduce (constant)](#reduce-constant)
+- [reduceRight (constant)](#reduceright-constant)
+- [reduceRightWithIndex (constant)](#reducerightwithindex-constant)
+- [reduceWithIndex (constant)](#reducewithindex-constant)
 - [reverse (constant)](#reverse-constant)
+- [sequence (constant)](#sequence-constant)
 - [snoc (constant)](#snoc-constant)
+- [traverse (constant)](#traverse-constant)
+- [traverseWithIndex (constant)](#traversewithindex-constant)
 - [filter (function)](#filter-function)
 - [filterWithIndex (function)](#filterwithindex-function)
 - [findFirst (function)](#findfirst-function)
@@ -80,6 +96,26 @@ export const URI = ...
 
 Added in v2.0.0
 
+# ap (constant)
+
+**Signature**
+
+```ts
+export const ap: Monad1<URI>['ap'] = ...
+```
+
+Added in v2.0.0
+
+# chain (constant)
+
+**Signature**
+
+```ts
+export const chain: Monad1<URI>['chain'] = ...
+```
+
+Added in v2.0.0
+
 # cons (constant)
 
 Append an element to the front of an array, creating a new non empty array
@@ -110,6 +146,46 @@ export const copy: <A>(nea: NonEmptyArray<A>) => NonEmptyArray<A> = ...
 
 Added in v2.0.0
 
+# extend (constant)
+
+**Signature**
+
+```ts
+export const extend: Comonad1<URI>['extend'] = ...
+```
+
+Added in v2.0.0
+
+# extract (constant)
+
+**Signature**
+
+```ts
+export const extract: Comonad1<URI>['extract'] = ...
+```
+
+Added in v2.0.0
+
+# foldMap (constant)
+
+**Signature**
+
+```ts
+export const foldMap: Foldable1<URI>['foldMap'] = ...
+```
+
+Added in v2.0.0
+
+# foldMapWithIndex (constant)
+
+**Signature**
+
+```ts
+export const foldMapWithIndex: FoldableWithIndex1<URI, number>['foldMapWithIndex'] = ...
+```
+
+Added in v2.0.0
+
 # getEq (constant)
 
 **Signature**
@@ -131,6 +207,26 @@ assert.strictEqual(E.equals(cons(1, [2]), make([1, 3])), false)
 
 Added in v2.0.0
 
+# map (constant)
+
+**Signature**
+
+```ts
+export const map: Monad1<URI>['map'] = ...
+```
+
+Added in v2.0.0
+
+# mapWithIndex (constant)
+
+**Signature**
+
+```ts
+export const mapWithIndex: FunctorWithIndex1<URI, number>['mapWithIndex'] = ...
+```
+
+Added in v2.0.0
+
 # nonEmptyArray (constant)
 
 **Signature**
@@ -145,12 +241,72 @@ export const nonEmptyArray: Monad1<URI> &
 
 Added in v2.0.0
 
+# of (constant)
+
+**Signature**
+
+```ts
+export const of: Monad1<URI>['of'] = ...
+```
+
+Added in v2.0.0
+
+# reduce (constant)
+
+**Signature**
+
+```ts
+export const reduce: Foldable1<URI>['reduce'] = ...
+```
+
+Added in v2.0.0
+
+# reduceRight (constant)
+
+**Signature**
+
+```ts
+export const reduceRight: Foldable1<URI>['reduceRight'] = ...
+```
+
+Added in v2.0.0
+
+# reduceRightWithIndex (constant)
+
+**Signature**
+
+```ts
+export const reduceRightWithIndex: FoldableWithIndex1<URI, number>['reduceRightWithIndex'] = ...
+```
+
+Added in v2.0.0
+
+# reduceWithIndex (constant)
+
+**Signature**
+
+```ts
+export const reduceWithIndex: FoldableWithIndex1<URI, number>['reduceWithIndex'] = ...
+```
+
+Added in v2.0.0
+
 # reverse (constant)
 
 **Signature**
 
 ```ts
 export const reverse: <A>(nea: NonEmptyArray<A>) => NonEmptyArray<A> = ...
+```
+
+Added in v2.0.0
+
+# sequence (constant)
+
+**Signature**
+
+```ts
+export const sequence: Traversable1<URI>['sequence'] = ...
 ```
 
 Added in v2.0.0
@@ -171,6 +327,26 @@ export const snoc: <A>(init: Array<A>, end: A) => NonEmptyArray<A> = ...
 import { snoc } from 'fp-ts/lib/NonEmptyArray'
 
 assert.deepStrictEqual(snoc([1, 2, 3], 4), [1, 2, 3, 4])
+```
+
+Added in v2.0.0
+
+# traverse (constant)
+
+**Signature**
+
+```ts
+export const traverse: Traversable1<URI>['traverse'] = ...
+```
+
+Added in v2.0.0
+
+# traverseWithIndex (constant)
+
+**Signature**
+
+```ts
+export const traverseWithIndex: TraversableWithIndex1<URI, number>['traverseWithIndex'] = ...
 ```
 
 Added in v2.0.0
