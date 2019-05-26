@@ -1,7 +1,6 @@
 import { Category2 } from './Category'
 import { Choice2 } from './Choice'
 import * as E from './Either'
-import { identity as id } from './function'
 import { identity } from './Identity'
 import { Monad2 } from './Monad'
 import { Monoid } from './Monoid'
@@ -9,6 +8,7 @@ import { Profunctor2 } from './Profunctor'
 import { getReaderM } from './ReaderT'
 import { Semigroup } from './Semigroup'
 import { Strong2 } from './Strong'
+import { augment } from './augment'
 
 const T = getReaderM(identity)
 
@@ -75,28 +75,93 @@ export function getMonoid<R, A>(M: Monoid<A>): Monoid<Reader<R, A>> {
   }
 }
 
-function left<A, B, C>(pab: Reader<A, B>): Reader<E.Either<A, C>, E.Either<B, C>> {
-  return E.fold$<A, C, E.Either<B, C>>(a => E.left(pab(a)), E.right)
-}
+/**
+ * @since 2.0.0
+ */
+export const map: Monad2<URI>['map'] = T.map
 
-function right<A, B, C>(pbc: Reader<B, C>): Reader<E.Either<A, B>, E.Either<A, C>> {
-  return E.fold$<A, B, E.Either<A, C>>(E.left, b => E.right(pbc(b)))
-}
+/**
+ * @since 2.0.0
+ */
+export const of: Monad2<URI>['of'] = T.of
+
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad2<URI>['ap'] = T.ap
+
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad2<URI>['chain'] = T.chain
+
+/**
+ * @since 2.0.0
+ */
+export const promap: Profunctor2<URI>['promap'] = (mbc, f, g) => a => g(mbc(f(a)))
+
+/**
+ * @since 2.0.0
+ */
+export const compose: Category2<URI>['compose'] = (ab, la) => l => ab(la(l))
+
+/**
+ * @since 2.0.0
+ */
+export const id: Category2<URI>['id'] = () => a => a
+
+/**
+ * @since 2.0.0
+ */
+export const first: Strong2<URI>['first'] = pab => ([a, c]) => [pab(a), c]
+
+/**
+ * @since 2.0.0
+ */
+export const second: Strong2<URI>['second'] = pbc => ([a, b]) => [a, pbc(b)]
+
+/**
+ * @since 2.0.0
+ */
+export const left: Choice2<URI>['left'] = <A, B, C>(pab: Reader<A, B>): Reader<E.Either<A, C>, E.Either<B, C>> =>
+  E.fold$<A, C, E.Either<B, C>>(a => E.left(pab(a)), E.right)
+
+/**
+ * @since 2.0.0
+ */
+export const right: Choice2<URI>['right'] = <A, B, C>(pbc: Reader<B, C>): Reader<E.Either<A, B>, E.Either<A, C>> =>
+  E.fold$<A, B, E.Either<A, C>>(E.left, b => E.right(pbc(b)))
 
 /**
  * @since 2.0.0
  */
 export const reader: Monad2<URI> & Profunctor2<URI> & Category2<URI> & Strong2<URI> & Choice2<URI> = {
   URI,
-  map: (ma, f) => e => f(ma(e)),
-  of: T.of,
-  ap: T.ap,
-  chain: T.chain,
-  promap: (mbc, f, g) => a => g(mbc(f(a))),
-  compose: (ab, la) => l => ab(la(l)),
-  id: () => id,
-  first: pab => ([a, c]) => [pab(a), c],
-  second: pbc => ([a, b]) => [a, pbc(b)],
+  map,
+  of,
+  ap,
+  chain,
+  promap,
+  compose,
+  id,
+  first,
+  second,
   left,
   right
 }
+
+const {
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  map$,
+  compose$,
+  promap$
+} = augment(reader)
+
+export { ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$, map$, compose$, promap$ }
