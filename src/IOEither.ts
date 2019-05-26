@@ -163,11 +163,15 @@ export function tryCatch<E, A>(f: Lazy<A>, onError: (reason: unknown) => E): IOE
  *
  * @since 2.0.0
  */
-export const bracket: <E, A, B>(
+export function bracket<E, A, B>(
   acquire: IOEither<E, A>,
   use: (a: A) => IOEither<E, B>,
   release: (a: A, e: Either<E, B>) => IOEither<E, void>
-) => IOEither<E, B> = T.bracket
+): IOEither<E, B> {
+  return T.chain(acquire, a =>
+    T.chain(io.map(use(a), E.right), e => T.chain(release(a, e), () => (E.isLeft(e) ? T.left(e.left) : T.of(e.right))))
+  )
+}
 
 /**
  * @since 2.0.0

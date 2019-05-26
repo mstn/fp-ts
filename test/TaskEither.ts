@@ -42,7 +42,7 @@ describe('TaskEither', () => {
     const useSuccess = () => _.right('use success')
     const useFailure = () => _.left('use failure')
     const releaseSuccess = () =>
-      _.taskEither.fromIO(() => {
+      _.rightIO(() => {
         log.push('release success')
       })
     const releaseFailure = () => _.left('release failure')
