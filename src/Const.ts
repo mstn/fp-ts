@@ -1,11 +1,12 @@
 import { Applicative2C } from './Applicative'
 import { Apply2C } from './Apply'
+import { augment } from './augment'
 import { Contravariant2 } from './Contravariant'
-import { phantom, unsafeCoerce, identity } from './function'
+import { Eq } from './Eq'
+import { identity, phantom, unsafeCoerce } from './function'
 import { Functor2 } from './Functor'
 import { Monoid } from './Monoid'
 import { Semigroup } from './Semigroup'
-import { Eq } from './Eq'
 import { Show } from './Show'
 
 declare module './HKT' {
@@ -48,7 +49,15 @@ export function getShow<L, A>(S: Show<L>): Show<Const<L, A>> {
  */
 export const getEq: <L, A>(E: Eq<L>) => Eq<Const<L, A>> = identity
 
-const map = unsafeCoerce
+/**
+ * @since 2.0.0
+ */
+export const map: Functor2<URI>['map'] = unsafeCoerce
+
+/**
+ * @since 2.0.0
+ */
+export const contramap: Contravariant2<URI>['contramap'] = unsafeCoerce
 
 /**
  * @since 2.0.0
@@ -66,9 +75,10 @@ export function getApply<L>(S: Semigroup<L>): Apply2C<URI, L> {
  * @since 2.0.0
  */
 export function getApplicative<L>(M: Monoid<L>): Applicative2C<URI, L> {
+  const empty = make(M.empty)
   return {
     ...getApply(M),
-    of: () => make(M.empty)
+    of: () => empty
   }
 }
 
@@ -78,5 +88,9 @@ export function getApplicative<L>(M: Monoid<L>): Applicative2C<URI, L> {
 export const const_: Functor2<URI> & Contravariant2<URI> = {
   URI,
   map,
-  contramap: unsafeCoerce
+  contramap
 }
+
+const { map$ } = augment(const_)
+
+export { map$ }
