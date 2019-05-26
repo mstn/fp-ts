@@ -95,7 +95,7 @@ import { HKT } from './HKT'
 import { Monad1 } from './Monad'
 import { Monoid } from './Monoid'
 import { Ord } from './Ord'
-import { pipeable } from './pipeable'
+import { augment } from './augment'
 import { Plus1 } from './Plus'
 import { Semigroup } from './Semigroup'
 import { Show } from './Show'
@@ -734,7 +734,7 @@ const {
   partitionMap$,
   reduce$,
   reduceRight$
-} = pipeable(option)
+} = augment(option)
 
 export {
   alt$,

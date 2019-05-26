@@ -1,6 +1,6 @@
 ---
 title: index.ts
-nav_order: 40
+nav_order: 41
 parent: Modules
 ---
 
@@ -13,6 +13,7 @@ parent: Modules
 - [applicative (export)](#applicative-export)
 - [apply (export)](#apply-export)
 - [array (export)](#array-export)
+- [augment (export)](#augment-export)
 - [bifunctor (export)](#bifunctor-export)
 - [booleanAlgebra (export)](#booleanalgebra-export)
 - [bounded (export)](#bounded-export)
@@ -66,7 +67,6 @@ parent: Modules
 - [optionT (export)](#optiont-export)
 - [ord (export)](#ord-export)
 - [ordering (export)](#ordering-export)
-- [pipeable (export)](#pipeable-export)
 - [plus (export)](#plus-export)
 - [profunctor (export)](#profunctor-export)
 - [random (export)](#random-export)
@@ -138,6 +138,14 @@ export { apply }
 
 ```ts
 export { array }
+```
+
+# augment (export)
+
+**Signature**
+
+```ts
+export { augment }
 ```
 
 # bifunctor (export)
@@ -562,14 +570,6 @@ export { ord }
 
 ```ts
 export { ordering }
-```
-
-# pipeable (export)
-
-**Signature**
-
-```ts
-export { pipeable }
 ```
 
 # plus (export)

@@ -1,8 +1,8 @@
 import * as assert from 'assert'
 import { head } from '../src/Array'
 import { some, isSome, map$ } from '../src/Option'
-import { pipe } from '../src/pipeable'
 import { spy, trace } from '../src/Trace'
+import { pipeOp } from '../src/function'
 
 describe('Trace', () => {
   it('spy', () => {
@@ -13,12 +13,7 @@ describe('Trace', () => {
     console.log = (a: any) => {
       logger.push(a)
     }
-    pipe(
-      head(['a', 'bb', 'ccc']),
-      spy,
-      map$(spy),
-      map$(s => s.length)
-    )
+    pipeOp(head(['a', 'bb', 'ccc']), spy, map$(spy), map$(s => s.length))
     assert.deepStrictEqual(logger, [some('a'), 'a'])
     // tslint:disable-next-line:no-console
     console.log = log_
@@ -32,7 +27,7 @@ describe('Trace', () => {
     console.log = (a: any) => {
       logger.push(a)
     }
-    pipe(
+    pipeOp(
       head(['a', 'bb', 'ccc']),
       trace(h => `The head is a some? ${isSome(h)}`),
       map$(trace(s => `The value before calling .length is: ${s}`)),
