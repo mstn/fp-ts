@@ -323,7 +323,7 @@ describe('Map', () => {
   describe('map', () => {
     describe('functor', () => {
       it('map', () => {
-        const map = M.map.map
+        const map = M.map_.map
         const d1 = new Map<string, number>([['k1', 1], ['k2', 2]])
         const expected = new Map<string, number>([['k1', 2], ['k2', 4]])
         const double = (n: number): number => n * 2
@@ -332,14 +332,14 @@ describe('Map', () => {
     })
     describe('filterable', () => {
       it('compact', () => {
-        const compact = M.map.compact
+        const compact = M.map_.compact
         const fooBar = new Map<string, Option<number>>([['foo', none], ['bar', some(123)]])
         const bar = new Map<string, number>([['bar', 123]])
         assert.deepStrictEqual(compact(fooBar), bar)
       })
 
       it('partitionMap', () => {
-        const partitionMap = M.map.partitionMap
+        const partitionMap = M.map_.partitionMap
         const emptyMap = new Map<string, number>()
         const a1b3 = new Map<string, number>([['a', 1], ['b', 3]])
         const a0 = new Map<string, number>([['a', 0]])
@@ -353,7 +353,7 @@ describe('Map', () => {
       })
 
       it('partition', () => {
-        const partition = M.map.partition
+        const partition = M.map_.partition
         const emptyMap = new Map<string, number>()
         const a1b3 = new Map<string, number>([['a', 1], ['b', 3]])
         const a1 = new Map<string, number>([['a', 1]])
@@ -366,7 +366,7 @@ describe('Map', () => {
       })
 
       it('separate', () => {
-        const separate = M.map.separate
+        const separate = M.map_.separate
         const fooBar = new Map<string, Either<number, number>>([['foo', left(123)], ['bar', right(123)]])
         const foo = new Map<string, number>([['foo', 123]])
         const bar = new Map<string, number>([['bar', 123]])
@@ -377,7 +377,7 @@ describe('Map', () => {
       })
 
       it('filter', () => {
-        const filter = M.map.filter
+        const filter = M.map_.filter
         const a1b3 = new Map<string, number>([['a', 1], ['b', 3]])
         const b3 = new Map<string, number>([['b', 3]])
         assert.deepStrictEqual(filter(a1b3, p), b3)
@@ -391,7 +391,7 @@ describe('Map', () => {
       })
 
       it('filterMap', () => {
-        const filterMap = M.map.filterMap
+        const filterMap = M.map_.filterMap
         const emptyMap = new Map<string, number>()
         const a1b3 = new Map<string, number>([['a', 1], ['b', 3]])
         const b4 = new Map<string, number>([['b', 4]])

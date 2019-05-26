@@ -11,8 +11,9 @@ parent: Modules
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
 - [empty (constant)](#empty-constant)
-- [map (constant)](#map-constant)
+- [map\_ (constant)](#map_-constant)
 - [collect (function)](#collect-function)
+- [compact (function)](#compact-function)
 - [elem (function)](#elem-function)
 - [fromFoldable (function)](#fromfoldable-function)
 - [getEq (function)](#geteq-function)
@@ -27,9 +28,11 @@ parent: Modules
 - [keys (function)](#keys-function)
 - [lookup (function)](#lookup-function)
 - [lookupWithKey (function)](#lookupwithkey-function)
+- [map (function)](#map-function)
 - [member (function)](#member-function)
 - [pop (function)](#pop-function)
 - [remove (function)](#remove-function)
+- [separate (function)](#separate-function)
 - [singleton (function)](#singleton-function)
 - [size (function)](#size-function)
 - [toArray (function)](#toarray-function)
@@ -68,12 +71,12 @@ export const empty = ...
 
 Added in v2.0.0
 
-# map (constant)
+# map\_ (constant)
 
 **Signature**
 
 ```ts
-export const map: Filterable2<URI> = ...
+export const map_: Filterable2<URI> = ...
 ```
 
 Added in v2.0.0
@@ -84,6 +87,16 @@ Added in v2.0.0
 
 ```ts
 export function collect<K>(O: Ord<K>): <A, B>(m: Map<K, A>, f: (k: K, a: A) => B) => Array<B> { ... }
+```
+
+Added in v2.0.0
+
+# compact (function)
+
+**Signature**
+
+```ts
+export const compact: Compactable2<URI>['compact'] = <K, A>(fa: Map<K, Option<A>>): Map<K, A> => ...
 ```
 
 Added in v2.0.0
@@ -263,6 +276,16 @@ export function lookupWithKey<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Option<[K
 
 Added in v2.0.0
 
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Functor2<URI>['map'] = (fa, f) => mapWithIndex(fa, (_, a) => ...
+```
+
+Added in v2.0.0
+
 # member (function)
 
 Test whether or not a key exists in a map
@@ -295,6 +318,18 @@ Delete a key and value from a map
 
 ```ts
 export function remove<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Map<K, A> { ... }
+```
+
+Added in v2.0.0
+
+# separate (function)
+
+**Signature**
+
+```ts
+export const separate: Compactable2<URI>['separate'] = <K, RL, RR>(
+  fa: Map<K, Either<RL, RR>>
+): Separated<Map<K, RL>, Map<K, RR>> => ...
 ```
 
 Added in v2.0.0

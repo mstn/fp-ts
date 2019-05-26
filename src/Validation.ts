@@ -1,18 +1,12 @@
 import { Alt2C } from './Alt'
 import { Applicative2C } from './Applicative'
-import { Bifunctor2C } from './Bifunctor'
-import { URI, either, Either, isLeft, isRight, left, right } from './Either'
-import { Extend2C } from './Extend'
-import { Foldable2C } from './Foldable'
+import { either, Either, isLeft, isRight, left, right, URI } from './Either'
 import { phantom } from './function'
 import { Monad2C } from './Monad'
 import { Monoid } from './Monoid'
 import { Semigroup } from './Semigroup'
-import { Traversable2C } from './Traversable'
 
-export function getApplicative<E>(
-  S: Semigroup<E>
-): Applicative2C<URI, E> & Foldable2C<URI, E> & Traversable2C<URI, E> & Bifunctor2C<URI, E> & Extend2C<URI, E> {
+export function getApplicative<E>(S: Semigroup<E>): Applicative2C<URI, E> {
   return {
     URI,
     _L: phantom,
@@ -25,15 +19,7 @@ export function getApplicative<E>(
           : mab
         : isLeft(ma)
         ? ma
-        : right(mab.right(ma.right)),
-    reduce: either.reduce,
-    foldMap: either.foldMap,
-    reduceRight: either.reduceRight,
-    traverse: either.traverse,
-    sequence: either.sequence,
-    extend: either.extend,
-    bimap: either.bimap,
-    mapLeft: either.mapLeft
+        : right(mab.right(ma.right))
   }
 }
 
@@ -42,9 +28,7 @@ export function getApplicative<E>(
  *
  * @since 2.0.0
  */
-export function getMonad<E>(
-  S: Semigroup<E>
-): Monad2C<URI, E> & Foldable2C<URI, E> & Traversable2C<URI, E> & Bifunctor2C<URI, E> & Extend2C<URI, E> {
+export function getMonad<E>(S: Semigroup<E>): Monad2C<URI, E> {
   return {
     ...getApplicative(S),
     chain: (ma, f) => (isLeft(ma) ? ma : f(ma.right))

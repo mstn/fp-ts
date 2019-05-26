@@ -20,6 +20,7 @@ import { Traversable2C } from './Traversable'
 import { Filterable2 } from './Filterable'
 import { Show } from './Show'
 import { Magma } from './Magma'
+import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT2<L, A> {
@@ -450,7 +451,10 @@ const sequence = <F>(F: Applicative<F>): (<K, A>(ta: Map<K, HKT<F, A>>) => HKT<F
   return ta => traverseWithIndexF(ta, (_, a) => a)
 }
 
-const compact = <K, A>(fa: Map<K, Option<A>>): Map<K, A> => {
+/**
+ * @since 2.0.0
+ */
+export const compact: Compactable2<URI>['compact'] = <K, A>(fa: Map<K, Option<A>>): Map<K, A> => {
   const m = new Map<K, A>()
   const entries = fa.entries()
   let e: IteratorResult<[K, Option<A>]>
@@ -463,13 +467,12 @@ const compact = <K, A>(fa: Map<K, Option<A>>): Map<K, A> => {
   return m
 }
 
-const partitionMap = <K, RL, RR, A>(fa: Map<K, A>, f: (a: A) => Either<RL, RR>): Separated<Map<K, RL>, Map<K, RR>> =>
-  partitionMapWithIndex(fa, (_, a) => f(a))
-
-const partition = <K, A>(fa: Map<K, A>, p: Predicate<A>): Separated<Map<K, A>, Map<K, A>> =>
-  partitionWithIndex(fa, (_, a) => p(a))
-
-const separate = <K, RL, RR>(fa: Map<K, Either<RL, RR>>): Separated<Map<K, RL>, Map<K, RR>> => {
+/**
+ * @since 2.0.0
+ */
+export const separate: Compactable2<URI>['separate'] = <K, RL, RR>(
+  fa: Map<K, Either<RL, RR>>
+): Separated<Map<K, RL>, Map<K, RR>> => {
   const left = new Map<K, RL>()
   const right = new Map<K, RR>()
   const entries = fa.entries()
@@ -487,6 +490,12 @@ const separate = <K, RL, RR>(fa: Map<K, Either<RL, RR>>): Separated<Map<K, RL>, 
     right
   }
 }
+
+const partitionMap = <K, RL, RR, A>(fa: Map<K, A>, f: (a: A) => Either<RL, RR>): Separated<Map<K, RL>, Map<K, RR>> =>
+  partitionMapWithIndex(fa, (_, a) => f(a))
+
+const partition = <K, A>(fa: Map<K, A>, p: Predicate<A>): Separated<Map<K, A>, Map<K, A>> =>
+  partitionWithIndex(fa, (_, a) => p(a))
 
 const wither = <F>(
   F: Applicative<F>
@@ -578,21 +587,16 @@ const filterWithIndex = <K, A>(fa: Map<K, A>, p: (k: K, a: A) => boolean): Map<K
   return m
 }
 
-const compactable: Compactable2<URI> = {
-  URI,
-  compact,
-  separate
-}
-
-const functor: Functor2<URI> = {
-  URI,
-  map: (fa, f) => mapWithIndex(fa, (_, a) => f(a))
-}
+/**
+ * @since 2.0.0
+ */
+export const map: Functor2<URI>['map'] = (fa, f) => mapWithIndex(fa, (_, a) => f(a))
 
 const getFunctorWithIndex = <K>(): FunctorWithIndex2C<URI, K, K> => {
   return {
+    URI,
     _L: phantom,
-    ...functor,
+    map,
     mapWithIndex: mapWithIndex
   }
 }
@@ -616,21 +620,12 @@ const getFoldableWithIndex = <K>(O: Ord<K>): FoldableWithIndex2C<URI, K, K> => {
   }
 }
 
-const filterable: Filterable2<URI> = {
-  ...compactable,
-  ...functor,
-  filter,
-  filterMap,
-  partition,
-  partitionMap
-}
-
 /**
  * @since 2.0.0
  */
 export function getFilterableWithIndex<K>(): FilterableWithIndex2C<URI, K, K> {
   return {
-    ...filterable,
+    ...map_,
     ...getFunctorWithIndex<K>(),
     partitionMapWithIndex,
     partitionWithIndex,
@@ -643,7 +638,7 @@ const getTraversable = <K>(O: Ord<K>): Traversable2C<URI, K> => {
   return {
     _L: phantom,
     ...getFoldable(O),
-    ...functor,
+    map,
     traverse,
     sequence
   }
@@ -654,7 +649,7 @@ const getTraversable = <K>(O: Ord<K>): Traversable2C<URI, K> => {
  */
 export function getWitherable<K>(O: Ord<K>): Witherable2C<URI, K> {
   return {
-    ...filterable,
+    ...map_,
     ...getTraversable(O),
     wilt,
     wither
@@ -676,9 +671,17 @@ export function getTraversableWithIndex<K>(O: Ord<K>): TraversableWithIndex2C<UR
 /**
  * @since 2.0.0
  */
-export const map: Filterable2<URI> = {
+export const map_: Filterable2<URI> = {
   URI,
-  ...compactable,
-  ...functor,
-  ...filterable
+  map,
+  compact,
+  separate,
+  filter,
+  filterMap,
+  partition,
+  partitionMap
 }
+
+const { filter$, filterMap$, map$, partition$, partitionMap$ } = augment(map_)
+
+export { filter$, filterMap$, map$, partition$, partitionMap$ }
