@@ -1,11 +1,11 @@
-import { Alt, Alt1, Alt2, Alt2C, Alt3 } from './Alt'
-import { Apply, Apply1, Apply2, Apply2C, Apply3 } from './Apply'
-import { Bifunctor, Bifunctor2, Bifunctor3 } from './Bifunctor'
-import { Chain, Chain1, Chain2, Chain2C, Chain3 } from './Chain'
+import { Alt, Alt1, Alt2, Alt2C, Alt3, Alt4 } from './Alt'
+import { Apply, Apply1, Apply2, Apply2C, Apply3, Apply4 } from './Apply'
+import { Bifunctor, Bifunctor2, Bifunctor3, Bifunctor4 } from './Bifunctor'
+import { Chain, Chain1, Chain2, Chain2C, Chain3, Chain4 } from './Chain'
 import { Separated } from './Compactable'
 import { Either } from './Either'
-import { Extend, Extend1, Extend2, Extend2C, Extend3 } from './Extend'
-import { Filterable, Filterable1, Filterable2, Filterable2C, Filterable3 } from './Filterable'
+import { Extend, Extend1, Extend2, Extend2C, Extend3, Extend4 } from './Extend'
+import { Filterable, Filterable1, Filterable2, Filterable2C, Filterable3, Filterable4 } from './Filterable'
 import {
   FilterableWithIndex,
   FilterableWithIndex1,
@@ -13,30 +13,33 @@ import {
   FilterableWithIndex2C,
   FilterableWithIndex3,
   PredicateWithIndex,
-  RefinementWithIndex
+  RefinementWithIndex,
+  FilterableWithIndex4
 } from './FilterableWithIndex'
-import { Foldable, Foldable1, Foldable2, Foldable2C, Foldable3 } from './Foldable'
+import { Foldable, Foldable1, Foldable2, Foldable2C, Foldable3, Foldable4 } from './Foldable'
 import {
   FoldableWithIndex,
   FoldableWithIndex1,
   FoldableWithIndex2,
   FoldableWithIndex2C,
-  FoldableWithIndex3
+  FoldableWithIndex3,
+  FoldableWithIndex4
 } from './FoldableWithIndex'
 import { identity, Predicate, Refinement } from './function'
-import { Functor, Functor1, Functor2, Functor2C, Functor3 } from './Functor'
+import { Functor, Functor1, Functor2, Functor2C, Functor3, Functor4 } from './Functor'
 import {
   FunctorWithIndex,
   FunctorWithIndex1,
   FunctorWithIndex2,
   FunctorWithIndex2C,
-  FunctorWithIndex3
+  FunctorWithIndex3,
+  FunctorWithIndex4
 } from './FunctorWithIndex'
-import { HKT, HKT2, Type, Type2, Type3, URIS, URIS2, URIS3 } from './HKT'
+import { HKT, HKT2, Type, Type2, Type3, URIS, URIS2, URIS3, URIS4, Type4 } from './HKT'
 import { Monoid } from './Monoid'
 import { Option } from './Option'
-import { Profunctor, Profunctor2, Profunctor2C, Profunctor3 } from './Profunctor'
-import { Semigroupoid, Semigroupoid2, Semigroupoid2C, Semigroupoid3 } from './Semigroupoid'
+import { Profunctor, Profunctor2, Profunctor2C, Profunctor3, Profunctor4 } from './Profunctor'
+import { Semigroupoid, Semigroupoid2, Semigroupoid2C, Semigroupoid3, Semigroupoid4 } from './Semigroupoid'
 
 export interface AugmentedFunctor<F> extends Functor<F> {
   readonly map$: <A, B>(f: (a: A) => B) => (fa: HKT<F, A>) => HKT<F, B>
@@ -56,6 +59,10 @@ export interface AugmentedFunctor2C<F extends URIS2, L> extends Functor2C<F, L> 
 
 export interface AugmentedFunctor3<F extends URIS3> extends Functor3<F> {
   readonly map$: <A, B>(f: (a: A) => B) => <U, L>(fa: Type3<F, U, L, A>) => Type3<F, U, L, B>
+}
+
+export interface AugmentedFunctor4<F extends URIS4> extends Functor4<F> {
+  readonly map$: <A, B>(f: (a: A) => B) => <X, U, L>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, B>
 }
 
 export interface AugmentedFunctorWithIndex<F, I> extends AugmentedFunctor<F>, FunctorWithIndex<F, I> {
@@ -78,6 +85,10 @@ export interface AugmentedFunctorWithIndex2C<F extends URIS2, I, L>
 
 export interface AugmentedFunctorWithIndex3<F extends URIS3, I> extends AugmentedFunctor3<F>, FunctorWithIndex3<F, I> {
   readonly mapWithIndex$: <A, B>(f: (i: I, a: A) => B) => <U, L>(fa: Type3<F, U, L, A>) => Type3<F, U, L, B>
+}
+
+export interface AugmentedFunctorWithIndex4<F extends URIS4, I> extends AugmentedFunctor4<F>, FunctorWithIndex4<F, I> {
+  readonly mapWithIndex$: <A, B>(f: (i: I, a: A) => B) => <X, U, L>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, B>
 }
 
 export interface AugmentedApply<F> extends AugmentedFunctor<F>, Apply<F> {
@@ -120,6 +131,22 @@ export interface AugmentedApply3<F extends URIS3> extends AugmentedFunctor3<F>, 
   readonly apSecond$: <U, L, B>(fb: Type3<F, U, L, B>) => <A>(fa: Type3<F, U, L, A>) => Type3<F, U, L, B>
 }
 
+export interface AugmentedApply4<F extends URIS4> extends AugmentedFunctor4<F>, Apply4<F> {
+  readonly apFirst: <X, U, L, A, B>(
+    fab: Type4<F, X, U, L, (a: A) => B>,
+    fb: Type4<F, X, U, L, B>
+  ) => Type4<F, X, U, L, A>
+  readonly apSecond: <X, U, L, A, B>(
+    fab: Type4<F, X, U, L, (a: A) => B>,
+    fb: Type4<F, X, U, L, B>
+  ) => Type4<F, X, U, L, B>
+  readonly ap$: <X, U, L, A>(
+    fa: Type4<F, X, U, L, A>
+  ) => <B>(fab: Type4<F, X, U, L, (a: A) => B>) => Type4<F, X, U, L, B>
+  readonly apFirst$: <X, U, L, B>(fb: Type4<F, X, U, L, B>) => <A>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, A>
+  readonly apSecond$: <X, U, L, B>(fb: Type4<F, X, U, L, B>) => <A>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, B>
+}
+
 export interface AugmentedChain<F> extends AugmentedApply<F>, Chain<F> {
   readonly chainFirst: <A, B>(ma: HKT<F, A>, f: (a: A) => HKT<F, B>) => HKT<F, A>
   readonly chain$: <A, B>(f: (a: A) => HKT<F, B>) => (ma: HKT<F, A>) => HKT<F, B>
@@ -155,6 +182,20 @@ export interface AugmentedChain3<F extends URIS3> extends AugmentedApply3<F>, Ch
   readonly flatten: <U, L, A>(mma: Type3<F, U, L, Type3<F, U, L, A>>) => Type3<F, U, L, A>
 }
 
+export interface AugmentedChain4<F extends URIS4> extends AugmentedApply4<F>, Chain4<F> {
+  readonly chainFirst: <X, U, L, A, B>(
+    ma: Type4<F, X, U, L, A>,
+    f: (a: A) => Type4<F, X, U, L, B>
+  ) => Type4<F, X, U, L, A>
+  readonly chain$: <X, U, L, A, B>(
+    f: (a: A) => Type4<F, X, U, L, B>
+  ) => (ma: Type4<F, X, U, L, A>) => Type4<F, X, U, L, B>
+  readonly chainFirst$: <X, U, L, A, B>(
+    f: (a: A) => Type4<F, X, U, L, B>
+  ) => (ma: Type4<F, X, U, L, A>) => Type4<F, X, U, L, A>
+  readonly flatten: <X, U, L, A>(mma: Type4<F, X, U, L, Type4<F, X, U, L, A>>) => Type4<F, X, U, L, A>
+}
+
 export interface AugmentedExtend<F> extends AugmentedFunctor<F>, Extend<F> {
   readonly extend$: <A, B>(f: (fa: HKT<F, A>) => B) => (ma: HKT<F, A>) => HKT<F, B>
   readonly duplicate: <A>(ma: HKT<F, A>) => HKT<F, HKT<F, A>>
@@ -180,6 +221,13 @@ export interface AugmentedExtend3<F extends URIS3> extends AugmentedFunctor3<F>,
   readonly duplicate: <U, L, A>(ma: Type3<F, U, L, A>) => Type3<F, U, L, Type3<F, U, L, A>>
 }
 
+export interface AugmentedExtend4<F extends URIS4> extends AugmentedFunctor4<F>, Extend4<F> {
+  readonly extend$: <X, U, L, A, B>(
+    f: (fa: Type4<F, X, U, L, A>) => B
+  ) => (ma: Type4<F, X, U, L, A>) => Type4<F, X, U, L, B>
+  readonly duplicate: <X, U, L, A>(ma: Type4<F, X, U, L, A>) => Type4<F, X, U, L, Type4<F, X, U, L, A>>
+}
+
 export interface AugmentedBifunctor<F> extends Bifunctor<F> {
   readonly bimap$: <L, A, M, B>(f: (l: L) => M, g: (a: A) => B) => (fa: HKT2<F, L, A>) => HKT2<F, M, B>
   readonly mapLeft$: <L, A, M>(f: (l: L) => M) => (fa: HKT2<F, L, A>) => HKT2<F, M, A>
@@ -193,6 +241,14 @@ export interface AugmentedBifunctor2<F extends URIS2> extends Bifunctor2<F> {
 export interface AugmentedBifunctor3<F extends URIS3> extends Bifunctor3<F> {
   readonly bimap$: <L, A, M, B>(f: (l: L) => M, g: (a: A) => B) => <U>(fa: Type3<F, U, L, A>) => Type3<F, U, M, B>
   readonly mapLeft$: <L, A, M>(f: (l: L) => M) => <U>(fa: Type3<F, U, L, A>) => Type3<F, U, M, A>
+}
+
+export interface AugmentedBifunctor4<F extends URIS4> extends Bifunctor4<F> {
+  readonly bimap$: <L, A, M, B>(
+    f: (l: L) => M,
+    g: (a: A) => B
+  ) => <X, U>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, M, B>
+  readonly mapLeft$: <L, A, M>(f: (l: L) => M) => <X, U>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, M, A>
 }
 
 export interface AugmentedFoldable<F> extends Foldable<F> {
@@ -223,6 +279,12 @@ export interface AugmentedFoldable3<F extends URIS3> extends Foldable3<F> {
   readonly reduce$: <A, B>(b: B, f: (b: B, a: A) => B) => <U, L>(fa: Type3<F, U, L, A>) => B
   readonly foldMap$: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => <U, L>(fa: Type3<F, U, L, A>) => M
   readonly reduceRight$: <A, B>(b: B, f: (a: A, b: B) => B) => <U, L>(fa: Type3<F, U, L, A>) => B
+}
+
+export interface AugmentedFoldable4<F extends URIS4> extends Foldable4<F> {
+  readonly reduce$: <A, B>(b: B, f: (b: B, a: A) => B) => <X, U, L>(fa: Type4<F, X, U, L, A>) => B
+  readonly foldMap$: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => <X, U, L>(fa: Type4<F, X, U, L, A>) => M
+  readonly reduceRight$: <A, B>(b: B, f: (a: A, b: B) => B) => <X, U, L>(fa: Type4<F, X, U, L, A>) => B
 }
 
 export interface AugmentedFoldableWithIndex<F, I> extends AugmentedFoldable<F>, FoldableWithIndex<F, I> {
@@ -263,6 +325,14 @@ export interface AugmentedFoldableWithIndex3<F extends URIS3, I>
   readonly reduceRightWithIndex$: <A, B>(b: B, f: (i: I, a: A, b: B) => B) => <U, L>(fa: Type3<F, U, L, A>) => B
 }
 
+export interface AugmentedFoldableWithIndex4<F extends URIS4, I>
+  extends AugmentedFoldable4<F>,
+    FoldableWithIndex4<F, I> {
+  readonly reduceWithIndex$: <A, B>(b: B, f: (i: I, b: B, a: A) => B) => <X, U, L>(fa: Type4<F, X, U, L, A>) => B
+  readonly foldMapWithIndex$: <M>(M: Monoid<M>) => <A>(f: (i: I, a: A) => M) => <X, U, L>(fa: Type4<F, X, U, L, A>) => M
+  readonly reduceRightWithIndex$: <A, B>(b: B, f: (i: I, a: A, b: B) => B) => <X, U, L>(fa: Type4<F, X, U, L, A>) => B
+}
+
 export interface AugmentedAlt<F> extends Alt<F> {
   readonly alt$: <A>(that: () => HKT<F, A>) => (fa: HKT<F, A>) => HKT<F, A>
 }
@@ -283,32 +353,11 @@ export interface AugmentedAlt3<F extends URIS3> extends Alt3<F> {
   readonly alt$: <U, L, A>(that: () => Type3<F, U, L, A>) => (fa: Type3<F, U, L, A>) => Type3<F, U, L, A>
 }
 
-export interface AugmentedCompactable<F> {
-  readonly compact: <A>(fa: HKT<F, Option<A>>) => HKT<F, A>
-  readonly separate: <A, B>(fa: HKT<F, Either<A, B>>) => Separated<HKT<F, A>, HKT<F, B>>
+export interface AugmentedAlt4<F extends URIS4> extends Alt4<F> {
+  readonly alt$: <X, U, L, A>(that: () => Type4<F, X, U, L, A>) => (fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, A>
 }
 
-export interface AugmentedCompactable1<F extends URIS> {
-  readonly compact: <A>(fa: Type<F, Option<A>>) => Type<F, A>
-  readonly separate: <A, B>(fa: Type<F, Either<A, B>>) => Separated<Type<F, A>, Type<F, B>>
-}
-
-export interface AugmentedCompactable2<F extends URIS2> {
-  readonly compact: <L, A>(fa: Type2<F, L, Option<A>>) => Type2<F, L, A>
-  readonly separate: <L, A, B>(fa: Type2<F, L, Either<A, B>>) => Separated<Type2<F, L, A>, Type2<F, L, B>>
-}
-
-export interface AugmentedCompactable2C<F extends URIS2, L> {
-  readonly compact: <A>(fa: Type2<F, L, Option<A>>) => Type2<F, L, A>
-  readonly separate: <A, B>(fa: Type2<F, L, Either<A, B>>) => Separated<Type2<F, L, A>, Type2<F, L, B>>
-}
-
-export interface AugmentedCompactable3<F extends URIS3> {
-  readonly compact: <U, L, A>(fa: Type3<F, U, L, Option<A>>) => Type3<F, U, L, A>
-  readonly separate: <U, L, A, B>(fa: Type3<F, U, L, Either<A, B>>) => Separated<Type3<F, U, L, A>, Type3<F, U, L, B>>
-}
-
-export interface AugmentedFilterable<F> extends AugmentedCompactable<F>, Filterable<F> {
+export interface AugmentedFilterable<F> extends Filterable<F> {
   readonly filter$: {
     <A, B extends A>(refinement: Refinement<A, B>): (fa: HKT<F, A>) => HKT<F, B>
     <A>(predicate: Predicate<A>): (fa: HKT<F, A>) => HKT<F, A>
@@ -323,7 +372,7 @@ export interface AugmentedFilterable<F> extends AugmentedCompactable<F>, Filtera
   ) => (fa: HKT<F, A>) => Separated<HKT<F, RL>, HKT<F, RR>>
 }
 
-export interface AugmentedFilterable1<F extends URIS> extends AugmentedCompactable1<F>, Filterable1<F> {
+export interface AugmentedFilterable1<F extends URIS> extends Filterable1<F> {
   readonly filter$: {
     <A, B extends A>(refinement: Refinement<A, B>): (fa: Type<F, A>) => Type<F, B>
     <A>(predicate: Predicate<A>): (fa: Type<F, A>) => Type<F, A>
@@ -338,7 +387,7 @@ export interface AugmentedFilterable1<F extends URIS> extends AugmentedCompactab
   ) => (fa: Type<F, A>) => Separated<Type<F, RL>, Type<F, RR>>
 }
 
-export interface AugmentedFilterable2<F extends URIS2> extends AugmentedCompactable2<F>, Filterable2<F> {
+export interface AugmentedFilterable2<F extends URIS2> extends Filterable2<F> {
   readonly filter$: {
     <A, B extends A>(refinement: Refinement<A, B>): <L>(fa: Type2<F, L, A>) => Type2<F, L, B>
     <A>(predicate: Predicate<A>): <L>(fa: Type2<F, L, A>) => Type2<F, L, A>
@@ -353,7 +402,7 @@ export interface AugmentedFilterable2<F extends URIS2> extends AugmentedCompacta
   ) => <L>(fa: Type2<F, L, A>) => Separated<Type2<F, L, RL>, Type2<F, L, RR>>
 }
 
-export interface AugmentedFilterable2C<F extends URIS2, L> extends AugmentedCompactable2C<F, L>, Filterable2C<F, L> {
+export interface AugmentedFilterable2C<F extends URIS2, L> extends Filterable2C<F, L> {
   readonly filter$: {
     <A, B extends A>(refinement: Refinement<A, B>): (fa: Type2<F, L, A>) => Type2<F, L, B>
     <A>(predicate: Predicate<A>): (fa: Type2<F, L, A>) => Type2<F, L, A>
@@ -368,7 +417,7 @@ export interface AugmentedFilterable2C<F extends URIS2, L> extends AugmentedComp
   ) => (fa: Type2<F, L, A>) => Separated<Type2<F, L, RL>, Type2<F, L, RR>>
 }
 
-export interface AugmentedFilterable3<F extends URIS3> extends AugmentedCompactable3<F>, Filterable3<F> {
+export interface AugmentedFilterable3<F extends URIS3> extends Filterable3<F> {
   readonly filter$: {
     <A, B extends A>(refinement: Refinement<A, B>): <U, L>(fa: Type3<F, U, L, A>) => Type3<F, U, L, B>
     <A>(predicate: Predicate<A>): <U, L>(fa: Type3<F, U, L, A>) => Type3<F, U, L, A>
@@ -383,6 +432,25 @@ export interface AugmentedFilterable3<F extends URIS3> extends AugmentedCompacta
   readonly partitionMap$: <A, RL, RR>(
     f: (a: A) => Either<RL, RR>
   ) => <U, L>(fa: Type3<F, U, L, A>) => Separated<Type3<F, U, L, RL>, Type3<F, U, L, RR>>
+}
+
+export interface AugmentedFilterable4<F extends URIS4> extends Filterable4<F> {
+  readonly filter$: {
+    <A, B extends A>(refinement: Refinement<A, B>): <X, U, L>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, B>
+    <A>(predicate: Predicate<A>): <X, U, L>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, A>
+  }
+  readonly filterMap$: <A, B>(f: (a: A) => Option<B>) => <X, U, L>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, A>
+  readonly partition$: {
+    <A, B extends A>(refinement: Refinement<A, B>): <X, U, L>(
+      fa: Type4<F, X, U, L, A>
+    ) => Separated<Type4<F, X, U, L, A>, Type4<F, X, U, L, B>>
+    <A>(predicate: Predicate<A>): <X, U, L>(
+      fa: Type4<F, X, U, L, A>
+    ) => Separated<Type4<F, X, U, L, A>, Type4<F, X, U, L, A>>
+  }
+  readonly partitionMap$: <A, RL, RR>(
+    f: (a: A) => Either<RL, RR>
+  ) => <X, U, L>(fa: Type4<F, X, U, L, A>) => Separated<Type4<F, X, U, L, RL>, Type4<F, X, U, L, RR>>
 }
 
 export interface AugmentedFilterableWithIndex<F, I> extends AugmentedFilterable<F>, FilterableWithIndex<F, I> {
@@ -478,6 +546,31 @@ export interface AugmentedFilterableWithIndex3<F extends URIS3, I>
   ) => <U, L>(fa: Type3<F, U, L, A>) => Separated<Type3<F, U, L, RL>, Type3<F, U, L, RR>>
 }
 
+export interface AugmentedFilterableWithIndex4<F extends URIS4, I>
+  extends AugmentedFilterable4<F>,
+    FilterableWithIndex4<F, I> {
+  readonly filterWithIndex$: {
+    <A, B extends A>(refinement: RefinementWithIndex<I, A, B>): <X, U, L>(
+      fa: Type4<F, X, U, L, A>
+    ) => Type4<F, X, U, L, B>
+    <A>(predicate: PredicateWithIndex<I, A>): <X, U, L>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, A>
+  }
+  readonly filterMapWithIndex$: <A, B>(
+    f: (i: I, a: A) => Option<B>
+  ) => <X, U, L>(fa: Type4<F, X, U, L, A>) => Type4<F, X, U, L, A>
+  readonly partitionWithIndex$: {
+    <A, B extends A>(refinement: RefinementWithIndex<I, A, B>): <X, U, L>(
+      fa: Type4<F, X, U, L, A>
+    ) => Separated<Type4<F, X, U, L, A>, Type4<F, X, U, L, B>>
+    <A>(predicate: PredicateWithIndex<I, A>): <X, U, L>(
+      fa: Type4<F, X, U, L, A>
+    ) => Separated<Type4<F, X, U, L, A>, Type4<F, X, U, L, A>>
+  }
+  readonly partitionMapWithIndex$: <A, RL, RR>(
+    f: (i: I, a: A) => Either<RL, RR>
+  ) => <X, U, L>(fa: Type4<F, X, U, L, A>) => Separated<Type4<F, X, U, L, RL>, Type4<F, X, U, L, RR>>
+}
+
 export interface AugmentedProfunctor<F> extends Profunctor<F> {
   readonly map$: <L, A, B>(f: (a: A) => B) => (fa: HKT2<F, L, A>) => HKT2<F, L, B>
   readonly promap$: <A, B, C, D>(f: (a: A) => B, g: (c: C) => D) => (fbc: HKT2<F, B, C>) => HKT2<F, A, D>
@@ -492,7 +585,14 @@ export interface AugmentedProfunctor2C<F extends URIS2, L> extends AugmentedFunc
 }
 
 export interface AugmentedProfunctor3<F extends URIS3> extends AugmentedFunctor3<F>, Profunctor3<F> {
-  readonly promap$: <U, A, B, C, D>(f: (a: A) => B, g: (c: C) => D) => (fbc: Type3<F, U, B, C>) => Type3<F, U, A, D>
+  readonly promap$: <A, B, C, D>(f: (a: A) => B, g: (c: C) => D) => <U>(fbc: Type3<F, U, B, C>) => Type3<F, U, A, D>
+}
+
+export interface AugmentedProfunctor4<F extends URIS4> extends AugmentedFunctor4<F>, Profunctor4<F> {
+  readonly promap$: <A, B, C, D>(
+    f: (a: A) => B,
+    g: (c: C) => D
+  ) => <X, U>(fbc: Type4<F, X, U, B, C>) => Type4<F, X, U, A, D>
 }
 
 export interface AugmentedSemigroupoid<F> extends Semigroupoid<F> {
@@ -509,6 +609,10 @@ export interface AugmentedSemigroupoid2C<F extends URIS2, L> extends Semigroupoi
 
 export interface AugmentedSemigroupoid3<F extends URIS3> extends Semigroupoid3<F> {
   readonly compose$: <U, L, A>(la: Type3<F, U, L, A>) => <B>(ab: Type3<F, U, A, B>) => Type3<F, U, L, B>
+}
+
+export interface AugmentedSemigroupoid4<F extends URIS4> extends Semigroupoid4<F> {
+  readonly compose$: <X, U, L, A>(la: Type4<F, X, U, L, A>) => <B>(ab: Type4<F, X, U, A, B>) => Type4<F, X, U, L, B>
 }
 
 const isFunctor = <F>(I: any): I is Functor<F> => typeof I.map === 'function'
@@ -529,6 +633,32 @@ const isSemigroupoid = <F>(I: any): I is Semigroupoid<F> => typeof I.compose ===
 /**
  * @since 2.0.0
  */
+export function augment<F extends URIS4, I>(
+  I: { URI: F } & I
+): I &
+  (I extends Chain4<F>
+    ? AugmentedChain4<F>
+    : I extends Apply4<F>
+    ? AugmentedApply4<F>
+    : I extends Functor4<F>
+    ? AugmentedFunctor4<F>
+    : {}) &
+  (I extends FunctorWithIndex4<F, infer Ix> ? AugmentedFunctorWithIndex4<F, Ix> : {}) &
+  (I extends Bifunctor4<F> ? AugmentedBifunctor4<F> : {}) &
+  (I extends Extend4<F> ? AugmentedExtend4<F> : {}) &
+  (I extends FoldableWithIndex4<F, infer Ix>
+    ? AugmentedFoldableWithIndex4<F, Ix>
+    : I extends Foldable4<F>
+    ? AugmentedFoldable4<F>
+    : {}) &
+  (I extends Alt4<F> ? AugmentedAlt4<F> : {}) &
+  (I extends FilterableWithIndex4<F, infer Ix>
+    ? AugmentedFilterableWithIndex4<F, Ix>
+    : I extends Filterable4<F>
+    ? AugmentedFilterable4<F>
+    : {}) &
+  (I extends Profunctor4<F> ? AugmentedProfunctor4<F> : {}) &
+  (I extends Semigroupoid4<F> ? AugmentedSemigroupoid4<F> : {})
 export function augment<F extends URIS3, I>(
   I: { URI: F } & I
 ): I &

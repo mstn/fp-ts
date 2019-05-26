@@ -11,6 +11,7 @@ import { Option } from './Option'
 import { IO } from './IO'
 
 import ReaderTaskEither = RTE.ReaderTaskEither
+import { augment } from './augment'
 
 const T = getStateM(RTE.readerTaskEither)
 
@@ -191,13 +192,37 @@ export const gets: <S, A>(f: (s: S) => A) => StateReaderTaskEither<S, unknown, n
 /**
  * @since 2.0.0
  */
+export const map: Monad4<URI>['map'] = T.map
+
+/**
+ * @since 2.0.0
+ */
+export const of: Monad4<URI>['of'] = T.of
+
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad4<URI>['ap'] = T.ap
+
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad4<URI>['chain'] = T.chain
+
+/**
+ * @since 2.0.0
+ */
 export const stateReaderTaskEither: Monad4<URI> = {
   URI,
-  map: T.map,
-  of: right,
-  ap: T.ap,
-  chain: T.chain
+  map,
+  of,
+  ap,
+  chain
 }
+
+const { ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$ } = augment(stateReaderTaskEither)
+
+export { ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$ }
 
 /**
  * Like `stateReaderTaskEither` but `ap` is sequential

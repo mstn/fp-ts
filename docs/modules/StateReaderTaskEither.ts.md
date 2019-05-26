@@ -11,12 +11,16 @@ parent: Modules
 - [StateReaderTaskEither (interface)](#statereadertaskeither-interface)
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
+- [ap (constant)](#ap-constant)
+- [chain (constant)](#chain-constant)
 - [evalState (constant)](#evalstate-constant)
 - [execState (constant)](#execstate-constant)
 - [fromReaderTaskEither (constant)](#fromreadertaskeither-constant)
 - [get (constant)](#get-constant)
 - [gets (constant)](#gets-constant)
+- [map (constant)](#map-constant)
 - [modify (constant)](#modify-constant)
+- [of (constant)](#of-constant)
 - [put (constant)](#put-constant)
 - [right (constant)](#right-constant)
 - [rightState (constant)](#rightstate-constant)
@@ -66,6 +70,26 @@ Added in v2.0.0
 
 ```ts
 export const URI = ...
+```
+
+Added in v2.0.0
+
+# ap (constant)
+
+**Signature**
+
+```ts
+export const ap: Monad4<URI>['ap'] = ...
+```
+
+Added in v2.0.0
+
+# chain (constant)
+
+**Signature**
+
+```ts
+export const chain: Monad4<URI>['chain'] = ...
 ```
 
 Added in v2.0.0
@@ -128,6 +152,16 @@ export const gets: <S, A>(f: (s: S) => A) => StateReaderTaskEither<S, unknown, n
 
 Added in v2.0.0
 
+# map (constant)
+
+**Signature**
+
+```ts
+export const map: Monad4<URI>['map'] = ...
+```
+
+Added in v2.0.0
+
 # modify (constant)
 
 Modify the state by applying a function to the current state
@@ -136,6 +170,16 @@ Modify the state by applying a function to the current state
 
 ```ts
 export const modify: <S>(f: (s: S) => S) => StateReaderTaskEither<S, unknown, never, void> = ...
+```
+
+Added in v2.0.0
+
+# of (constant)
+
+**Signature**
+
+```ts
+export const of: Monad4<URI>['of'] = ...
 ```
 
 Added in v2.0.0
