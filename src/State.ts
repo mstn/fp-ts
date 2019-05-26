@@ -1,6 +1,7 @@
 import { Monad2 } from './Monad'
 import { getStateM } from './StateT'
 import { identity } from './Identity'
+import { augment } from './augment'
 
 const T = getStateM(identity)
 
@@ -72,10 +73,34 @@ export const gets: <S, A>(f: (s: S) => A) => State<S, A> = T.gets
 /**
  * @since 2.0.0
  */
+export const map: Monad2<URI>['map'] = T.map
+
+/**
+ * @since 2.0.0
+ */
+export const of: Monad2<URI>['of'] = T.of
+
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad2<URI>['ap'] = T.ap
+
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad2<URI>['chain'] = T.chain
+
+/**
+ * @since 2.0.0
+ */
 export const state: Monad2<URI> = {
   URI,
-  map: T.map,
-  of: T.of,
-  ap: T.ap,
-  chain: T.chain
+  map,
+  of,
+  ap,
+  chain
 }
+
+const { ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$ } = augment(state)
+
+export { ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$ }
