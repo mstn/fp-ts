@@ -51,11 +51,11 @@ describe('These', () => {
     assert.deepStrictEqual(F.ap(fab, fa), F.of(2))
   })
 
-  it('fold', () => {
+  it('fold$', () => {
     const double = (n: number) => n * 2
     const len = (s: string) => s.length
     const f = (s: string, n: number) => len(s) + double(n)
-    const fold = _.fold(len, double, f)
+    const fold = _.fold$(len, double, f)
     assert.strictEqual(fold(_.left('foo')), 3)
     assert.strictEqual(fold(_.right(1)), 2)
     assert.strictEqual(fold(_.both('foo', 1)), 5)
@@ -78,25 +78,25 @@ describe('These', () => {
     })
   })
 
-  it('toTuple', () => {
+  it('toTuple$', () => {
     assert.deepStrictEqual(
       pipe(
         _.left('b'),
-        _.toTuple('a', 1)
+        _.toTuple$('a', 1)
       ),
       ['b', 1]
     )
     assert.deepStrictEqual(
       pipe(
         _.right(2),
-        _.toTuple('a', 1)
+        _.toTuple$('a', 1)
       ),
       ['a', 2]
     )
     assert.deepStrictEqual(
       pipe(
         _.both('b', 2),
-        _.toTuple('a', 1)
+        _.toTuple$('a', 1)
       ),
       ['b', 2]
     )

@@ -33,8 +33,11 @@ Adapted from https://github.com/purescript-contrib/purescript-these
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
 - [these (constant)](#these-constant)
+- [bimap (function)](#bimap-function)
 - [both (function)](#both-function)
 - [fold (function)](#fold-function)
+- [fold\$ (function)](#fold-function)
+- [foldMap (function)](#foldmap-function)
 - [fromOptions (function)](#fromoptions-function)
 - [getEq (function)](#geteq-function)
 - [getLeft (function)](#getleft-function)
@@ -49,9 +52,16 @@ Adapted from https://github.com/purescript-contrib/purescript-these
 - [isRight (function)](#isright-function)
 - [left (function)](#left-function)
 - [leftOrBoth (function)](#leftorboth-function)
+- [map (function)](#map-function)
+- [mapLeft (function)](#mapleft-function)
+- [reduce (function)](#reduce-function)
+- [reduceRight (function)](#reduceright-function)
 - [right (function)](#right-function)
 - [rightOrBoth (function)](#rightorboth-function)
+- [sequence (function)](#sequence-function)
 - [toTuple (function)](#totuple-function)
+- [toTuple\$ (function)](#totuple-function)
+- [traverse (function)](#traverse-function)
 
 ---
 
@@ -109,6 +119,16 @@ export const these: Functor2<URI> & Bifunctor2<URI> & Foldable2<URI> & Traversab
 
 Added in v2.0.0
 
+# bimap (function)
+
+**Signature**
+
+```ts
+export const bimap: Bifunctor2<URI>['bimap'] = (fa, f, g) => ...
+```
+
+Added in v2.0.0
+
 # both (function)
 
 **Signature**
@@ -125,10 +145,35 @@ Added in v2.0.0
 
 ```ts
 export function fold<E, A, R>(
+  fa: These<E, A>,
+  onLeft: (e: E) => R,
+  onRight: (a: A) => R,
+  onBoth: (e: E, a: A) => R
+): R { ... }
+```
+
+Added in v2.0.0
+
+# fold\$ (function)
+
+**Signature**
+
+```ts
+export function fold$<E, A, R>(
   onLeft: (e: E) => R,
   onRight: (a: A) => R,
   onBoth: (e: E, a: A) => R
 ): (fa: These<E, A>) => R { ... }
+```
+
+Added in v2.0.0
+
+# foldMap (function)
+
+**Signature**
+
+```ts
+export const foldMap: Foldable2<URI>['foldMap'] = M => (fa, f) => ...
 ```
 
 Added in v2.0.0
@@ -355,6 +400,46 @@ assert.deepStrictEqual(leftOrBoth('a', some(1)), both('a', 1))
 
 Added in v2.0.0
 
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Functor2<URI>['map'] = (fa, f) => ...
+```
+
+Added in v2.0.0
+
+# mapLeft (function)
+
+**Signature**
+
+```ts
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = (fla, f) => ...
+```
+
+Added in v2.0.0
+
+# reduce (function)
+
+**Signature**
+
+```ts
+export const reduce: Foldable2<URI>['reduce'] = (fa, b, f) => ...
+```
+
+Added in v2.0.0
+
+# reduceRight (function)
+
+**Signature**
+
+```ts
+export const reduceRight: Foldable2<URI>['reduceRight'] = (fa, b, f) => ...
+```
+
+Added in v2.0.0
+
 # right (function)
 
 **Signature**
@@ -385,12 +470,24 @@ assert.deepStrictEqual(rightOrBoth(1, some('a')), both('a', 1))
 
 Added in v2.0.0
 
+# sequence (function)
+
+**Signature**
+
+```ts
+export const sequence: Traversable2<URI>['sequence'] = <F>(F: Applicative<F>) => <E, A>(
+  ta: These<E, HKT<F, A>>
+): HKT<F, These<E, A>> => ...
+```
+
+Added in v2.0.0
+
 # toTuple (function)
 
 **Signature**
 
 ```ts
-export function toTuple<E, A>(e: E, a: A): (fa: These<E, A>) => [E, A] { ... }
+export function toTuple<E, A>(fa: These<E, A>, e: E, a: A): [E, A] { ... }
 ```
 
 **Example**
@@ -398,9 +495,34 @@ export function toTuple<E, A>(e: E, a: A): (fa: These<E, A>) => [E, A] { ... }
 ```ts
 import { toTuple, left, right, both } from 'fp-ts/lib/These'
 
-assert.deepStrictEqual(toTuple('a', 1)(left('b')), ['b', 1])
-assert.deepStrictEqual(toTuple('a', 1)(right(2)), ['a', 2])
-assert.deepStrictEqual(toTuple('a', 1)(both('b', 2)), ['b', 2])
+assert.deepStrictEqual(toTuple(left('b'), 'a', 1), ['b', 1])
+assert.deepStrictEqual(toTuple(right(2), 'a', 1), ['a', 2])
+assert.deepStrictEqual(toTuple(both('b', 2), 'a', 1), ['b', 2])
+```
+
+Added in v2.0.0
+
+# toTuple\$ (function)
+
+Data-last version of `toTuple`
+
+**Signature**
+
+```ts
+export function toTuple$<E, A>(e: E, a: A): (fa: These<E, A>) => [E, A] { ... }
+```
+
+Added in v2.0.0
+
+# traverse (function)
+
+**Signature**
+
+```ts
+export const traverse: Traversable2<URI>['traverse'] = <F>(F: Applicative<F>) => <E, A, B>(
+  ta: These<E, A>,
+  f: (a: A) => HKT<F, B>
+): HKT<F, These<E, B>> => ...
 ```
 
 Added in v2.0.0

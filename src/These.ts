@@ -18,17 +18,16 @@
  * Adapted from https://github.com/purescript-contrib/purescript-these
  */
 import { Applicative } from './Applicative'
+import { augment } from './augment'
 import { Bifunctor2 } from './Bifunctor'
 import { Either, Left, Right } from './Either'
+import { Eq, fromEquals } from './Eq'
 import { Foldable2 } from './Foldable'
-import { phantom, identity } from './function'
 import { Functor2 } from './Functor'
 import { HKT } from './HKT'
 import { Monad2C } from './Monad'
-import { Monoid } from './Monoid'
-import { Option, some, none, isNone } from './Option'
+import { isNone, none, Option, some } from './Option'
 import { Semigroup } from './Semigroup'
-import { fromEquals, Eq } from './Eq'
 import { Show } from './Show'
 import { Traversable2 } from './Traversable'
 
@@ -87,20 +86,30 @@ export function both<E, A>(left: E, right: A): These<E, A> {
  * @since 2.0.0
  */
 export function fold<E, A, R>(
+  fa: These<E, A>,
+  onLeft: (e: E) => R,
+  onRight: (a: A) => R,
+  onBoth: (e: E, a: A) => R
+): R {
+  switch (fa._tag) {
+    case 'Left':
+      return onLeft(fa.left)
+    case 'Right':
+      return onRight(fa.right)
+    case 'Both':
+      return onBoth(fa.left, fa.right)
+  }
+}
+
+/**
+ * @since 2.0.0
+ */
+export function fold$<E, A, R>(
   onLeft: (e: E) => R,
   onRight: (a: A) => R,
   onBoth: (e: E, a: A) => R
 ): (fa: These<E, A>) => R {
-  return fa => {
-    switch (fa._tag) {
-      case 'Left':
-        return onLeft(fa.left)
-      case 'Right':
-        return onRight(fa.right)
-      case 'Both':
-        return onBoth(fa.left, fa.right)
-    }
-  }
+  return fa => fold(fa, onLeft, onRight, onBoth)
 }
 
 /**
@@ -108,7 +117,7 @@ export function fold<E, A, R>(
  */
 export function getShow<E, A>(SE: Show<E>, SA: Show<A>): Show<These<E, A>> {
   return {
-    show: fold(l => `left(${SE.show(l)})`, a => `right(${SA.show(a)})`, (l, a) => `both(${SE.show(l)}, ${SA.show(a)})`)
+    show: fold$(l => `left(${SE.show(l)})`, a => `right(${SA.show(a)})`, (l, a) => `both(${SE.show(l)}, ${SA.show(a)})`)
   }
 }
 
@@ -151,9 +160,7 @@ export function getSemigroup<E, A>(SL: Semigroup<E>, SA: Semigroup<A>): Semigrou
   }
 }
 
-const map = <E, A, B>(fa: These<E, A>, f: (a: A) => B): These<E, B> => {
-  return isLeft(fa) ? fa : isRight(fa) ? right(f(fa.right)) : both(fa.left, f(fa.right))
-}
+const phantom: any = undefined
 
 /**
  * @since 2.0.0
@@ -184,43 +191,27 @@ export function getMonad<E>(S: Semigroup<E>): Monad2C<URI, E> {
   }
 }
 
-const bimap = <E, M, A, B>(fa: These<E, A>, f: (e: E) => M, g: (a: A) => B): These<M, B> => {
-  return isLeft(fa) ? left(f(fa.left)) : isRight(fa) ? right(g(fa.right)) : both(f(fa.left), g(fa.right))
-}
-
-const reduce = <E, A, B>(fa: These<E, A>, b: B, f: (b: B, a: A) => B): B => {
-  return isLeft(fa) ? b : isRight(fa) ? f(b, fa.right) : f(b, fa.right)
-}
-
-const foldMap = <M>(M: Monoid<M>) => <E, A>(fa: These<E, A>, f: (a: A) => M): M => {
-  return isLeft(fa) ? M.empty : isRight(fa) ? f(fa.right) : f(fa.right)
-}
-
-const reduceRight = <E, A, B>(fa: These<E, A>, b: B, f: (a: A, b: B) => B): B => {
-  return isLeft(fa) ? b : isRight(fa) ? f(fa.right, b) : f(fa.right, b)
-}
-
-const traverse = <F>(F: Applicative<F>) => <E, A, B>(ta: These<E, A>, f: (a: A) => HKT<F, B>): HKT<F, These<E, B>> => {
-  return isLeft(ta) ? F.of(ta) : isRight(ta) ? F.map(f(ta.right), right) : F.map(f(ta.right), b => both(ta.left, b))
-}
-
-const sequence = <F>(F: Applicative<F>) => <E, A>(ta: These<E, HKT<F, A>>): HKT<F, These<E, A>> => {
-  return isLeft(ta) ? F.of(ta) : isRight(ta) ? F.map(ta.right, right) : F.map(ta.right, b => both(ta.left, b))
-}
-
 /**
- *
  * @example
  * import { toTuple, left, right, both } from 'fp-ts/lib/These'
  *
- * assert.deepStrictEqual(toTuple('a', 1)(left('b')), ['b', 1])
- * assert.deepStrictEqual(toTuple('a', 1)(right(2)), ['a', 2])
- * assert.deepStrictEqual(toTuple('a', 1)(both('b', 2)), ['b', 2])
+ * assert.deepStrictEqual(toTuple(left('b'), 'a', 1), ['b', 1])
+ * assert.deepStrictEqual(toTuple(right(2), 'a', 1), ['a', 2])
+ * assert.deepStrictEqual(toTuple(both('b', 2), 'a', 1), ['b', 2])
  *
  * @since 2.0.0
  */
-export function toTuple<E, A>(e: E, a: A): (fa: These<E, A>) => [E, A] {
-  return fa => (isLeft(fa) ? [fa.left, a] : isRight(fa) ? [e, fa.right] : [fa.left, fa.right])
+export function toTuple<E, A>(fa: These<E, A>, e: E, a: A): [E, A] {
+  return isLeft(fa) ? [fa.left, a] : isRight(fa) ? [e, fa.right] : [fa.left, fa.right]
+}
+
+/**
+ * Data-last version of `toTuple`
+ *
+ * @since 2.0.0
+ */
+export function toTuple$<E, A>(e: E, a: A): (fa: These<E, A>) => [E, A] {
+  return fa => toTuple(fa, e, a)
 }
 
 /**
@@ -374,14 +365,74 @@ export function fromOptions<E, A>(fe: Option<E>, fa: Option<A>): Option<These<E,
 /**
  * @since 2.0.0
  */
+export const map: Functor2<URI>['map'] = (fa, f) =>
+  isLeft(fa) ? fa : isRight(fa) ? right(f(fa.right)) : both(fa.left, f(fa.right))
+
+/**
+ * @since 2.0.0
+ */
+export const bimap: Bifunctor2<URI>['bimap'] = (fa, f, g) =>
+  isLeft(fa) ? left(f(fa.left)) : isRight(fa) ? right(g(fa.right)) : both(f(fa.left), g(fa.right))
+
+const identity = <A>(a: A): A => a
+
+/**
+ * @since 2.0.0
+ */
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = (fla, f) => bimap(fla, f, identity)
+
+/**
+ * @since 2.0.0
+ */
+export const reduce: Foldable2<URI>['reduce'] = (fa, b, f) =>
+  isLeft(fa) ? b : isRight(fa) ? f(b, fa.right) : f(b, fa.right)
+
+/**
+ * @since 2.0.0
+ */
+export const foldMap: Foldable2<URI>['foldMap'] = M => (fa, f) =>
+  isLeft(fa) ? M.empty : isRight(fa) ? f(fa.right) : f(fa.right)
+
+/**
+ * @since 2.0.0
+ */
+export const reduceRight: Foldable2<URI>['reduceRight'] = (fa, b, f) =>
+  isLeft(fa) ? b : isRight(fa) ? f(fa.right, b) : f(fa.right, b)
+
+/**
+ * @since 2.0.0
+ */
+export const traverse: Traversable2<URI>['traverse'] = <F>(F: Applicative<F>) => <E, A, B>(
+  ta: These<E, A>,
+  f: (a: A) => HKT<F, B>
+): HKT<F, These<E, B>> => {
+  return isLeft(ta) ? F.of(ta) : isRight(ta) ? F.map(f(ta.right), right) : F.map(f(ta.right), b => both(ta.left, b))
+}
+
+/**
+ * @since 2.0.0
+ */
+export const sequence: Traversable2<URI>['sequence'] = <F>(F: Applicative<F>) => <E, A>(
+  ta: These<E, HKT<F, A>>
+): HKT<F, These<E, A>> => {
+  return isLeft(ta) ? F.of(ta) : isRight(ta) ? F.map(ta.right, right) : F.map(ta.right, b => both(ta.left, b))
+}
+
+/**
+ * @since 2.0.0
+ */
 export const these: Functor2<URI> & Bifunctor2<URI> & Foldable2<URI> & Traversable2<URI> = {
   URI,
   map,
   bimap,
-  mapLeft: (fla, f) => bimap(fla, f, identity),
+  mapLeft,
   reduce,
   foldMap,
   reduceRight,
   traverse,
   sequence
 }
+
+const { foldMap$, map$, reduce$, reduceRight$ } = augment(these)
+
+export { foldMap$, map$, reduce$, reduceRight$ }
