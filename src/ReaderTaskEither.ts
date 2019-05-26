@@ -14,6 +14,7 @@ import { Task } from './Task'
 import * as TE from './TaskEither'
 
 import TaskEither = TE.TaskEither
+import { augment } from './augment'
 
 const T = getReaderM(TE.taskEither)
 
@@ -188,28 +189,73 @@ export const asks: <R, A>(f: (r: R) => A) => ReaderTaskEither<R, never, A> = T.a
 export const local: <Q, R>(f: (f: Q) => R) => <E, A>(ma: ReaderTaskEither<R, E, A>) => ReaderTaskEither<Q, E, A> =
   T.local
 
-const alt = <R, E, A>(
-  fx: ReaderTaskEither<R, E, A>,
-  fy: () => ReaderTaskEither<R, E, A>
-): ReaderTaskEither<R, E, A> => {
-  return r => TE.taskEither.alt(fx(r), () => fy()(r))
-}
+/**
+ * @since 2.0.0
+ */
+export const map: Monad3<URI>['map'] = T.map
+
+/**
+ * @since 2.0.0
+ */
+export const of: Monad3<URI>['of'] = T.of
+
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad3<URI>['ap'] = T.ap
+
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad3<URI>['chain'] = T.chain
+
+/**
+ * @since 2.0.0
+ */
+export const alt: Alt3<URI>['alt'] = (fx, fy) => r => TE.taskEither.alt(fx(r), () => fy()(r))
+
+/**
+ * @since 2.0.0
+ */
+export const bimap: Bifunctor3<URI>['bimap'] = (ma, f, g) => e => TE.taskEither.bimap(ma(e), f, g)
+
+/**
+ * @since 2.0.0
+ */
+export const mapLeft: Bifunctor3<URI>['mapLeft'] = (ma, f) => e => TE.taskEither.mapLeft(ma(e), f)
 
 /**
  * @since 2.0.0
  */
 export const readerTaskEither: Monad3<URI> & Bifunctor3<URI> & Alt3<URI> & MonadIO3<URI> & MonadTask3<URI> = {
   URI,
-  map: T.map,
-  of: right,
-  ap: T.ap,
-  chain: T.chain,
+  map,
+  of,
+  ap,
+  chain,
   alt,
-  bimap: (ma, f, g) => e => TE.taskEither.bimap(ma(e), f, g),
-  mapLeft: (ma, f) => e => TE.taskEither.mapLeft(ma(e), f),
+  bimap,
+  mapLeft,
   fromIO: rightIO,
   fromTask: rightTask
 }
+
+const {
+  alt$,
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  map$,
+  bimap$,
+  mapLeft$
+} = augment(readerTaskEither)
+
+export { alt$, ap$, apFirst, apFirst$, apSecond, apSecond$, chain$, chainFirst, chainFirst$, map$, bimap$, mapLeft$ }
 
 /**
  * Like `readerTaskEither` but `ap` is sequential

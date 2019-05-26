@@ -11,14 +11,20 @@ parent: Modules
 - [ReaderTaskEither (interface)](#readertaskeither-interface)
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
+- [ap (constant)](#ap-constant)
 - [ask (constant)](#ask-constant)
 - [asks (constant)](#asks-constant)
+- [chain (constant)](#chain-constant)
 - [fromTaskEither (constant)](#fromtaskeither-constant)
 - [local (constant)](#local-constant)
+- [map (constant)](#map-constant)
+- [of (constant)](#of-constant)
 - [readerTaskEither (constant)](#readertaskeither-constant)
 - [readerTaskEitherSeq (constant)](#readertaskeitherseq-constant)
 - [right (constant)](#right-constant)
 - [rightReader (constant)](#rightreader-constant)
+- [alt (function)](#alt-function)
+- [bimap (function)](#bimap-function)
 - [fold (function)](#fold-function)
 - [fromEither (function)](#fromeither-function)
 - [fromIOEither (function)](#fromioeither-function)
@@ -29,6 +35,7 @@ parent: Modules
 - [leftIO (function)](#leftio-function)
 - [leftReader (function)](#leftreader-function)
 - [leftTask (function)](#lefttask-function)
+- [mapLeft (function)](#mapleft-function)
 - [orElse (function)](#orelse-function)
 - [rightIO (function)](#rightio-function)
 - [rightTask (function)](#righttask-function)
@@ -68,6 +75,16 @@ export const URI = ...
 
 Added in v2.0.0
 
+# ap (constant)
+
+**Signature**
+
+```ts
+export const ap: Monad3<URI>['ap'] = ...
+```
+
+Added in v2.0.0
+
 # ask (constant)
 
 **Signature**
@@ -88,6 +105,16 @@ export const asks: <R, A>(f: (r: R) => A) => ReaderTaskEither<R, never, A> = ...
 
 Added in v2.0.0
 
+# chain (constant)
+
+**Signature**
+
+```ts
+export const chain: Monad3<URI>['chain'] = ...
+```
+
+Added in v2.0.0
+
 # fromTaskEither (constant)
 
 **Signature**
@@ -104,6 +131,26 @@ Added in v2.0.0
 
 ```ts
 export const  = ...
+```
+
+Added in v2.0.0
+
+# map (constant)
+
+**Signature**
+
+```ts
+export const map: Monad3<URI>['map'] = ...
+```
+
+Added in v2.0.0
+
+# of (constant)
+
+**Signature**
+
+```ts
+export const of: Monad3<URI>['of'] = ...
 ```
 
 Added in v2.0.0
@@ -146,6 +193,26 @@ Added in v2.0.0
 
 ```ts
 export const rightReader: <R, A>(ma: Reader<R, A>) => ReaderTaskEither<R, never, A> = ...
+```
+
+Added in v2.0.0
+
+# alt (function)
+
+**Signature**
+
+```ts
+export const alt: Alt3<URI>['alt'] = (fx, fy) => r => TE.taskEither.alt(fx(r), () => ...
+```
+
+Added in v2.0.0
+
+# bimap (function)
+
+**Signature**
+
+```ts
+export const bimap: Bifunctor3<URI>['bimap'] = (ma, f, g) => e => ...
 ```
 
 Added in v2.0.0
@@ -258,6 +325,16 @@ Added in v2.0.0
 
 ```ts
 export function leftTask<E>(me: Task<E>): ReaderTaskEither<unknown, E, never> { ... }
+```
+
+Added in v2.0.0
+
+# mapLeft (function)
+
+**Signature**
+
+```ts
+export const mapLeft: Bifunctor3<URI>['mapLeft'] = (ma, f) => e => ...
 ```
 
 Added in v2.0.0
