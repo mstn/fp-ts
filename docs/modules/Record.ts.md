@@ -13,11 +13,14 @@ parent: Modules
 - [empty (constant)](#empty-constant)
 - [record (constant)](#record-constant)
 - [collect (function)](#collect-function)
+- [compact (function)](#compact-function)
 - [elem (function)](#elem-function)
 - [every (function)](#every-function)
 - [filter (function)](#filter-function)
+- [filterMap (function)](#filtermap-function)
 - [filterMapWithIndex (function)](#filtermapwithindex-function)
 - [filterWithIndex (function)](#filterwithindex-function)
+- [foldMap (function)](#foldmap-function)
 - [foldMapWithIndex (function)](#foldmapwithindex-function)
 - [fromFoldable (function)](#fromfoldable-function)
 - [fromFoldableMap (function)](#fromfoldablemap-function)
@@ -32,12 +35,17 @@ parent: Modules
 - [lookup (function)](#lookup-function)
 - [map (function)](#map-function)
 - [mapWithIndex (function)](#mapwithindex-function)
+- [partition (function)](#partition-function)
+- [partitionMap (function)](#partitionmap-function)
 - [partitionMapWithIndex (function)](#partitionmapwithindex-function)
 - [partitionWithIndex (function)](#partitionwithindex-function)
 - [pop (function)](#pop-function)
+- [reduce (function)](#reduce-function)
+- [reduceRight (function)](#reduceright-function)
 - [reduceRightWithIndex (function)](#reducerightwithindex-function)
 - [reduceWithIndex (function)](#reducewithindex-function)
 - [remove (function)](#remove-function)
+- [separate (function)](#separate-function)
 - [sequence (function)](#sequence-function)
 - [singleton (function)](#singleton-function)
 - [size (function)](#size-function)
@@ -46,6 +54,8 @@ parent: Modules
 - [toUnfoldable (function)](#tounfoldable-function)
 - [traverse (function)](#traverse-function)
 - [traverseWithIndex (function)](#traversewithindex-function)
+- [wilt (function)](#wilt-function)
+- [wither (function)](#wither-function)
 
 ---
 
@@ -119,6 +129,16 @@ assert.deepStrictEqual(collect(ob, (key, val) => ({ key: key, value: val })), [
 
 Added in v2.0.0
 
+# compact (function)
+
+**Signature**
+
+```ts
+export const compact: Compactable1<URI>['compact'] = <A>(fa: Record<string, Option<A>>): Record<string, A> => ...
+```
+
+Added in v2.0.0
+
 # elem (function)
 
 **Signature**
@@ -150,6 +170,16 @@ export function filter<A>(fa: Record<string, A>, predicate: Predicate<A>): Recor
 
 Added in v2.0.0
 
+# filterMap (function)
+
+**Signature**
+
+```ts
+export const filterMap: Filterable1<URI>['filterMap'] = (fa, f) => filterMapWithIndex(fa, (_, a) => ...
+```
+
+Added in v2.0.0
+
 # filterMapWithIndex (function)
 
 **Signature**
@@ -171,6 +201,16 @@ Added in v2.0.0
 ```ts
 export function filterWithIndex<K extends string, A>(fa: Record<K, A>, p: (key: K, a: A) => boolean): Record<string, A>
 export function filterWithIndex<A>(fa: Record<string, A>, p: (key: string, a: A) => boolean): Record<string, A> { ... }
+```
+
+Added in v2.0.0
+
+# foldMap (function)
+
+**Signature**
+
+```ts
+export const foldMap: Foldable1<URI>['foldMap'] = M => ...
 ```
 
 Added in v2.0.0
@@ -402,6 +442,29 @@ export function mapWithIndex<K extends string, A, B>(fa: Record<K, A>, f: (k: K,
 
 Added in v2.0.0
 
+# partition (function)
+
+**Signature**
+
+```ts
+export const partition: Filterable1<URI>['partition'] = <A>(
+  fa: Record<string, A>,
+  predicate: Predicate<A>
+): Separated<Record<string, A>, Record<string, A>> => ...
+```
+
+Added in v2.0.0
+
+# partitionMap (function)
+
+**Signature**
+
+```ts
+export const partitionMap: Filterable1<URI>['partitionMap'] = (fa, f) => partitionMapWithIndex(fa, (_, a) => ...
+```
+
+Added in v2.0.0
+
 # partitionMapWithIndex (function)
 
 **Signature**
@@ -451,6 +514,27 @@ export function pop<K extends string, KS extends string, A>(
 
 Added in v2.0.0
 
+# reduce (function)
+
+**Signature**
+
+```ts
+export const reduce: Foldable1<URI>['reduce'] = (fa, b, f) => reduceWithIndex(fa, b, (_, b, a) => ...
+```
+
+Added in v2.0.0
+
+# reduceRight (function)
+
+**Signature**
+
+```ts
+export const reduceRight: Foldable1<URI>['reduceRight'] = (fa, b, f) =>
+  reduceRightWithIndex(fa, b, (_, a, b) => ...
+```
+
+Added in v2.0.0
+
 # reduceRightWithIndex (function)
 
 **Signature**
@@ -482,6 +566,18 @@ export function remove<K extends string, KS extends string, A>(
   k: K,
   d: Record<KS, A>
 ): Record<string extends K ? string : Exclude<KS, K>, A> { ... }
+```
+
+Added in v2.0.0
+
+# separate (function)
+
+**Signature**
+
+```ts
+export const separate: Compactable1<URI>['separate'] = <RL, RR>(
+  fa: Record<string, Either<RL, RR>>
+): Separated<Record<string, RL>, Record<string, RR>> => ...
 ```
 
 Added in v2.0.0
@@ -611,6 +707,33 @@ export function traverseWithIndex<F extends URIS>(
 export function traverseWithIndex<F>(
   F: Applicative<F>
 ): <K extends string, A, B>(ta: Record<K, A>, f: (k: K, a: A) => HKT<F, B>) => HKT<F, Record<K, B>> { ... }
+```
+
+Added in v2.0.0
+
+# wilt (function)
+
+**Signature**
+
+```ts
+export const wilt: Witherable1<URI>['wilt'] = <F>(
+  F: Applicative<F>
+): (<RL, RR, A>(
+  wa: Record<string, A>,
+  f: (a: A) => HKT<F, Either<RL, RR>>
+) => HKT<F, Separated<Record<string, RL>, Record<string, RR>>>) => ...
+```
+
+Added in v2.0.0
+
+# wither (function)
+
+**Signature**
+
+```ts
+export const wither: Witherable1<URI>['wither'] = <F>(
+  F: Applicative<F>
+): (<A, B>(wa: Record<string, A>, f: (a: A) => HKT<F, Option<B>>) => HKT<F, Record<string, B>>) => ...
 ```
 
 Added in v2.0.0

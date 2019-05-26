@@ -16,6 +16,8 @@ import { Show, showString } from './Show'
 import { TraversableWithIndex1 } from './TraversableWithIndex'
 import { Unfoldable, Unfoldable1 } from './Unfoldable'
 import { Witherable1 } from './Witherable'
+import { Filterable1 } from './Filterable'
+import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT<A> {
@@ -285,18 +287,24 @@ export function map<A, B>(fa: Record<string, A>, f: (a: A) => B): Record<string,
   return mapWithIndex(fa, (_, a) => f(a))
 }
 
-const reduce = <A, B>(fa: Record<string, A>, b: B, f: (b: B, a: A) => B): B => {
-  return reduceWithIndex(fa, b, (_, b, a) => f(b, a))
-}
+/**
+ * @since 2.0.0
+ */
+export const reduce: Foldable1<URI>['reduce'] = (fa, b, f) => reduceWithIndex(fa, b, (_, b, a) => f(b, a))
 
-const foldMap = <M>(M: Monoid<M>): (<A>(fa: Record<string, A>, f: (a: A) => M) => M) => {
+/**
+ * @since 2.0.0
+ */
+export const foldMap: Foldable1<URI>['foldMap'] = M => {
   const foldMapWithIndexM = foldMapWithIndex(M)
   return (fa, f) => foldMapWithIndexM(fa, (_, a) => f(a))
 }
 
-const reduceRight = <A, B>(fa: Record<string, A>, b: B, f: (a: A, b: B) => B): B => {
-  return reduceRightWithIndex(fa, b, (_, a, b) => f(a, b))
-}
+/**
+ * @since 2.0.0
+ */
+export const reduceRight: Foldable1<URI>['reduceRight'] = (fa, b, f) =>
+  reduceRightWithIndex(fa, b, (_, a, b) => f(a, b))
 
 /**
  * @since 2.0.0
@@ -440,7 +448,10 @@ export function sequence<F>(F: Applicative<F>): <A>(ta: Record<string, HKT<F, A>
   return ta => traverseWithIndexF(ta, (_, a) => a)
 }
 
-const compact = <A>(fa: Record<string, Option<A>>): Record<string, A> => {
+/**
+ * @since 2.0.0
+ */
+export const compact: Compactable1<URI>['compact'] = <A>(fa: Record<string, Option<A>>): Record<string, A> => {
   const r: Record<string, A> = {}
   const keys = Object.keys(fa)
   for (const key of keys) {
@@ -452,21 +463,12 @@ const compact = <A>(fa: Record<string, Option<A>>): Record<string, A> => {
   return r
 }
 
-const partitionMap = <RL, RR, A>(
-  fa: Record<string, A>,
-  f: (a: A) => Either<RL, RR>
+/**
+ * @since 2.0.0
+ */
+export const separate: Compactable1<URI>['separate'] = <RL, RR>(
+  fa: Record<string, Either<RL, RR>>
 ): Separated<Record<string, RL>, Record<string, RR>> => {
-  return partitionMapWithIndex(fa, (_, a) => f(a))
-}
-
-const partition = <A>(
-  fa: Record<string, A>,
-  predicate: Predicate<A>
-): Separated<Record<string, A>, Record<string, A>> => {
-  return partitionWithIndex(fa, (_, a) => predicate(a))
-}
-
-const separate = <RL, RR>(fa: Record<string, Either<RL, RR>>): Separated<Record<string, RL>, Record<string, RR>> => {
   const left: Record<string, RL> = {}
   const right: Record<string, RR> = {}
   const keys = Object.keys(fa)
@@ -487,25 +489,47 @@ const separate = <RL, RR>(fa: Record<string, Either<RL, RR>>): Separated<Record<
   }
 }
 
-function wither<F>(
+/**
+ * @since 2.0.0
+ */
+export const filterMap: Filterable1<URI>['filterMap'] = (fa, f) => filterMapWithIndex(fa, (_, a) => f(a))
+
+/**
+ * @since 2.0.0
+ */
+export const partition: Filterable1<URI>['partition'] = <A>(
+  fa: Record<string, A>,
+  predicate: Predicate<A>
+): Separated<Record<string, A>, Record<string, A>> => {
+  return partitionWithIndex(fa, (_, a) => predicate(a))
+}
+
+/**
+ * @since 2.0.0
+ */
+export const partitionMap: Filterable1<URI>['partitionMap'] = (fa, f) => partitionMapWithIndex(fa, (_, a) => f(a))
+
+/**
+ * @since 2.0.0
+ */
+export const wither: Witherable1<URI>['wither'] = <F>(
   F: Applicative<F>
-): <A, B>(wa: Record<string, A>, f: (a: A) => HKT<F, Option<B>>) => HKT<F, Record<string, B>> {
+): (<A, B>(wa: Record<string, A>, f: (a: A) => HKT<F, Option<B>>) => HKT<F, Record<string, B>>) => {
   const traverseF = traverse(F)
   return (wa, f) => F.map(traverseF(wa, f), compact)
 }
 
-function wilt<F>(
+/**
+ * @since 2.0.0
+ */
+export const wilt: Witherable1<URI>['wilt'] = <F>(
   F: Applicative<F>
-): <RL, RR, A>(
+): (<RL, RR, A>(
   wa: Record<string, A>,
   f: (a: A) => HKT<F, Either<RL, RR>>
-) => HKT<F, Separated<Record<string, RL>, Record<string, RR>>> {
+) => HKT<F, Separated<Record<string, RL>, Record<string, RR>>>) => {
   const traverseF = traverse(F)
   return (wa, f) => F.map(traverseF(wa, f), separate)
-}
-
-const filterMap = <A, B>(fa: Record<string, A>, f: (a: A) => Option<B>): Record<string, B> => {
-  return filterMapWithIndex(fa, (_, a) => f(a))
 }
 
 /**
@@ -774,4 +798,42 @@ export const record: FunctorWithIndex1<URI, string> &
   partitionWithIndex: partitionWithIndex,
   filterMapWithIndex: filterMapWithIndex,
   filterWithIndex: filterWithIndex
+}
+
+const {
+  filter$,
+  filterMap$,
+  foldMap$,
+  map$,
+  partition$,
+  partitionMap$,
+  reduce$,
+  reduceRight$,
+  filterMapWithIndex$,
+  filterWithIndex$,
+  foldMapWithIndex$,
+  mapWithIndex$,
+  partitionMapWithIndex$,
+  partitionWithIndex$,
+  reduceRightWithIndex$,
+  reduceWithIndex$
+} = augment(record)
+
+export {
+  filter$,
+  filterMap$,
+  foldMap$,
+  map$,
+  partition$,
+  partitionMap$,
+  reduce$,
+  reduceRight$,
+  filterMapWithIndex$,
+  filterWithIndex$,
+  foldMapWithIndex$,
+  mapWithIndex$,
+  partitionMapWithIndex$,
+  partitionWithIndex$,
+  reduceRightWithIndex$,
+  reduceWithIndex$
 }
