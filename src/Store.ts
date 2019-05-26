@@ -38,7 +38,7 @@ export function seek<S, A>(wa: Store<S, A>, s: S): Store<S, A> {
 }
 
 /**
- * Reposition the focus at the specified position
+ * Data-last version of `seek`
  *
  * @since 2.0.0
  */
@@ -56,7 +56,7 @@ export function seeks<S, A>(wa: Store<S, A>, f: Endomorphism<S>): Store<S, A> {
 }
 
 /**
- * Reposition the focus at the specified position, which depends on the current position
+ * Data-last version of `seeks`
  *
  * @since 2.0.0
  */
@@ -74,7 +74,7 @@ export function peeks<S, A>(wa: Store<S, A>, f: Endomorphism<S>): A {
 }
 
 /**
- * Extract a value from a position which depends on the current position
+ * Data-last version of `peeks`
  *
  * @since 2.0.0
  */

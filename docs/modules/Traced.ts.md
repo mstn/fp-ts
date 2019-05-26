@@ -13,10 +13,15 @@ parent: Modules
 - [URI (constant)](#uri-constant)
 - [traced (constant)](#traced-constant)
 - [censor (function)](#censor-function)
+- [censor\$ (function)](#censor-function)
 - [getComonad (function)](#getcomonad-function)
 - [listen (function)](#listen-function)
 - [listens (function)](#listens-function)
+- [listens\$ (function)](#listens-function)
+- [map (function)](#map-function)
 - [tracks (function)](#tracks-function)
+- [tracks\$ (function)](#tracks-function)
+- [map\$ (export)](#map-export)
 
 ---
 
@@ -69,7 +74,19 @@ Apply a function to the current position
 **Signature**
 
 ```ts
-export function censor<P>(f: (p: P) => P): <A>(wa: Traced<P, A>) => Traced<P, A> { ... }
+export function censor<P, A>(wa: Traced<P, A>, f: (p: P) => P): Traced<P, A> { ... }
+```
+
+Added in v2.0.0
+
+# censor\$ (function)
+
+Data-last version of `censor`
+
+**Signature**
+
+```ts
+export function censor$<P>(f: (p: P) => P): <A>(wa: Traced<P, A>) => Traced<P, A> { ... }
 ```
 
 Added in v2.0.0
@@ -79,7 +96,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function getComonad<P>(monoid: Monoid<P>): Comonad2C<URI, P> { ... }
+export function getComonad<P>(M: Monoid<P>): Comonad2C<URI, P> { ... }
 ```
 
 Added in v2.0.0
@@ -103,7 +120,29 @@ Get a value which depends on the current position
 **Signature**
 
 ```ts
-export function listens<P, B>(f: (p: P) => B): <A>(wa: Traced<P, A>) => Traced<P, [A, B]> { ... }
+export function listens<P, A, B>(wa: Traced<P, A>, f: (p: P) => B): Traced<P, [A, B]> { ... }
+```
+
+Added in v2.0.0
+
+# listens\$ (function)
+
+Data-last version of `listens`
+
+**Signature**
+
+```ts
+export function listens$<P, B>(f: (p: P) => B): <A>(wa: Traced<P, A>) => Traced<P, [A, B]> { ... }
+```
+
+Added in v2.0.0
+
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Functor2<URI>['map'] = (fa, f) => p => ...
 ```
 
 Added in v2.0.0
@@ -115,7 +154,27 @@ Extracts a value at a relative position which depends on the current value.
 **Signature**
 
 ```ts
-export function tracks<P, A>(M: Monoid<P>, f: (a: A) => P): (wa: Traced<P, A>) => A { ... }
+export function tracks<P>(M: Monoid<P>): <A>(wa: Traced<P, A>, f: (a: A) => P) => A { ... }
 ```
 
 Added in v2.0.0
+
+# tracks\$ (function)
+
+Data-last version of `tracks`
+
+**Signature**
+
+```ts
+export function tracks$<P>(M: Monoid<P>): <A>(f: (a: A) => P) => (wa: Traced<P, A>) => A { ... }
+```
+
+Added in v2.0.0
+
+# map\$ (export)
+
+**Signature**
+
+```ts
+export { map$ }
+```

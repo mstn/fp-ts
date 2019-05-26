@@ -1,7 +1,8 @@
 import { Comonad2C } from './Comonad'
-import { Monoid } from './Monoid'
-import { Functor2 } from './Functor'
 import { phantom, tuple } from './function'
+import { Functor2 } from './Functor'
+import { Monoid } from './Monoid'
+import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT2<L, A> {
@@ -31,8 +32,18 @@ export interface Traced<P, A> {
  *
  * @since 2.0.0
  */
-export function tracks<P, A>(M: Monoid<P>, f: (a: A) => P): (wa: Traced<P, A>) => A {
-  return wa => wa(f(wa(M.empty)))
+export function tracks<P>(M: Monoid<P>): <A>(wa: Traced<P, A>, f: (a: A) => P) => A {
+  return (wa, f) => wa(f(wa(M.empty)))
+}
+
+/**
+ * Data-last version of `tracks`
+ *
+ * @since 2.0.0
+ */
+export function tracks$<P>(M: Monoid<P>): <A>(f: (a: A) => P) => (wa: Traced<P, A>) => A {
+  const tracksM = tracks(M)
+  return f => wa => tracksM(wa, f)
 }
 
 /**
@@ -41,7 +52,7 @@ export function tracks<P, A>(M: Monoid<P>, f: (a: A) => P): (wa: Traced<P, A>) =
  * @since 2.0.0
  */
 export function listen<P, A>(wa: Traced<P, A>): Traced<P, [A, P]> {
-  return e => tuple(wa(e), e)
+  return p => tuple(wa(p), p)
 }
 
 /**
@@ -49,8 +60,17 @@ export function listen<P, A>(wa: Traced<P, A>): Traced<P, [A, P]> {
  *
  * @since 2.0.0
  */
-export function listens<P, B>(f: (p: P) => B): <A>(wa: Traced<P, A>) => Traced<P, [A, B]> {
-  return wa => e => tuple(wa(e), f(e))
+export function listens<P, A, B>(wa: Traced<P, A>, f: (p: P) => B): Traced<P, [A, B]> {
+  return p => tuple(wa(p), f(p))
+}
+
+/**
+ * Data-last version of `listens`
+ *
+ * @since 2.0.0
+ */
+export function listens$<P, B>(f: (p: P) => B): <A>(wa: Traced<P, A>) => Traced<P, [A, B]> {
+  return wa => listens(wa, f)
 }
 
 /**
@@ -58,20 +78,29 @@ export function listens<P, B>(f: (p: P) => B): <A>(wa: Traced<P, A>) => Traced<P
  *
  * @since 2.0.0
  */
-export function censor<P>(f: (p: P) => P): <A>(wa: Traced<P, A>) => Traced<P, A> {
-  return wa => e => wa(f(e))
+export function censor<P, A>(wa: Traced<P, A>, f: (p: P) => P): Traced<P, A> {
+  return p => wa(f(p))
+}
+
+/**
+ * Data-last version of `censor`
+ *
+ * @since 2.0.0
+ */
+export function censor$<P>(f: (p: P) => P): <A>(wa: Traced<P, A>) => Traced<P, A> {
+  return wa => censor(wa, f)
 }
 
 /**
  * @since 2.0.0
  */
-export function getComonad<P>(monoid: Monoid<P>): Comonad2C<URI, P> {
+export function getComonad<P>(M: Monoid<P>): Comonad2C<URI, P> {
   function extend<A, B>(wa: Traced<P, A>, f: (wa: Traced<P, A>) => B): Traced<P, B> {
-    return p1 => f(p2 => wa(monoid.concat(p1, p2)))
+    return p1 => f(p2 => wa(M.concat(p1, p2)))
   }
 
   function extract<A>(wa: Traced<P, A>): A {
-    return wa(monoid.empty)
+    return wa(M.empty)
   }
 
   return {
@@ -83,9 +112,10 @@ export function getComonad<P>(monoid: Monoid<P>): Comonad2C<URI, P> {
   }
 }
 
-const map = <P, A, B>(wa: Traced<P, A>, f: (a: A) => B): Traced<P, B> => {
-  return p => f(wa(p))
-}
+/**
+ * @since 2.0.0
+ */
+export const map: Functor2<URI>['map'] = (fa, f) => p => f(fa(p))
 
 /**
  * @since 2.0.0
@@ -94,3 +124,7 @@ export const traced: Functor2<URI> = {
   URI,
   map
 }
+
+const { map$ } = augment(traced)
+
+export { map$ }

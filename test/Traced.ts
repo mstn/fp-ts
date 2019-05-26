@@ -1,6 +1,6 @@
 import * as assert from 'assert'
 import { getStructMonoid, monoidAny, Monoid } from '../src/Monoid'
-import { Traced, traced, getComonad, tracks, listen, listens, censor } from '../src/Traced'
+import { Traced, traced, getComonad, tracks$, listen, listens$, censor$ } from '../src/Traced'
 import { pipeOp as pipe } from '../src/function'
 
 // Adapted from https://chshersh.github.io/posts/2019-03-25-comonadic-builders
@@ -69,8 +69,8 @@ describe('Traced', () => {
     })
   })
 
-  it('tracks', () => {
-    const travisB = tracks(M, (project: Project): Settings => ({ ...M.empty, settingsTravis: project.projectGitHub }))
+  it('tracks$', () => {
+    const travisB = tracks$(M)((project: Project): Settings => ({ ...M.empty, settingsTravis: project.projectGitHub }))
     assert.deepStrictEqual(C.extract(C.extend(buildProject('travis'), travisB)), {
       projectName: 'travis',
       projectHasLibrary: false,
@@ -101,12 +101,12 @@ describe('Traced', () => {
     ])
   })
 
-  it('listens', () => {
+  it('listens$', () => {
     assert.deepStrictEqual(
       C.extract(
         pipe(
           buildProject('myproject'),
-          listens(settings => settings.settingsTravis)
+          listens$(settings => settings.settingsTravis)
         )
       ),
       [
@@ -121,12 +121,12 @@ describe('Traced', () => {
     )
   })
 
-  it('censor', () => {
+  it('censor$', () => {
     assert.deepStrictEqual(
       C.extract(
         pipe(
           buildProject('myproject'),
-          censor(settings => ({
+          censor$(settings => ({
             ...settings,
             settingsHasLibrary: !settings.settingsHasLibrary
           }))

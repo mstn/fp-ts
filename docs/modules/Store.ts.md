@@ -136,7 +136,7 @@ Added in v2.0.0
 
 # peeks\$ (function)
 
-Extract a value from a position which depends on the current position
+Data-last version of `peeks`
 
 **Signature**
 
@@ -160,7 +160,7 @@ Added in v2.0.0
 
 # seek\$ (function)
 
-Reposition the focus at the specified position
+Data-last version of `seek`
 
 **Signature**
 
@@ -184,7 +184,7 @@ Added in v2.0.0
 
 # seeks\$ (function)
 
-Reposition the focus at the specified position, which depends on the current position
+Data-last version of `seeks`
 
 **Signature**
 
