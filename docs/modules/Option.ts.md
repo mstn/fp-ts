@@ -1,6 +1,6 @@
 ---
 title: Option.ts
-nav_order: 58
+nav_order: 56
 parent: Modules
 ---
 
@@ -95,11 +95,22 @@ option.chain(some(0), inverse) // none
 - [Option (type alias)](#option-type-alias)
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
+- [filterMap (constant)](#filtermap-constant)
 - [none (constant)](#none-constant)
+- [of (constant)](#of-constant)
 - [option (constant)](#option-constant)
+- [alt (function)](#alt-function)
+- [ap (function)](#ap-function)
+- [chain (function)](#chain-function)
+- [compact (function)](#compact-function)
 - [elem (function)](#elem-function)
 - [exists (function)](#exists-function)
+- [exists\$ (function)](#exists-function)
+- [extend (function)](#extend-function)
+- [filter (function)](#filter-function)
 - [fold (function)](#fold-function)
+- [fold\$ (function)](#fold-function)
+- [foldMap (function)](#foldmap-function)
 - [fromEither (function)](#fromeither-function)
 - [fromNullable (function)](#fromnullable-function)
 - [fromPredicate (function)](#frompredicate-function)
@@ -111,17 +122,30 @@ option.chain(some(0), inverse) // none
 - [getLeft (function)](#getleft-function)
 - [getMonoid (function)](#getmonoid-function)
 - [getOrElse (function)](#getorelse-function)
+- [getOrElse\$ (function)](#getorelse-function)
 - [getOrd (function)](#getord-function)
 - [getRefinement (function)](#getrefinement-function)
 - [getRight (function)](#getright-function)
 - [getShow (function)](#getshow-function)
 - [isNone (function)](#isnone-function)
 - [isSome (function)](#issome-function)
+- [map (function)](#map-function)
 - [mapNullable (function)](#mapnullable-function)
+- [mapNullable\$ (function)](#mapnullable-function)
+- [partition (function)](#partition-function)
+- [partitionMap (function)](#partitionmap-function)
+- [reduce (function)](#reduce-function)
+- [reduceRight (function)](#reduceright-function)
+- [separate (function)](#separate-function)
+- [sequence (function)](#sequence-function)
 - [some (function)](#some-function)
 - [toNullable (function)](#tonullable-function)
 - [toUndefined (function)](#toundefined-function)
+- [traverse (function)](#traverse-function)
 - [tryCatch (function)](#trycatch-function)
+- [wilt (function)](#wilt-function)
+- [wither (function)](#wither-function)
+- [zero (function)](#zero-function)
 
 ---
 
@@ -180,12 +204,32 @@ export const URI = ...
 
 Added in v2.0.0
 
+# filterMap (constant)
+
+**Signature**
+
+```ts
+export const filterMap: Filterable1<URI>['filterMap'] = ...
+```
+
+Added in v2.0.0
+
 # none (constant)
 
 **Signature**
 
 ```ts
 export const none: Option<never> = ...
+```
+
+Added in v2.0.0
+
+# of (constant)
+
+**Signature**
+
+```ts
+export const of: Applicative1<URI>['of'] = ...
 ```
 
 Added in v2.0.0
@@ -197,13 +241,53 @@ Added in v2.0.0
 ```ts
 export const option: Monad1<URI> &
   Foldable1<URI> &
-  Plus1<URI> &
-  Traversable1<URI> &
   Alternative1<URI> &
+  Plus1<URI> &
   Extend1<URI> &
   Compactable1<URI> &
   Filterable1<URI> &
+  Traversable1<URI> &
   Witherable1<URI> = ...
+```
+
+Added in v2.0.0
+
+# alt (function)
+
+**Signature**
+
+```ts
+export const alt: Alt1<URI>['alt'] = (ma, f) => ...
+```
+
+Added in v2.0.0
+
+# ap (function)
+
+**Signature**
+
+```ts
+export const ap: Applicative1<URI>['ap'] = (mab, ma) => ...
+```
+
+Added in v2.0.0
+
+# chain (function)
+
+**Signature**
+
+```ts
+export const chain: Monad1<URI>['chain'] = (ma, f) => ...
+```
+
+Added in v2.0.0
+
+# compact (function)
+
+**Signature**
+
+```ts
+export const compact: Compactable1<URI>['compact'] = mma => ...
 ```
 
 Added in v2.0.0
@@ -223,7 +307,37 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function exists<A>(predicate: Predicate<A>): (ma: Option<A>) => boolean { ... }
+export function exists<A>(ma: Option<A>, predicate: Predicate<A>): boolean { ... }
+```
+
+Added in v2.0.0
+
+# exists\$ (function)
+
+**Signature**
+
+```ts
+export function exists$<A>(predicate: Predicate<A>): (ma: Option<A>) => boolean { ... }
+```
+
+Added in v2.0.0
+
+# extend (function)
+
+**Signature**
+
+```ts
+export const extend: Extend1<URI>['extend'] = (wa, f) => ...
+```
+
+Added in v2.0.0
+
+# filter (function)
+
+**Signature**
+
+```ts
+export const filter: Filterable1<URI>['filter'] = <A>(fa: Option<A>, predicate: Predicate<A>): Option<A> => ...
 ```
 
 Added in v2.0.0
@@ -233,7 +347,27 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function fold<A, R>(onNone: () => R, onSome: (a: A) => R): (ma: Option<A>) => R { ... }
+export function fold<A, R>(ma: Option<A>, onNone: () => R, onSome: (a: A) => R): R { ... }
+```
+
+Added in v2.0.0
+
+# fold\$ (function)
+
+**Signature**
+
+```ts
+export function fold$<A, R>(onNone: () => R, onSome: (a: A) => R): (ma: Option<A>) => R { ... }
+```
+
+Added in v2.0.0
+
+# foldMap (function)
+
+**Signature**
+
+```ts
+export const foldMap: Foldable1<URI>['foldMap'] = M => (fa, f) => ...
 ```
 
 Added in v2.0.0
@@ -471,7 +605,17 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function getOrElse<A>(f: () => A): (ma: Option<A>) => A { ... }
+export function getOrElse<A>(ma: Option<A>, f: () => A): A { ... }
+```
+
+Added in v2.0.0
+
+# getOrElse\$ (function)
+
+**Signature**
+
+```ts
+export function getOrElse$<A>(f: () => A): (ma: Option<A>) => A { ... }
 ```
 
 Added in v2.0.0
@@ -576,12 +720,97 @@ export function isSome<A>(fa: Option<A>): fa is Some<A> { ... }
 
 Added in v2.0.0
 
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Functor1<URI>['map'] = (ma, f) => ...
+```
+
+Added in v2.0.0
+
 # mapNullable (function)
 
 **Signature**
 
 ```ts
-export function mapNullable<A, B>(f: (a: A) => B | null | undefined): (ma: Option<A>) => Option<B> { ... }
+export function mapNullable<A, B>(ma: Option<A>, f: (a: A) => B | null | undefined): Option<B> { ... }
+```
+
+Added in v2.0.0
+
+# mapNullable\$ (function)
+
+**Signature**
+
+```ts
+export function mapNullable$<A, B>(f: (a: A) => B | null | undefined): (ma: Option<A>) => Option<B> { ... }
+```
+
+Added in v2.0.0
+
+# partition (function)
+
+**Signature**
+
+```ts
+export const partition: Filterable1<URI>['partition'] = <A>(
+  fa: Option<A>,
+  predicate: Predicate<A>
+): Separated<Option<A>, Option<A>> => ...
+```
+
+Added in v2.0.0
+
+# partitionMap (function)
+
+**Signature**
+
+```ts
+export const partitionMap: Filterable1<URI>['partitionMap'] = (fa, f) => ...
+```
+
+Added in v2.0.0
+
+# reduce (function)
+
+**Signature**
+
+```ts
+export const reduce: Foldable1<URI>['reduce'] = (fa, b, f) => ...
+```
+
+Added in v2.0.0
+
+# reduceRight (function)
+
+**Signature**
+
+```ts
+export const reduceRight: Foldable1<URI>['reduceRight'] = (fa, b, f) => ...
+```
+
+Added in v2.0.0
+
+# separate (function)
+
+**Signature**
+
+```ts
+export const separate: Compactable1<URI>['separate'] = ma => ...
+```
+
+Added in v2.0.0
+
+# sequence (function)
+
+**Signature**
+
+```ts
+export const sequence: Traversable1<URI>['sequence'] = <F>(F: Applicative<F>) => <A>(
+  ta: Option<HKT<F, A>>
+): HKT<F, Option<A>> => ...
 ```
 
 Added in v2.0.0
@@ -616,6 +845,19 @@ export function toUndefined<A>(ma: Option<A>): A | undefined { ... }
 
 Added in v2.0.0
 
+# traverse (function)
+
+**Signature**
+
+```ts
+export const traverse: Traversable1<URI>['traverse'] = <F>(F: Applicative<F>) => <A, B>(
+  ta: Option<A>,
+  f: (a: A) => HKT<F, B>
+): HKT<F, Option<B>> => ...
+```
+
+Added in v2.0.0
+
 # tryCatch (function)
 
 Transforms an exception into an `Option`. If `f` throws, returns `None`, otherwise returns the output wrapped in
@@ -639,6 +881,42 @@ assert.deepStrictEqual(
   none
 )
 assert.deepStrictEqual(tryCatch(() => 1), some(1))
+```
+
+Added in v2.0.0
+
+# wilt (function)
+
+**Signature**
+
+```ts
+export const wilt: Witherable1<URI>['wilt'] = <F>(F: Applicative<F>) => <RL, RR, A>(
+  fa: Option<A>,
+  f: (a: A) => HKT<F, Either<RL, RR>>
+): HKT<F, Separated<Option<RL>, Option<RR>>> => ...
+```
+
+Added in v2.0.0
+
+# wither (function)
+
+**Signature**
+
+```ts
+export const wither: Witherable1<URI>['wither'] = <F>(F: Applicative<F>) => <A, B>(
+  fa: Option<A>,
+  f: (a: A) => HKT<F, Option<B>>
+): HKT<F, Option<B>> => ...
+```
+
+Added in v2.0.0
+
+# zero (function)
+
+**Signature**
+
+```ts
+export const zero: Plus1<URI>['zero'] = () => ...
 ```
 
 Added in v2.0.0
