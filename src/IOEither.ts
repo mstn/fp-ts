@@ -110,7 +110,7 @@ export function filterOrElse<E, A>(
   predicate: Predicate<A>,
   onFalse: (a: A) => E
 ): (ma: IOEither<E, A>) => IOEither<E, A> {
-  return ma => io.map(ma, E.filterOrElse(predicate, onFalse))
+  return ma => io.map(ma, E.filterOrElse$(predicate, onFalse))
 }
 
 /**

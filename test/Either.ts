@@ -10,33 +10,33 @@ import { showString } from '../src/Show'
 import { getMonoid as getArrayMonoid } from '../src/Array'
 
 describe('Either', () => {
-  it('fold', () => {
+  it('fold$', () => {
     const f = (s: string) => `left${s.length}`
     const g = (s: string) => `right${s.length}`
-    const fold = _.fold(f, g)
+    const fold = _.fold$(f, g)
     assert.strictEqual(fold(_.left('abc')), 'left3')
     assert.strictEqual(fold(_.right('abc')), 'right3')
   })
 
-  it('getOrElse', () => {
+  it('getOrElse$', () => {
     assert.deepStrictEqual(
       pipe(
         _.right(12),
-        _.getOrElse(() => 17)
+        _.getOrElse$(() => 17)
       ),
       12
     )
     assert.deepStrictEqual(
       pipe(
         _.left('a'),
-        _.getOrElse(() => 17)
+        _.getOrElse$(() => 17)
       ),
       17
     )
     assert.deepStrictEqual(
       pipe(
         _.left('a'),
-        _.getOrElse((l: string) => l.length + 1)
+        _.getOrElse$((l: string) => l.length + 1)
       ),
       2
     )
@@ -48,33 +48,33 @@ describe('Either', () => {
     assert.deepStrictEqual(_.elem(eqNumber)(1, _.right(2)), false)
   })
 
-  it('filterOrElse', () => {
+  it('filterOrElse$', () => {
     const gt10 = (n: number): boolean => n > 10
     assert.deepStrictEqual(
       pipe(
         _.right(12),
-        _.filterOrElse(gt10, () => -1)
+        _.filterOrElse$(gt10, () => -1)
       ),
       _.right(12)
     )
     assert.deepStrictEqual(
       pipe(
         _.right(7),
-        _.filterOrElse(gt10, () => -1)
+        _.filterOrElse$(gt10, () => -1)
       ),
       _.left(-1)
     )
     assert.deepStrictEqual(
       pipe(
         _.left(12),
-        _.filterOrElse(gt10, () => -1)
+        _.filterOrElse$(gt10, () => -1)
       ),
       _.left(12)
     )
     assert.deepStrictEqual(
       pipe(
         _.right(7),
-        _.filterOrElse(gt10, n => `invalid ${n}`)
+        _.filterOrElse$(gt10, n => `invalid ${n}`)
       ),
       _.left('invalid 7')
     )
@@ -86,21 +86,21 @@ describe('Either', () => {
     assert.deepStrictEqual(
       pipe(
         _.right('red'),
-        _.filterOrElse(isColor, errorHandler)
+        _.filterOrElse$(isColor, errorHandler)
       ),
       _.right('red')
     )
     assert.deepStrictEqual(
       pipe(
         _.right('foo'),
-        _.filterOrElse(isColor, errorHandler)
+        _.filterOrElse$(isColor, errorHandler)
       ),
       _.left('invalid color foo')
     )
     assert.deepStrictEqual(
       pipe(
         _.left('err'),
-        _.filterOrElse(isColor, errorHandler)
+        _.filterOrElse$(isColor, errorHandler)
       ),
       _.left('err')
     )
@@ -116,32 +116,32 @@ describe('Either', () => {
     assert.strictEqual(_.isRight(_.left(1)), false)
   })
 
-  it('orElse', () => {
+  it('orElse$', () => {
     assert.deepStrictEqual(
       pipe(
         _.right(1),
-        _.orElse(() => _.right(2))
+        _.orElse$(() => _.right(2))
       ),
       _.right(1)
     )
     assert.deepStrictEqual(
       pipe(
         _.right(1),
-        _.orElse(() => _.left('foo') as _.Either<string, number>)
+        _.orElse$(() => _.left('foo') as _.Either<string, number>)
       ),
       _.right(1)
     )
     assert.deepStrictEqual(
       pipe(
         _.left('a'),
-        _.orElse(() => _.right(1))
+        _.orElse$(() => _.right(1))
       ),
       _.right(1)
     )
     assert.deepStrictEqual(
       pipe(
         _.left('a'),
-        _.orElse(() => _.left('b'))
+        _.orElse$(() => _.left('b'))
       ),
       _.left('b')
     )

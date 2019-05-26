@@ -43,9 +43,19 @@ either.map(left(23), double) // left(23)
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
 - [either (constant)](#either-constant)
+- [of (constant)](#of-constant)
+- [alt (function)](#alt-function)
+- [ap (function)](#ap-function)
+- [bimap (function)](#bimap-function)
+- [chain (function)](#chain-function)
+- [chainRec (function)](#chainrec-function)
 - [elem (function)](#elem-function)
+- [extend (function)](#extend-function)
 - [filterOrElse (function)](#filterorelse-function)
+- [filterOrElse\$ (function)](#filterorelse-function)
 - [fold (function)](#fold-function)
+- [fold\$ (function)](#fold-function)
+- [foldMap (function)](#foldmap-function)
 - [fromNullable (function)](#fromnullable-function)
 - [fromOption (function)](#fromoption-function)
 - [fromPredicate (function)](#frompredicate-function)
@@ -55,6 +65,7 @@ either.map(left(23), double) // left(23)
 - [getEq (function)](#geteq-function)
 - [getFilterable (function)](#getfilterable-function)
 - [getOrElse (function)](#getorelse-function)
+- [getOrElse\$ (function)](#getorelse-function)
 - [getSemigroup (function)](#getsemigroup-function)
 - [getShow (function)](#getshow-function)
 - [getValidationAlt (function)](#getvalidationalt-function)
@@ -66,12 +77,19 @@ either.map(left(23), double) // left(23)
 - [isLeft (function)](#isleft-function)
 - [isRight (function)](#isright-function)
 - [left (function)](#left-function)
+- [map (function)](#map-function)
+- [mapLeft (function)](#mapleft-function)
 - [orElse (function)](#orelse-function)
+- [orElse\$ (function)](#orelse-function)
 - [parseJSON (function)](#parsejson-function)
+- [reduce (function)](#reduce-function)
+- [reduceRight (function)](#reduceright-function)
 - [right (function)](#right-function)
+- [sequence (function)](#sequence-function)
 - [stringifyJSON (function)](#stringifyjson-function)
 - [swap (function)](#swap-function)
 - [toError (function)](#toerror-function)
+- [traverse (function)](#traverse-function)
 - [tryCatch (function)](#trycatch-function)
 
 ---
@@ -148,6 +166,69 @@ export const either: Monad2<URI> &
 
 Added in v2.0.0
 
+# of (constant)
+
+**Signature**
+
+```ts
+export const of: Monad2<URI>['of'] = ...
+```
+
+Added in v2.0.0
+
+# alt (function)
+
+**Signature**
+
+```ts
+export const alt: Alt2<URI>['alt'] = (fx, fy) => ...
+```
+
+Added in v2.0.0
+
+# ap (function)
+
+**Signature**
+
+```ts
+export const ap: Monad2<URI>['ap'] = (mab, ma) => ...
+```
+
+Added in v2.0.0
+
+# bimap (function)
+
+**Signature**
+
+```ts
+export const bimap: Bifunctor2<URI>['bimap'] = (ma, f, g) => ...
+```
+
+Added in v2.0.0
+
+# chain (function)
+
+**Signature**
+
+```ts
+export const chain: Monad2<URI>['chain'] = (ma, f) => ...
+```
+
+Added in v2.0.0
+
+# chainRec (function)
+
+**Signature**
+
+```ts
+export const chainRec: ChainRec2<URI>['chainRec'] = <E, A, B>(
+  a: A,
+  f: (a: A) => Either<E, Either<A, B>>
+): Either<E, B> => ...
+```
+
+Added in v2.0.0
+
 # elem (function)
 
 **Signature**
@@ -158,16 +239,41 @@ export function elem<A>(E: Eq<A>): <E>(a: A, ma: Either<E, A>) => boolean { ... 
 
 Added in v2.0.0
 
+# extend (function)
+
+**Signature**
+
+```ts
+export const extend: Extend2<URI>['extend'] = (ma, f) => ...
+```
+
+Added in v2.0.0
+
 # filterOrElse (function)
 
 **Signature**
 
 ```ts
 export function filterOrElse<E, A, B extends A>(
+  ma: Either<E, A>,
+  refinement: Refinement<A, B>,
+  onFalse: (a: A) => E
+): Either<E, B>
+export function filterOrElse<E, A>(ma: Either<E, A>, predicate: Predicate<A>, onFalse: (a: A) => E): Either<E, A> { ... }
+```
+
+Added in v2.0.0
+
+# filterOrElse\$ (function)
+
+**Signature**
+
+```ts
+export function filterOrElse$<E, A, B extends A>(
   refinement: Refinement<A, B>,
   onFalse: (a: A) => E
 ): (ma: Either<E, A>) => Either<E, B>
-export function filterOrElse<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Either<E, A>) => Either<E, A> { ... }
+export function filterOrElse$<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Either<E, A>) => Either<E, A> { ... }
 ```
 
 Added in v2.0.0
@@ -177,7 +283,27 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function fold<E, A, R>(onLeft: (e: E) => R, onRight: (a: A) => R): (ma: Either<E, A>) => R { ... }
+export function fold<E, A, R>(ma: Either<E, A>, onLeft: (e: E) => R, onRight: (a: A) => R): R { ... }
+```
+
+Added in v2.0.0
+
+# fold\$ (function)
+
+**Signature**
+
+```ts
+export function fold$<E, A, R>(onLeft: (e: E) => R, onRight: (a: A) => R): (ma: Either<E, A>) => R { ... }
+```
+
+Added in v2.0.0
+
+# foldMap (function)
+
+**Signature**
+
+```ts
+export const foldMap: Foldable2<URI>['foldMap'] = M => (ma, f) => ...
 ```
 
 Added in v2.0.0
@@ -293,7 +419,17 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function getOrElse<E, A>(f: (e: E) => A): (ma: Either<E, A>) => A { ... }
+export function getOrElse<E, A>(ma: Either<E, A>, f: (e: E) => A): A { ... }
+```
+
+Added in v2.0.0
+
+# getOrElse\$ (function)
+
+**Signature**
+
+```ts
+export function getOrElse$<E, A>(f: (e: E) => A): (ma: Either<E, A>) => A { ... }
 ```
 
 Added in v2.0.0
@@ -437,12 +573,42 @@ export function left<E>(e: E): Either<E, never> { ... }
 
 Added in v2.0.0
 
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Monad2<URI>['map'] = (ma, f) => ...
+```
+
+Added in v2.0.0
+
+# mapLeft (function)
+
+**Signature**
+
+```ts
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = (ma, f) => ...
+```
+
+Added in v2.0.0
+
 # orElse (function)
 
 **Signature**
 
 ```ts
-export function orElse<E, A, M>(f: (e: E) => Either<M, A>): (ma: Either<E, A>) => Either<M, A> { ... }
+export function orElse<E, A, M>(ma: Either<E, A>, f: (e: E) => Either<M, A>): Either<M, A> { ... }
+```
+
+Added in v2.0.0
+
+# orElse\$ (function)
+
+**Signature**
+
+```ts
+export function orElse$<E, A, M>(f: (e: E) => Either<M, A>): (ma: Either<E, A>) => Either<M, A> { ... }
 ```
 
 Added in v2.0.0
@@ -468,6 +634,26 @@ assert.deepStrictEqual(parseJSON('{"a":}', toError), left(new SyntaxError('Unexp
 
 Added in v2.0.0
 
+# reduce (function)
+
+**Signature**
+
+```ts
+export const reduce: Foldable2<URI>['reduce'] = (ma, b, f) => ...
+```
+
+Added in v2.0.0
+
+# reduceRight (function)
+
+**Signature**
+
+```ts
+export const reduceRight: Foldable2<URI>['reduceRight'] = (ma, b, f) => ...
+```
+
+Added in v2.0.0
+
 # right (function)
 
 Constructs a new `Either` holding a `Right` value. This usually represents a successful value due to the right bias
@@ -477,6 +663,18 @@ of this structure
 
 ```ts
 export function right<A>(a: A): Either<never, A> { ... }
+```
+
+Added in v2.0.0
+
+# sequence (function)
+
+**Signature**
+
+```ts
+export const sequence: Traversable2<URI>['sequence'] = <F>(F: Applicative<F>) => <E, A>(
+  ma: Either<E, HKT<F, A>>
+): HKT<F, Either<E, A>> => ...
 ```
 
 Added in v2.0.0
@@ -522,6 +720,19 @@ Default value for the `onError` argument of `tryCatch`
 
 ```ts
 export function toError(e: unknown): Error { ... }
+```
+
+Added in v2.0.0
+
+# traverse (function)
+
+**Signature**
+
+```ts
+export const traverse: Traversable2<URI>['traverse'] = <F>(F: Applicative<F>) => <E, A, B>(
+  ma: Either<E, A>,
+  f: (a: A) => HKT<F, B>
+): HKT<F, Either<E, B>> => ...
 ```
 
 Added in v2.0.0

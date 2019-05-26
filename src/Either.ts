@@ -45,6 +45,7 @@ import { Semigroup } from './Semigroup'
 import { Show } from './Show'
 import { Traversable2, Traversable2C } from './Traversable'
 import { Witherable2C } from './Witherable'
+import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT2<L, A> {
@@ -175,8 +176,15 @@ export function tryCatch<E, A>(f: Lazy<A>, onError: (e: unknown) => E): Either<E
 /**
  * @since 2.0.0
  */
-export function fold<E, A, R>(onLeft: (e: E) => R, onRight: (a: A) => R): (ma: Either<E, A>) => R {
-  return ma => (isLeft(ma) ? onLeft(ma.left) : onRight(ma.right))
+export function fold<E, A, R>(ma: Either<E, A>, onLeft: (e: E) => R, onRight: (a: A) => R): R {
+  return isLeft(ma) ? onLeft(ma.left) : onRight(ma.right)
+}
+
+/**
+ * @since 2.0.0
+ */
+export function fold$<E, A, R>(onLeft: (e: E) => R, onRight: (a: A) => R): (ma: Either<E, A>) => R {
+  return ma => fold(ma, onLeft, onRight)
 }
 
 /**
@@ -273,7 +281,7 @@ export function isLeft<E, A>(ma: Either<E, A>): ma is Left<E> {
  * @since 2.0.0
  */
 export function isRight<E, A>(ma: Either<E, A>): ma is Right<A> {
-  return isLeft(ma) ? false : true
+  return !isLeft(ma)
 }
 
 /**
@@ -286,15 +294,29 @@ export function swap<E, A>(ma: Either<E, A>): Either<A, E> {
 /**
  * @since 2.0.0
  */
-export function orElse<E, A, M>(f: (e: E) => Either<M, A>): (ma: Either<E, A>) => Either<M, A> {
-  return ma => (isLeft(ma) ? f(ma.left) : ma)
+export function orElse<E, A, M>(ma: Either<E, A>, f: (e: E) => Either<M, A>): Either<M, A> {
+  return isLeft(ma) ? f(ma.left) : ma
 }
 
 /**
  * @since 2.0.0
  */
-export function getOrElse<E, A>(f: (e: E) => A): (ma: Either<E, A>) => A {
-  return ma => (isLeft(ma) ? f(ma.left) : ma.right)
+export function orElse$<E, A, M>(f: (e: E) => Either<M, A>): (ma: Either<E, A>) => Either<M, A> {
+  return ma => orElse(ma, f)
+}
+
+/**
+ * @since 2.0.0
+ */
+export function getOrElse<E, A>(ma: Either<E, A>, f: (e: E) => A): A {
+  return isLeft(ma) ? f(ma.left) : ma.right
+}
+
+/**
+ * @since 2.0.0
+ */
+export function getOrElse$<E, A>(f: (e: E) => A): (ma: Either<E, A>) => A {
+  return ma => getOrElse(ma, f)
 }
 
 /**
@@ -308,12 +330,25 @@ export function elem<A>(E: Eq<A>): <E>(a: A, ma: Either<E, A>) => boolean {
  * @since 2.0.0
  */
 export function filterOrElse<E, A, B extends A>(
+  ma: Either<E, A>,
+  refinement: Refinement<A, B>,
+  onFalse: (a: A) => E
+): Either<E, B>
+export function filterOrElse<E, A>(ma: Either<E, A>, predicate: Predicate<A>, onFalse: (a: A) => E): Either<E, A>
+export function filterOrElse<E, A>(ma: Either<E, A>, predicate: Predicate<A>, onFalse: (a: A) => E): Either<E, A> {
+  return isLeft(ma) ? ma : predicate(ma.right) ? ma : left(onFalse(ma.right))
+}
+
+/**
+ * @since 2.0.0
+ */
+export function filterOrElse$<E, A, B extends A>(
   refinement: Refinement<A, B>,
   onFalse: (a: A) => E
 ): (ma: Either<E, A>) => Either<E, B>
-export function filterOrElse<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Either<E, A>) => Either<E, A>
-export function filterOrElse<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Either<E, A>) => Either<E, A> {
-  return ma => (isLeft(ma) ? ma : predicate(ma.right) ? ma : left(onFalse(ma.right)))
+export function filterOrElse$<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Either<E, A>) => Either<E, A>
+export function filterOrElse$<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (ma: Either<E, A>) => Either<E, A> {
+  return ma => filterOrElse(ma, predicate, onFalse)
 }
 
 /**
@@ -348,50 +383,87 @@ export function stringifyJSON<E>(u: unknown, onError: (reason: unknown) => E): E
   return tryCatch(() => JSON.stringify(u), onError)
 }
 
-const map = <E, A, B>(ma: Either<E, A>, f: (a: A) => B): Either<E, B> => {
-  return isLeft(ma) ? ma : right(f(ma.right))
-}
+/**
+ * @since 2.0.0
+ */
+export const map: Monad2<URI>['map'] = (ma, f) => (isLeft(ma) ? ma : right(f(ma.right)))
 
-const ap = <E, A, B>(mab: Either<E, (a: A) => B>, ma: Either<E, A>): Either<E, B> => {
-  return isLeft(mab) ? mab : isLeft(ma) ? ma : right(mab.right(ma.right))
-}
+/**
+ * @since 2.0.0
+ */
+export const of: Monad2<URI>['of'] = right
 
-const chain = <E, A, B>(ma: Either<E, A>, f: (a: A) => Either<E, B>): Either<E, B> => {
-  return isLeft(ma) ? ma : f(ma.right)
-}
+/**
+ * @since 2.0.0
+ */
+export const ap: Monad2<URI>['ap'] = (mab, ma) => (isLeft(mab) ? mab : isLeft(ma) ? ma : right(mab.right(ma.right)))
 
-const bimap = <E, V, A, B>(ma: Either<E, A>, f: (e: E) => V, g: (a: A) => B): Either<V, B> => {
-  return isLeft(ma) ? left(f(ma.left)) : right(g(ma.right))
-}
+/**
+ * @since 2.0.0
+ */
+export const chain: Monad2<URI>['chain'] = (ma, f) => (isLeft(ma) ? ma : f(ma.right))
 
-const extend = <E, A, B>(ma: Either<E, A>, f: (ma: Either<E, A>) => B): Either<E, B> => {
-  return isLeft(ma) ? ma : right(f(ma))
-}
+/**
+ * @since 2.0.0
+ */
+export const bimap: Bifunctor2<URI>['bimap'] = (ma, f, g) => (isLeft(ma) ? left(f(ma.left)) : right(g(ma.right)))
 
-const reduce = <E, A, B>(ma: Either<E, A>, b: B, f: (b: B, a: A) => B): B => {
-  return isLeft(ma) ? b : f(b, ma.right)
-}
+/**
+ * @since 2.0.0
+ */
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = (ma, f) => (isLeft(ma) ? left(f(ma.left)) : ma)
 
-const foldMap = <M>(M: Monoid<M>) => <E, A>(ma: Either<E, A>, f: (a: A) => M): M => {
-  return isLeft(ma) ? M.empty : f(ma.right)
-}
+/**
+ * @since 2.0.0
+ */
+export const alt: Alt2<URI>['alt'] = (fx, fy) => (isLeft(fx) ? fy() : fx)
 
-const reduceRight = <E, A, B>(ma: Either<E, A>, b: B, f: (a: A, b: B) => B): B => {
-  return isLeft(ma) ? b : f(ma.right, b)
-}
+/**
+ * @since 2.0.0
+ */
+export const extend: Extend2<URI>['extend'] = (ma, f) => (isLeft(ma) ? ma : right(f(ma)))
 
-const traverse = <F>(F: Applicative<F>) => <E, A, B>(
+/**
+ * @since 2.0.0
+ */
+export const reduce: Foldable2<URI>['reduce'] = (ma, b, f) => (isLeft(ma) ? b : f(b, ma.right))
+
+/**
+ * @since 2.0.0
+ */
+export const foldMap: Foldable2<URI>['foldMap'] = M => (ma, f) => (isLeft(ma) ? M.empty : f(ma.right))
+
+/**
+ * @since 2.0.0
+ */
+export const reduceRight: Foldable2<URI>['reduceRight'] = (ma, b, f) => (isLeft(ma) ? b : f(ma.right, b))
+
+/**
+ * @since 2.0.0
+ */
+export const traverse: Traversable2<URI>['traverse'] = <F>(F: Applicative<F>) => <E, A, B>(
   ma: Either<E, A>,
   f: (a: A) => HKT<F, B>
 ): HKT<F, Either<E, B>> => {
   return isLeft(ma) ? F.of(left(ma.left)) : F.map<B, Either<E, B>>(f(ma.right), of)
 }
 
-const sequence = <F>(F: Applicative<F>) => <E, A>(ma: Either<E, HKT<F, A>>): HKT<F, Either<E, A>> => {
+/**
+ * @since 2.0.0
+ */
+export const sequence: Traversable2<URI>['sequence'] = <F>(F: Applicative<F>) => <E, A>(
+  ma: Either<E, HKT<F, A>>
+): HKT<F, Either<E, A>> => {
   return isLeft(ma) ? F.of(left(ma.left)) : F.map<A, Either<E, A>>(ma.right, right)
 }
 
-const chainRec = <E, A, B>(a: A, f: (a: A) => Either<E, Either<A, B>>): Either<E, B> => {
+/**
+ * @since 2.0.0
+ */
+export const chainRec: ChainRec2<URI>['chainRec'] = <E, A, B>(
+  a: A,
+  f: (a: A) => Either<E, Either<A, B>>
+): Either<E, B> => {
   return tailRec(f(a), e =>
     isLeft(e)
       ? right<Either<E, B>>(left(e.left))
@@ -400,8 +472,6 @@ const chainRec = <E, A, B>(a: A, f: (a: A) => Either<E, Either<A, B>>): Either<E
       : right(right(e.right.right))
   )
 }
-
-const of = right
 
 const phantom: any = undefined
 
@@ -623,8 +693,44 @@ export const either: Monad2<URI> &
   traverse,
   sequence,
   bimap,
-  mapLeft: (ma, f) => (isLeft(ma) ? left(f(ma.left)) : ma),
-  alt: (fx, fy) => (isLeft(fx) ? fy() : fx),
+  mapLeft,
+  alt,
   extend,
   chainRec
+}
+
+const {
+  alt$,
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  duplicate,
+  extend$,
+  foldMap$,
+  map$,
+  reduce$,
+  reduceRight$
+} = augment(either)
+
+export {
+  alt$,
+  ap$,
+  apFirst,
+  apFirst$,
+  apSecond,
+  apSecond$,
+  chain$,
+  chainFirst,
+  chainFirst$,
+  duplicate,
+  extend$,
+  foldMap$,
+  map$,
+  reduce$,
+  reduceRight$
 }

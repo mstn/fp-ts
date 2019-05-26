@@ -134,7 +134,7 @@ export function filterOrElse<E, A>(
   predicate: Predicate<A>,
   onFalse: (a: A) => E
 ): (ma: TaskEither<E, A>) => TaskEither<E, A> {
-  return ma => task.map(ma, E.filterOrElse(predicate, onFalse))
+  return ma => task.map(ma, E.filterOrElse$(predicate, onFalse))
 }
 
 /**
