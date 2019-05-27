@@ -21,12 +21,23 @@ type Forest<A> = Array<Tree<A>>
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
 - [tree (constant)](#tree-constant)
+- [ap (function)](#ap-function)
+- [chain (function)](#chain-function)
 - [drawForest (function)](#drawforest-function)
 - [drawTree (function)](#drawtree-function)
 - [elem (function)](#elem-function)
+- [extend (function)](#extend-function)
+- [extract (function)](#extract-function)
+- [foldMap (function)](#foldmap-function)
 - [getEq (function)](#geteq-function)
 - [getShow (function)](#getshow-function)
 - [make (function)](#make-function)
+- [map (function)](#map-function)
+- [of (function)](#of-function)
+- [reduce (function)](#reduce-function)
+- [reduceRight (function)](#reduceright-function)
+- [sequence (function)](#sequence-function)
+- [traverse (function)](#traverse-function)
 - [unfoldForest (function)](#unfoldforest-function)
 - [unfoldForestM (function)](#unfoldforestm-function)
 - [unfoldTree (function)](#unfoldtree-function)
@@ -87,6 +98,26 @@ export const tree: Monad1<URI> & Foldable1<URI> & Traversable1<URI> & Comonad1<U
 
 Added in v2.0.0
 
+# ap (function)
+
+**Signature**
+
+```ts
+export const ap: Monad1<URI>['ap'] = (mab, ma) => chain(mab, f => ...
+```
+
+Added in v2.0.0
+
+# chain (function)
+
+**Signature**
+
+```ts
+export const chain: Monad1<URI>['chain'] = <A, B>(fa: Tree<A>, f: (a: A) => Tree<B>): Tree<B> => ...
+```
+
+Added in v2.0.0
+
 # drawForest (function)
 
 Neat 2-dimensional drawing of a forest
@@ -139,6 +170,38 @@ export function elem<A>(E: Eq<A>): (a: A, fa: Tree<A>) => boolean { ... }
 
 Added in v2.0.0
 
+# extend (function)
+
+**Signature**
+
+```ts
+export const extend: Comonad1<URI>['extend'] = (fa, f) => ({
+  value: f(fa),
+  forest: fa.forest.map(t => ...
+```
+
+Added in v2.0.0
+
+# extract (function)
+
+**Signature**
+
+```ts
+export const extract: Comonad1<URI>['extract'] = fa => ...
+```
+
+Added in v2.0.0
+
+# foldMap (function)
+
+**Signature**
+
+```ts
+export const foldMap: Foldable1<URI>['foldMap'] = M => (fa, f) => reduce(fa, M.empty, (acc, a) => ...
+```
+
+Added in v2.0.0
+
 # getEq (function)
 
 **Signature**
@@ -165,6 +228,72 @@ Added in v2.0.0
 
 ```ts
 export function make<A>(value: A, forest: Forest<A> = empty): Tree<A> { ... }
+```
+
+Added in v2.0.0
+
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Monad1<URI>['map'] = (fa, f) => ({
+  value: f(fa.value),
+  forest: fa.forest.map(tree => ...
+```
+
+Added in v2.0.0
+
+# of (function)
+
+**Signature**
+
+```ts
+export const of: Monad1<URI>['of'] = a => ...
+```
+
+Added in v2.0.0
+
+# reduce (function)
+
+**Signature**
+
+```ts
+export const reduce: Foldable1<URI>['reduce'] = (fa, b, f) => ...
+```
+
+Added in v2.0.0
+
+# reduceRight (function)
+
+**Signature**
+
+```ts
+export const reduceRight: Foldable1<URI>['reduceRight'] = (fa, b, f) => ...
+```
+
+Added in v2.0.0
+
+# sequence (function)
+
+**Signature**
+
+```ts
+export const sequence: Traversable1<URI>['sequence'] = <F>(
+  F: Applicative<F>
+): (<A>(ta: Tree<HKT<F, A>>) => HKT<F, Tree<A>>) => ...
+```
+
+Added in v2.0.0
+
+# traverse (function)
+
+**Signature**
+
+```ts
+export const traverse: Traversable1<URI>['traverse'] = <F>(
+  F: Applicative<F>
+): (<A, B>(ta: Tree<A>, f: (a: A) => HKT<F, B>) => HKT<F, Tree<B>>) => ...
 ```
 
 Added in v2.0.0
