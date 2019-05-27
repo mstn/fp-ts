@@ -14,7 +14,12 @@ Adapted from https://github.com/purescript/purescript-tuples
 
 - [URI (type alias)](#uri-type-alias)
 - [URI (constant)](#uri-constant)
+- [extract (constant)](#extract-constant)
 - [tuple (constant)](#tuple-constant)
+- [bimap (function)](#bimap-function)
+- [compose (function)](#compose-function)
+- [extend (function)](#extend-function)
+- [foldMap (function)](#foldmap-function)
 - [fst (function)](#fst-function)
 - [getApplicative (function)](#getapplicative-function)
 - [getApply (function)](#getapply-function)
@@ -22,8 +27,14 @@ Adapted from https://github.com/purescript/purescript-tuples
 - [getChainRec (function)](#getchainrec-function)
 - [getMonad (function)](#getmonad-function)
 - [getShow (function)](#getshow-function)
+- [map (function)](#map-function)
+- [mapLeft (function)](#mapleft-function)
+- [reduce (function)](#reduce-function)
+- [reduceRight (function)](#reduceright-function)
+- [sequence (function)](#sequence-function)
 - [snd (function)](#snd-function)
 - [swap (function)](#swap-function)
+- [traverse (function)](#traverse-function)
 
 ---
 
@@ -47,12 +58,62 @@ export const URI = ...
 
 Added in v2.0.0
 
+# extract (constant)
+
+**Signature**
+
+```ts
+export const extract: Comonad2<URI>['extract'] = ...
+```
+
+Added in v2.0.0
+
 # tuple (constant)
 
 **Signature**
 
 ```ts
 export const tuple: Semigroupoid2<URI> & Bifunctor2<URI> & Comonad2<URI> & Foldable2<URI> & Traversable2<URI> = ...
+```
+
+Added in v2.0.0
+
+# bimap (function)
+
+**Signature**
+
+```ts
+export const bimap: Bifunctor2<URI>['bimap'] = (fla, f, g) => ...
+```
+
+Added in v2.0.0
+
+# compose (function)
+
+**Signature**
+
+```ts
+export const compose: Semigroupoid2<URI>['compose'] = (ba, al) => ...
+```
+
+Added in v2.0.0
+
+# extend (function)
+
+**Signature**
+
+```ts
+export const extend: Comonad2<URI>['extend'] = (wa, f) => ...
+```
+
+Added in v2.0.0
+
+# foldMap (function)
+
+**Signature**
+
+```ts
+export const foldMap: Foldable2<URI>['foldMap'] = _ => (fa, f) => ...
 ```
 
 Added in v2.0.0
@@ -127,6 +188,58 @@ export function getShow<A, S>(SA: Show<A>, SS: Show<S>): Show<[A, S]> { ... }
 
 Added in v2.0.0
 
+# map (function)
+
+**Signature**
+
+```ts
+export const map: Functor2<URI>['map'] = (fa, f) => ...
+```
+
+Added in v2.0.0
+
+# mapLeft (function)
+
+**Signature**
+
+```ts
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = (fla, f) => ...
+```
+
+Added in v2.0.0
+
+# reduce (function)
+
+**Signature**
+
+```ts
+export const reduce: Foldable2<URI>['reduce'] = (fa, b, f) => ...
+```
+
+Added in v2.0.0
+
+# reduceRight (function)
+
+**Signature**
+
+```ts
+export const reduceRight: Foldable2<URI>['reduceRight'] = (fa, b, f) => ...
+```
+
+Added in v2.0.0
+
+# sequence (function)
+
+**Signature**
+
+```ts
+export const sequence: Traversable2<URI>['sequence'] = <F>(F: Applicative<F>) => <A, S>(
+  ta: [HKT<F, A>, S]
+): HKT<F, [A, S]> => ...
+```
+
+Added in v2.0.0
+
 # snd (function)
 
 **Signature**
@@ -143,6 +256,19 @@ Added in v2.0.0
 
 ```ts
 export function swap<A, S>(sa: [A, S]): [S, A] { ... }
+```
+
+Added in v2.0.0
+
+# traverse (function)
+
+**Signature**
+
+```ts
+export const traverse: Traversable2<URI>['traverse'] = <F>(F: Applicative<F>) => <A, S, B>(
+  ta: [A, S],
+  f: (a: A) => HKT<F, B>
+): HKT<F, [B, S]> => ...
 ```
 
 Added in v2.0.0

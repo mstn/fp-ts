@@ -17,6 +17,8 @@ import { Semigroup } from './Semigroup'
 import { Semigroupoid2 } from './Semigroupoid'
 import { Show } from './Show'
 import { Traversable2 } from './Traversable'
+import { Functor2 } from './Functor'
+import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT2<L, A> {
@@ -62,36 +64,6 @@ export function snd<A, S>(sa: [A, S]): S {
  */
 export function swap<A, S>(sa: [A, S]): [S, A] {
   return [snd(sa), fst(sa)]
-}
-
-const compose = <B, A, S>(bc: [B, A], sa: [A, S]): [B, S] => {
-  return [fst(bc), snd(sa)]
-}
-
-const map = <A, S, B>(sa: [A, S], f: (a: A) => B): [B, S] => {
-  return [f(fst(sa)), snd(sa)]
-}
-
-const bimap = <A, S, T, B>(sa: [A, S], f: (s: S) => T, g: (a: A) => B): [B, T] => {
-  return [g(fst(sa)), f(snd(sa))]
-}
-
-const extract = fst
-
-const extend = <A, S, B>(sa: [A, S], f: (sa: [A, S]) => B): [B, S] => {
-  return [f(sa), snd(sa)]
-}
-
-const reduce = <A, S, B>(sa: [A, S], b: B, f: (b: B, a: A) => B): B => {
-  return f(b, fst(sa))
-}
-
-const foldMap = <M>(_: Monoid<M>) => <A, S>(sa: [A, S], f: (a: A) => M): M => {
-  return f(fst(sa))
-}
-
-const reduceRight = <A, S, B>(sa: [A, S], b: B, f: (a: A, b: B) => B): B => {
-  return f(fst(sa), b)
 }
 
 /**
@@ -165,11 +137,67 @@ export function getChainRec<S>(M: Monoid<S>): ChainRec2C<URI, S> {
   }
 }
 
-const traverse = <F>(F: Applicative<F>) => <A, S, B>(ta: [A, S], f: (a: A) => HKT<F, B>): HKT<F, [B, S]> => {
+/**
+ * @since 2.0.0
+ */
+export const compose: Semigroupoid2<URI>['compose'] = (ba, al) => [fst(ba), snd(al)]
+
+/**
+ * @since 2.0.0
+ */
+export const map: Functor2<URI>['map'] = (fa, f) => [f(fst(fa)), snd(fa)]
+
+/**
+ * @since 2.0.0
+ */
+export const bimap: Bifunctor2<URI>['bimap'] = (fla, f, g) => [g(fst(fla)), f(snd(fla))]
+
+/**
+ * @since 2.0.0
+ */
+export const mapLeft: Bifunctor2<URI>['mapLeft'] = (fla, f) => [fst(fla), f(snd(fla))]
+
+/**
+ * @since 2.0.0
+ */
+export const extract: Comonad2<URI>['extract'] = fst
+
+/**
+ * @since 2.0.0
+ */
+export const extend: Comonad2<URI>['extend'] = (wa, f) => [f(wa), snd(wa)]
+
+/**
+ * @since 2.0.0
+ */
+export const reduce: Foldable2<URI>['reduce'] = (fa, b, f) => f(b, fst(fa))
+
+/**
+ * @since 2.0.0
+ */
+export const foldMap: Foldable2<URI>['foldMap'] = _ => (fa, f) => f(fst(fa))
+
+/**
+ * @since 2.0.0
+ */
+export const reduceRight: Foldable2<URI>['reduceRight'] = (fa, b, f) => f(fst(fa), b)
+
+/**
+ * @since 2.0.0
+ */
+export const traverse: Traversable2<URI>['traverse'] = <F>(F: Applicative<F>) => <A, S, B>(
+  ta: [A, S],
+  f: (a: A) => HKT<F, B>
+): HKT<F, [B, S]> => {
   return F.map(f(fst(ta)), b => [b, snd(ta)])
 }
 
-const sequence = <F>(F: Applicative<F>) => <A, S>(ta: [HKT<F, A>, S]): HKT<F, [A, S]> => {
+/**
+ * @since 2.0.0
+ */
+export const sequence: Traversable2<URI>['sequence'] = <F>(F: Applicative<F>) => <A, S>(
+  ta: [HKT<F, A>, S]
+): HKT<F, [A, S]> => {
   return F.map(fst(ta), a => [a, snd(ta)])
 }
 
@@ -181,7 +209,7 @@ export const tuple: Semigroupoid2<URI> & Bifunctor2<URI> & Comonad2<URI> & Folda
   compose,
   map,
   bimap,
-  mapLeft: (fla, f) => [fst(fla), f(snd(fla))],
+  mapLeft,
   extract,
   extend,
   reduce,
@@ -190,3 +218,7 @@ export const tuple: Semigroupoid2<URI> & Bifunctor2<URI> & Comonad2<URI> & Folda
   traverse,
   sequence
 }
+
+const { duplicate, extend$, foldMap$, map$, reduce$, reduceRight$, bimap$, compose$, mapLeft$ } = augment(tuple)
+
+export { duplicate, extend$, foldMap$, map$, reduce$, reduceRight$, bimap$, compose$, mapLeft$ }
