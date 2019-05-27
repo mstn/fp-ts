@@ -3,25 +3,24 @@ import * as Apy from '../../src/Apply'
 import * as A from '../../src/Array'
 import * as C from '../../src/Const'
 import * as E from '../../src/Either'
+import * as Eq from '../../src/Eq'
+import * as Field from '../../src/Field'
+import * as Fo from '../../src/Foldable'
+import * as Fu from '../../src/function'
 import * as H from '../../src/HKT'
+import * as Map from '../../src/Map'
+import * as Mon from '../../src/Monoid'
+import * as NEA from '../../src/NonEmptyArray'
 import * as O from '../../src/Option'
-import * as OT from '../../src/OptionT'
+import * as Or from '../../src/Ord'
 import * as Re from '../../src/Reader'
 import * as RTE from '../../src/ReaderTaskEither'
 import * as R from '../../src/Record'
-import * as S from '../../src/Semigroup'
-import * as TE from '../../src/TaskEither'
-import * as Th from '../../src/These'
-import * as Mon from '../../src/Monoid'
-import * as Eq from '../../src/Eq'
-import * as Fo from '../../src/Foldable'
-import * as Or from '../../src/Ord'
-import * as Fu from '../../src/function'
 import * as Ring from '../../src/Ring'
-import * as Field from '../../src/Field'
+import * as S from '../../src/Semigroup'
 import * as T from '../../src/Task'
-import * as Map from '../../src/Map'
-import * as NEA from '../../src/NonEmptyArray'
+import * as TE from '../../src/TaskEither'
+import * as V from '../../src/Validation'
 
 const len = (s: string): number => s.length
 
@@ -131,7 +130,7 @@ sequenceTf2(sequenceS5, sequenceS6, sequenceS7) // $ExpectType ReaderTaskEither<
 
 // getApplicativeComposition
 
-const applicativeValidation = E.getValidationApplicative(S.semigroupString)
+const applicativeValidation = V.getApplicative(S.semigroupString)
 
 Apv.getApplicativeComposition(Re.reader, applicativeValidation).map // $ExpectType <LF, A, B>(fa: Reader<LF, Either<string, A>>, f: (a: A) => B) => Reader<LF, Either<string, B>>
 
