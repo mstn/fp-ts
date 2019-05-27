@@ -701,6 +701,9 @@ export function traverseWithIndex<F extends URIS3>(
 export function traverseWithIndex<F extends URIS2>(
   F: Applicative2<F>
 ): <K extends string, L, A, B>(ta: Record<K, A>, f: (k: K, a: A) => Type2<F, L, B>) => Type2<F, L, Record<K, B>>
+export function traverseWithIndex<F extends URIS2, L>(
+  F: Applicative2C<F, L>
+): <K extends string, A, B>(ta: Record<K, A>, f: (k: K, a: A) => Type2<F, L, B>) => Type2<F, L, Record<K, B>>
 export function traverseWithIndex<F extends URIS>(
   F: Applicative1<F>
 ): <K extends string, A, B>(ta: Record<K, A>, f: (k: K, a: A) => Type<F, B>) => Type<F, Record<K, B>>
