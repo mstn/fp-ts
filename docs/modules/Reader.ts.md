@@ -25,6 +25,7 @@ parent: Modules
 - [getSemigroup (function)](#getsemigroup-function)
 - [id (function)](#id-function)
 - [left (function)](#left-function)
+- [local\$ (function)](#local-function)
 - [promap (function)](#promap-function)
 - [right (function)](#right-function)
 - [second (function)](#second-function)
@@ -114,7 +115,7 @@ changes the value of the local context during the execution of the action `ma`
 **Signature**
 
 ```ts
-export const local: <Q, R>(f: (d: Q) => R) => <A>(ma: Reader<R, A>) => Reader<Q, A> = ...
+export const local: <R, A, Q>(ma: Reader<R, A>, f: (d: Q) => R) => Reader<Q, A> = ...
 ```
 
 Added in v2.0.0
@@ -206,6 +207,18 @@ Added in v2.0.0
 ```ts
 export const left: Choice2<URI>['left'] = <A, B, C>(pab: Reader<A, B>): Reader<E.Either<A, C>, E.Either<B, C>> =>
   E.fold$<A, C, E.Either<B, C>>(a => ...
+```
+
+Added in v2.0.0
+
+# local\$ (function)
+
+Data-last version of `local`
+
+**Signature**
+
+```ts
+export function local$<Q, R>(f: (d: Q) => R): <A>(ma: Reader<R, A>) => Reader<Q, A> { ... }
 ```
 
 Added in v2.0.0

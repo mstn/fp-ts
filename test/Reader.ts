@@ -31,13 +31,13 @@ describe('Reader', () => {
     assert.strictEqual(R.reader.chain(x, f)({}), 3)
   })
 
-  it('local', () => {
+  it('local$', () => {
     interface E {
       name: string
     }
     const x = pipe(
       (s: string) => s.length,
-      R.local((e: E) => e.name)
+      R.local$((e: E) => e.name)
     )
     assert.strictEqual(x({ name: 'foo' }), 3)
   })

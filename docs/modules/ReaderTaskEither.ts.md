@@ -37,6 +37,7 @@ parent: Modules
 - [leftIO (function)](#leftio-function)
 - [leftReader (function)](#leftreader-function)
 - [leftTask (function)](#lefttask-function)
+- [local\$ (function)](#local-function)
 - [mapLeft (function)](#mapleft-function)
 - [orElse (function)](#orelse-function)
 - [orElse\$ (function)](#orelse-function)
@@ -133,7 +134,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export const  = ...
+export const local: <R, E, A, Q>(ma: ReaderTaskEither<R, E, A>, f: (f: Q) => R) => ReaderTaskEither<Q, E, A> = ...
 ```
 
 Added in v2.0.0
@@ -355,6 +356,16 @@ Added in v2.0.0
 
 ```ts
 export function leftTask<E>(me: Task<E>): ReaderTaskEither<unknown, E, never> { ... }
+```
+
+Added in v2.0.0
+
+# local\$ (function)
+
+**Signature**
+
+```ts
+export function local$<Q, R>(f: (f: Q) => R): <E, A>(ma: ReaderTaskEither<R, E, A>) => ReaderTaskEither<Q, E, A> { ... }
 ```
 
 Added in v2.0.0
