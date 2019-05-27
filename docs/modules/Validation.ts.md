@@ -36,8 +36,6 @@ export function getApplicative<E>(S: Semigroup<E>): Applicative2C<URI, E> { ... 
 
 # getMonad (function)
 
-**Note**: This function is here just to avoid switching to / from `Either`
-
 **Signature**
 
 ```ts

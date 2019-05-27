@@ -24,14 +24,12 @@ export function getApplicative<E>(S: Semigroup<E>): Applicative2C<URI, E> {
 }
 
 /**
- * **Note**: This function is here just to avoid switching to / from `Either`
- *
  * @since 2.0.0
  */
 export function getMonad<E>(S: Semigroup<E>): Monad2C<URI, E> {
   return {
     ...getApplicative(S),
-    chain: (ma, f) => (isLeft(ma) ? ma : f(ma.right))
+    chain: either.chain
   }
 }
 
