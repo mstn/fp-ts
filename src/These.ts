@@ -102,6 +102,8 @@ export function fold<E, A, R>(
 }
 
 /**
+ * Data-last version of `fold`
+ *
  * @since 2.0.0
  */
 export function fold$<E, A, R>(

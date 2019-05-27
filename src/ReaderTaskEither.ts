@@ -220,6 +220,8 @@ export const asks: <R, A>(f: (r: R) => A) => ReaderTaskEither<R, never, A> = T.a
 export const local: <R, E, A, Q>(ma: ReaderTaskEither<R, E, A>, f: (f: Q) => R) => ReaderTaskEither<Q, E, A> = T.local
 
 /**
+ * Data-last version of `local`
+ *
  * @since 2.0.0
  */
 export function local$<Q, R>(f: (f: Q) => R): <E, A>(ma: ReaderTaskEither<R, E, A>) => ReaderTaskEither<Q, E, A> {

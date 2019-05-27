@@ -314,6 +314,8 @@ Added in v2.0.0
 
 # filterOrElse\$ (function)
 
+Data-last version of `filterOrElse`
+
 **Signature**
 
 ```ts
@@ -330,6 +332,8 @@ export function filterOrElse$<E, A>(
 Added in v2.0.0
 
 # fold\$ (function)
+
+Data-last version of `fold`
 
 **Signature**
 
@@ -388,6 +392,8 @@ Added in v2.0.0
 
 # getOrElse\$ (function)
 
+Data-last version of `getOrElse`
+
 **Signature**
 
 ```ts
@@ -417,6 +423,8 @@ export function leftIO<E>(me: IO<E>): TaskEither<E, never> { ... }
 Added in v2.0.0
 
 # orElse\$ (function)
+
+Data-last version of `orElse`
 
 **Signature**
 

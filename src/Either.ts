@@ -181,6 +181,8 @@ export function fold<E, A, R>(ma: Either<E, A>, onLeft: (e: E) => R, onRight: (a
 }
 
 /**
+ * Data-last version of `fold`
+ *
  * @since 2.0.0
  */
 export function fold$<E, A, R>(onLeft: (e: E) => R, onRight: (a: A) => R): (ma: Either<E, A>) => R {
@@ -299,6 +301,8 @@ export function orElse<E, A, M>(ma: Either<E, A>, f: (e: E) => Either<M, A>): Ei
 }
 
 /**
+ * Data-last version of `orElse`
+ *
  * @since 2.0.0
  */
 export function orElse$<E, A, M>(f: (e: E) => Either<M, A>): (ma: Either<E, A>) => Either<M, A> {
@@ -313,6 +317,8 @@ export function getOrElse<E, A>(ma: Either<E, A>, f: (e: E) => A): A {
 }
 
 /**
+ * Data-last version of `getOrElse`
+ *
  * @since 2.0.0
  */
 export function getOrElse$<E, A>(f: (e: E) => A): (ma: Either<E, A>) => A {
@@ -340,6 +346,8 @@ export function filterOrElse<E, A>(ma: Either<E, A>, predicate: Predicate<A>, on
 }
 
 /**
+ * Data-last version of `filterOrElse`
+ *
  * @since 2.0.0
  */
 export function filterOrElse$<E, A, B extends A>(

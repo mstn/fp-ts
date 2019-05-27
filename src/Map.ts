@@ -356,8 +356,6 @@ export function fromFoldable<F, K, A>(E: Eq<K>, M: Magma<A>, F: Foldable<F>): (f
   }
 }
 
-const filter = <K, A>(fa: Map<K, A>, p: Predicate<A>): Map<K, A> => filterWithIndex(fa, (_, a) => p(a))
-
 const mapWithIndex = <K, A, B>(fa: Map<K, A>, f: (k: K, a: A) => B): Map<K, B> => {
   const m = new Map<K, B>()
   const entries = fa.entries()
@@ -491,12 +489,6 @@ export const separate: Compactable2<URI>['separate'] = <K, RL, RR>(
   }
 }
 
-const partitionMap = <K, RL, RR, A>(fa: Map<K, A>, f: (a: A) => Either<RL, RR>): Separated<Map<K, RL>, Map<K, RR>> =>
-  partitionMapWithIndex(fa, (_, a) => f(a))
-
-const partition = <K, A>(fa: Map<K, A>, p: Predicate<A>): Separated<Map<K, A>, Map<K, A>> =>
-  partitionWithIndex(fa, (_, a) => p(a))
-
 const wither = <F>(
   F: Applicative<F>
 ): (<K, A, B>(wa: Map<K, A>, f: (a: A) => HKT<F, Option<B>>) => HKT<F, Map<K, B>>) => {
@@ -512,10 +504,6 @@ const wilt = <F>(
 ) => HKT<F, Separated<Map<K, RL>, Map<K, RR>>>) => {
   const traverseF = traverse(F)
   return (wa, f) => F.map(traverseF(wa, f), separate)
-}
-
-const filterMap = <K, A, B>(fa: Map<K, A>, f: (a: A) => Option<B>): Map<K, B> => {
-  return filterMapWithIndex(fa, (_, a) => f(a))
 }
 
 const partitionMapWithIndex = <K, RL, RR, A>(
@@ -667,6 +655,30 @@ export function getTraversableWithIndex<K>(O: Ord<K>): TraversableWithIndex2C<UR
     traverseWithIndex
   }
 }
+
+/**
+ * @since 2.0.0
+ */
+export const filter: Filterable2<URI>['filter'] = <K, A>(fa: Map<K, A>, p: Predicate<A>): Map<K, A> =>
+  filterWithIndex(fa, (_, a) => p(a))
+
+/**
+ * @since 2.0.0
+ */
+export const filterMap: Filterable2<URI>['filterMap'] = (fa, f) => filterMapWithIndex(fa, (_, a) => f(a))
+
+/**
+ * @since 2.0.0
+ */
+export const partition: Filterable2<URI>['partition'] = <K, A>(
+  fa: Map<K, A>,
+  p: Predicate<A>
+): Separated<Map<K, A>, Map<K, A>> => partitionWithIndex(fa, (_, a) => p(a))
+
+/**
+ * @since 2.0.0
+ */
+export const partitionMap: Filterable2<URI>['partitionMap'] = (fa, f) => partitionMapWithIndex(fa, (_, a) => f(a))
 
 /**
  * @since 2.0.0

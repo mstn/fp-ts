@@ -43,7 +43,10 @@ export const getShow: <A>(S: Show<A>) => Show<Identity<A>> = id
  */
 export const getEq: <A>(E: Eq<A>) => Eq<Identity<A>> = id
 
-const chainRec = <A, B>(a: A, f: (a: A) => Either<A, B>): B => {
+/**
+ * @since 2.0.0
+ */
+export const chainRec: ChainRec1<URI>['chainRec'] = <A, B>(a: A, f: (a: A) => Either<A, B>): B => {
   let v = f(a)
   while (v._tag === 'Left') {
     v = f(v.left)

@@ -114,6 +114,8 @@ export const fold: <E, A, R>(ma: TaskEither<E, A>, onLeft: (e: E) => Task<R>, on
   T.fold
 
 /**
+ * Data-last version of `fold`
+ *
  * @since 2.0.0
  */
 export function fold$<E, A, R>(
@@ -129,6 +131,8 @@ export function fold$<E, A, R>(
 export const getOrElse: <E, A>(ma: TaskEither<E, A>, f: (e: E) => Task<A>) => Task<A> = T.getOrElse
 
 /**
+ * Data-last version of `getOrElse`
+ *
  * @since 2.0.0
  */
 export function getOrElse$<E, A>(f: (e: E) => Task<A>): (ma: TaskEither<E, A>) => Task<A> {
@@ -157,6 +161,8 @@ export function filterOrElse<E, A>(
 }
 
 /**
+ * Data-last version of `filterOrElse`
+ *
  * @since 2.0.0
  */
 export function filterOrElse$<E, A, B extends A>(
@@ -180,6 +186,8 @@ export function filterOrElse$<E, A>(
 export const orElse: <E, A, M>(ma: TaskEither<E, A>, f: (e: E) => TaskEither<M, A>) => TaskEither<M, A> = T.orElse
 
 /**
+ * Data-last version of `orElse`
+ *
  * @since 2.0.0
  */
 export function orElse$<E, A, M>(f: (e: E) => TaskEither<M, A>): (ma: TaskEither<E, A>) => TaskEither<M, A> {

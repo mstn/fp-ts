@@ -479,6 +479,8 @@ export function fold<A, R>(ma: Option<A>, onNone: () => R, onSome: (a: A) => R):
 }
 
 /**
+ * Data-last version of `fold`
+ *
  * @since 2.0.0
  */
 export function fold$<A, R>(onNone: () => R, onSome: (a: A) => R): (ma: Option<A>) => R {
@@ -493,6 +495,8 @@ export function getOrElse<A>(ma: Option<A>, f: () => A): A {
 }
 
 /**
+ * Data-last version of `getOrElse`
+ *
  * @since 2.0.0
  */
 export function getOrElse$<A>(f: () => A): (ma: Option<A>) => A {
@@ -507,6 +511,8 @@ export function exists<A>(ma: Option<A>, predicate: Predicate<A>): boolean {
 }
 
 /**
+ * Data-last version of `exists`
+ *
  * @since 2.0.0
  */
 export function exists$<A>(predicate: Predicate<A>): (ma: Option<A>) => boolean {
@@ -521,6 +527,8 @@ export function mapNullable<A, B>(ma: Option<A>, f: (a: A) => B | null | undefin
 }
 
 /**
+ * Data-last version of `mapNullable`
+ *
  * @since 2.0.0
  */
 export function mapNullable$<A, B>(f: (a: A) => B | null | undefined): (ma: Option<A>) => Option<B> {

@@ -314,6 +314,8 @@ Added in v2.0.0
 
 # exists\$ (function)
 
+Data-last version of `exists`
+
 **Signature**
 
 ```ts
@@ -353,6 +355,8 @@ export function fold<A, R>(ma: Option<A>, onNone: () => R, onSome: (a: A) => R):
 Added in v2.0.0
 
 # fold\$ (function)
+
+Data-last version of `fold`
 
 **Signature**
 
@@ -612,6 +616,8 @@ Added in v2.0.0
 
 # getOrElse\$ (function)
 
+Data-last version of `getOrElse`
+
 **Signature**
 
 ```ts
@@ -741,6 +747,8 @@ export function mapNullable<A, B>(ma: Option<A>, f: (a: A) => B | null | undefin
 Added in v2.0.0
 
 # mapNullable\$ (function)
+
+Data-last version of `mapNullable`
 
 **Signature**
 

@@ -19,6 +19,7 @@ parent: Modules
 - [of (constant)](#of-constant)
 - [ap (function)](#ap-function)
 - [chain (function)](#chain-function)
+- [chainRec (function)](#chainrec-function)
 - [extend (function)](#extend-function)
 - [foldMap (function)](#foldmap-function)
 - [map (function)](#map-function)
@@ -135,6 +136,16 @@ Added in v2.0.0
 
 ```ts
 export const chain: Monad1<URI>['chain'] = (ma, f) => ...
+```
+
+Added in v2.0.0
+
+# chainRec (function)
+
+**Signature**
+
+```ts
+export const chainRec: ChainRec1<URI>['chainRec'] = <A, B>(a: A, f: (a: A) => Either<A, B>): B => ...
 ```
 
 Added in v2.0.0

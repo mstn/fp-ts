@@ -261,6 +261,8 @@ Added in v2.0.0
 
 # filterOrElse\$ (function)
 
+Data-last version of `filterOrElse`
+
 **Signature**
 
 ```ts
@@ -284,6 +286,8 @@ export function fold<E, A, R>(ma: Either<E, A>, onLeft: (e: E) => R, onRight: (a
 Added in v2.0.0
 
 # fold\$ (function)
+
+Data-last version of `fold`
 
 **Signature**
 
@@ -421,6 +425,8 @@ Added in v2.0.0
 
 # getOrElse\$ (function)
 
+Data-last version of `getOrElse`
+
 **Signature**
 
 ```ts
@@ -545,6 +551,8 @@ export function orElse<E, A, M>(ma: Either<E, A>, f: (e: E) => Either<M, A>): Ei
 Added in v2.0.0
 
 # orElse\$ (function)
+
+Data-last version of `orElse`
 
 **Signature**
 

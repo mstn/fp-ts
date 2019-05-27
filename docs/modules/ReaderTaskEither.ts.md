@@ -362,6 +362,8 @@ Added in v2.0.0
 
 # local\$ (function)
 
+Data-last version of `local`
+
 **Signature**
 
 ```ts

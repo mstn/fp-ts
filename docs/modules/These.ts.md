@@ -156,6 +156,8 @@ Added in v2.0.0
 
 # fold\$ (function)
 
+Data-last version of `fold`
+
 **Signature**
 
 ```ts

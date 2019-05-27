@@ -15,6 +15,8 @@ parent: Modules
 - [collect (function)](#collect-function)
 - [compact (function)](#compact-function)
 - [elem (function)](#elem-function)
+- [filter (function)](#filter-function)
+- [filterMap (function)](#filtermap-function)
 - [fromFoldable (function)](#fromfoldable-function)
 - [getEq (function)](#geteq-function)
 - [getFilterableWithIndex (function)](#getfilterablewithindex-function)
@@ -30,6 +32,8 @@ parent: Modules
 - [lookupWithKey (function)](#lookupwithkey-function)
 - [map (function)](#map-function)
 - [member (function)](#member-function)
+- [partition (function)](#partition-function)
+- [partitionMap (function)](#partitionmap-function)
 - [pop (function)](#pop-function)
 - [remove (function)](#remove-function)
 - [separate (function)](#separate-function)
@@ -109,6 +113,27 @@ Test whether or not a value is a member of a map
 
 ```ts
 export function elem<A>(E: Eq<A>): <K>(a: A, m: Map<K, A>) => boolean { ... }
+```
+
+Added in v2.0.0
+
+# filter (function)
+
+**Signature**
+
+```ts
+export const filter: Filterable2<URI>['filter'] = <K, A>(fa: Map<K, A>, p: Predicate<A>): Map<K, A> =>
+  filterWithIndex(fa, (_, a) => ...
+```
+
+Added in v2.0.0
+
+# filterMap (function)
+
+**Signature**
+
+```ts
+export const filterMap: Filterable2<URI>['filterMap'] = (fa, f) => filterMapWithIndex(fa, (_, a) => ...
 ```
 
 Added in v2.0.0
@@ -294,6 +319,29 @@ Test whether or not a key exists in a map
 
 ```ts
 export function member<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => boolean { ... }
+```
+
+Added in v2.0.0
+
+# partition (function)
+
+**Signature**
+
+```ts
+export const partition: Filterable2<URI>['partition'] = <K, A>(
+  fa: Map<K, A>,
+  p: Predicate<A>
+): Separated<Map<K, A>, Map<K, A>> => partitionWithIndex(fa, (_, a) => ...
+```
+
+Added in v2.0.0
+
+# partitionMap (function)
+
+**Signature**
+
+```ts
+export const partitionMap: Filterable2<URI>['partitionMap'] = (fa, f) => partitionMapWithIndex(fa, (_, a) => ...
 ```
 
 Added in v2.0.0

@@ -91,6 +91,8 @@ export function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => 
 export const fold: <E, A, R>(ma: IOEither<E, A>, onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>) => IO<R> = T.fold
 
 /**
+ * Data-last version of `fold`
+ *
  * @since 2.0.0
  */
 export function fold$<E, A, R>(onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>): (ma: IOEither<E, A>) => IO<R> {
@@ -103,6 +105,8 @@ export function fold$<E, A, R>(onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>
 export const getOrElse: <E, A>(ma: IOEither<E, A>, f: (e: E) => IO<A>) => IO<A> = T.getOrElse
 
 /**
+ * Data-last version of `getOrElse`
+ *
  * @since 2.0.0
  */
 export function getOrElse$<E, A>(f: (e: E) => IO<A>): (ma: IOEither<E, A>) => IO<A> {
@@ -123,6 +127,8 @@ export function filterOrElse<E, A>(ma: IOEither<E, A>, predicate: Predicate<A>, 
 }
 
 /**
+ * Data-last version of `filterOrElse`
+ *
  * @since 2.0.0
  */
 export function filterOrElse$<E, A, B extends A>(
@@ -146,6 +152,8 @@ export function filterOrElse$<E, A>(
 export const orElse: <E, A, M>(ma: IOEither<E, A>, f: (e: E) => IOEither<M, A>) => IOEither<M, A> = T.orElse
 
 /**
+ * Data-last version of `orElse`
+ *
  * @since 2.0.0
  */
 export function orElse$<E, A, M>(f: (e: E) => IOEither<M, A>): (ma: IOEither<E, A>) => IOEither<M, A> {
