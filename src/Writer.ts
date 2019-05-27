@@ -1,3 +1,4 @@
+import { augment } from './augment'
 import { phantom } from './function'
 import { Functor2 } from './Functor'
 import { Monad2C } from './Monad'
@@ -78,11 +79,20 @@ export function pass<W, A>(fa: Writer<W, [A, (w: W) => W]>): Writer<W, A> {
  *
  * @since 2.0.0
  */
-export function listens<W, B>(f: (w: W) => B): <A>(fa: Writer<W, A>) => Writer<W, [A, B]> {
-  return fa => () => {
+export function listens<W, A, B>(fa: Writer<W, A>, f: (w: W) => B): Writer<W, [A, B]> {
+  return () => {
     const [a, w] = fa()
     return [[a, f(w)], w]
   }
+}
+
+/**
+ * Data-last version of `listens`
+ *
+ * @since 2.0.0
+ */
+export function listens$<W, B>(f: (w: W) => B): <A>(fa: Writer<W, A>) => Writer<W, [A, B]> {
+  return fa => listens(fa, f)
 }
 
 /**
@@ -90,18 +100,20 @@ export function listens<W, B>(f: (w: W) => B): <A>(fa: Writer<W, A>) => Writer<W
  *
  * @since 2.0.0
  */
-export function censor<W>(f: (w: W) => W): <A>(fa: Writer<W, A>) => Writer<W, A> {
-  return fa => () => {
+export function censor<W, A>(fa: Writer<W, A>, f: (w: W) => W): Writer<W, A> {
+  return () => {
     const [a, w] = fa()
     return [a, f(w)]
   }
 }
 
-const map = <W, A, B>(fa: Writer<W, A>, f: (a: A) => B): Writer<W, B> => {
-  return () => {
-    const [a, w] = fa()
-    return [f(a), w]
-  }
+/**
+ * Data-last version of `censor`
+ *
+ * @since 2.0.0
+ */
+export function censor$<W>(f: (w: W) => W): <A>(fa: Writer<W, A>) => Writer<W, A> {
+  return fa => censor(fa, f)
 }
 
 /**
@@ -129,7 +141,21 @@ export function getMonad<W>(M: Monoid<W>): Monad2C<URI, W> {
 /**
  * @since 2.0.0
  */
+const map: Functor2<URI>['map'] = (fa, f) => {
+  return () => {
+    const [a, w] = fa()
+    return [f(a), w]
+  }
+}
+
+/**
+ * @since 2.0.0
+ */
 export const writer: Functor2<URI> = {
   URI,
   map
 }
+
+const { map$ } = augment(writer)
+
+export { map$ }

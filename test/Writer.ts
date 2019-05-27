@@ -29,23 +29,23 @@ describe('Writer', () => {
     assert.deepStrictEqual(W.pass(() => [tuple(1, (w: string) => w + 'b'), 'a'])(), [1, 'ab'])
   })
 
-  it('listens', () => {
+  it('listens$', () => {
     const fa: W.Writer<string, number> = () => [1, 'a']
     assert.deepStrictEqual(
       pipe(
         fa,
-        W.listens(w => w.length)
+        W.listens$(w => w.length)
       )(),
       [[1, 1], 'a']
     )
   })
 
-  it('censor', () => {
+  it('censor$', () => {
     const fa: W.Writer<Array<string>, number> = () => [1, ['a', 'b']]
     assert.deepStrictEqual(
       pipe(
         fa,
-        W.censor(w => w.filter(a => a !== 'a'))
+        W.censor$(w => w.filter(a => a !== 'a'))
       )(),
       [1, ['b']]
     )

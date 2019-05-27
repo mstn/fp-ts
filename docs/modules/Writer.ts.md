@@ -13,13 +13,16 @@ parent: Modules
 - [URI (constant)](#uri-constant)
 - [writer (constant)](#writer-constant)
 - [censor (function)](#censor-function)
+- [censor\$ (function)](#censor-function)
 - [evalWriter (function)](#evalwriter-function)
 - [execWriter (function)](#execwriter-function)
 - [getMonad (function)](#getmonad-function)
 - [listen (function)](#listen-function)
 - [listens (function)](#listens-function)
+- [listens\$ (function)](#listens-function)
 - [pass (function)](#pass-function)
 - [tell (function)](#tell-function)
+- [map\$ (export)](#map-export)
 
 ---
 
@@ -72,7 +75,19 @@ Modify the final accumulator value by applying a function
 **Signature**
 
 ```ts
-export function censor<W>(f: (w: W) => W): <A>(fa: Writer<W, A>) => Writer<W, A> { ... }
+export function censor<W, A>(fa: Writer<W, A>, f: (w: W) => W): Writer<W, A> { ... }
+```
+
+Added in v2.0.0
+
+# censor\$ (function)
+
+Data-last version of `censor`
+
+**Signature**
+
+```ts
+export function censor$<W>(f: (w: W) => W): <A>(fa: Writer<W, A>) => Writer<W, A> { ... }
 ```
 
 Added in v2.0.0
@@ -126,7 +141,19 @@ Projects a value from modifications made to the accumulator during an action
 **Signature**
 
 ```ts
-export function listens<W, B>(f: (w: W) => B): <A>(fa: Writer<W, A>) => Writer<W, [A, B]> { ... }
+export function listens<W, A, B>(fa: Writer<W, A>, f: (w: W) => B): Writer<W, [A, B]> { ... }
+```
+
+Added in v2.0.0
+
+# listens\$ (function)
+
+Data-last version of `listens`
+
+**Signature**
+
+```ts
+export function listens$<W, B>(f: (w: W) => B): <A>(fa: Writer<W, A>) => Writer<W, [A, B]> { ... }
 ```
 
 Added in v2.0.0
@@ -154,3 +181,11 @@ export function tell<W>(w: W): Writer<W, void> { ... }
 ```
 
 Added in v2.0.0
+
+# map\$ (export)
+
+**Signature**
+
+```ts
+export { map$ }
+```
