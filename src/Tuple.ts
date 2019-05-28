@@ -3,6 +3,7 @@
  */
 import { Applicative, Applicative2C } from './Applicative'
 import { Apply2C } from './Apply'
+import { augment } from './augment'
 import { Bifunctor2 } from './Bifunctor'
 import { Chain2C } from './Chain'
 import { ChainRec2C } from './ChainRec'
@@ -10,15 +11,13 @@ import { Comonad2 } from './Comonad'
 import { Either } from './Either'
 import { Foldable2 } from './Foldable'
 import { phantom } from './function'
+import { Functor2 } from './Functor'
 import { HKT } from './HKT'
 import { Monad2C } from './Monad'
 import { Monoid } from './Monoid'
 import { Semigroup } from './Semigroup'
 import { Semigroupoid2 } from './Semigroupoid'
-import { Show } from './Show'
 import { Traversable2 } from './Traversable'
-import { Functor2 } from './Functor'
-import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT2<L, A> {
@@ -35,15 +34,6 @@ export const URI = 'Tuple'
  * @since 2.0.0
  */
 export type URI = typeof URI
-
-/**
- * @since 2.0.0
- */
-export function getShow<A, S>(SA: Show<A>, SS: Show<S>): Show<[A, S]> {
-  return {
-    show: sa => `[${SA.show(fst(sa))}, ${SS.show(snd(sa))}]`
-  }
-}
 
 /**
  * @since 2.0.0
