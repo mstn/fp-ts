@@ -20,7 +20,6 @@ import * as Ring from '../../src/Ring'
 import * as S from '../../src/Semigroup'
 import * as T from '../../src/Task'
 import * as TE from '../../src/TaskEither'
-import * as V from '../../src/Validation'
 
 const len = (s: string): number => s.length
 
@@ -130,9 +129,9 @@ sequenceTf2(sequenceS5, sequenceS6, sequenceS7) // $ExpectType ReaderTaskEither<
 
 // getApplicativeComposition
 
-const applicativeValidation = V.getApplicative(S.semigroupString)
+const validaton = E.getValidation(S.semigroupString)
 
-Apv.getApplicativeComposition(Re.reader, applicativeValidation).map // $ExpectType <LF, A, B>(fa: Reader<LF, Either<string, A>>, f: (a: A) => B) => Reader<LF, Either<string, B>>
+Apv.getApplicativeComposition(Re.reader, validaton).map // $ExpectType <LF, A, B>(fa: Reader<LF, Either<string, A>>, f: (a: A) => B) => Reader<LF, Either<string, B>>
 
 //
 // Const
@@ -368,10 +367,10 @@ declare function isString(x: unknown): x is string
 O.option.filter(O.some<string | number>('a'), isString) // $ExpectType Option<string>
 O.option.partition(O.some<string | number>('a'), isString) // $ExpectType Separated<Option<string | number>, Option<string>>
 
-const filterableEither = E.getFilterable(Mon.monoidAll)
+const witherableEither = E.getWitherable(Mon.monoidAll)
 
-filterableEither.filter(E.right(1) as E.Either<boolean, string | number>, isString) // $ExpectType Either<boolean, string>
-filterableEither.partition(E.right(1) as E.Either<boolean, string | number>, isString) // $ExpectType Separated<Either<boolean, string | number>, Either<boolean, string>>
+witherableEither.filter(E.right(1) as E.Either<boolean, string | number>, isString) // $ExpectType Either<boolean, string>
+witherableEither.partition(E.right(1) as E.Either<boolean, string | number>, isString) // $ExpectType Separated<Either<boolean, string | number>, Either<boolean, string>>
 
 declare function isStringWithIndex(i: number, x: unknown): x is string
 

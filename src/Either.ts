@@ -27,19 +27,18 @@
  * ```
  */
 
-import { Alt2 } from './Alt'
+import { Alt2, Alt2C } from './Alt'
 import { Applicative } from './Applicative'
 import { augment } from './augment'
 import { Bifunctor2 } from './Bifunctor'
 import { ChainRec2, tailRec } from './ChainRec'
-import { Compactable2C, Separated } from './Compactable'
+import { Separated } from './Compactable'
 import { Eq } from './Eq'
 import { Extend2 } from './Extend'
-import { Filterable2C } from './Filterable'
 import { Foldable2 } from './Foldable'
 import { Lazy, Predicate, Refinement } from './function'
 import { HKT } from './HKT'
-import { Monad2 } from './Monad'
+import { Monad2, Monad2C } from './Monad'
 import { Monoid } from './Monoid'
 import { Option } from './Option'
 import { Semigroup } from './Semigroup'
@@ -484,11 +483,11 @@ export const chainRec: ChainRec2<URI>['chainRec'] = <E, A, B>(
 const phantom: any = undefined
 
 /**
- * Builds `Compactable` instance for `Either` given a `Monoid` for the left side
+ * Builds `Witherable` instance for `Either` given `Monoid` for the left side
  *
  * @since 2.0.0
  */
-export function getCompactable<E>(M: Monoid<E>): Compactable2C<URI, E> {
+export function getWitherable<E>(M: Monoid<E>): Witherable2C<URI, E> {
   const empty = left(M.empty)
   const onNone = () => M.empty
 
@@ -503,24 +502,6 @@ export function getCompactable<E>(M: Monoid<E>): Compactable2C<URI, E> {
       ? { left: right(ma.right.left), right: empty }
       : { left: empty, right: right(ma.right.right) }
   }
-
-  return {
-    URI,
-    _L: phantom,
-    compact,
-    separate
-  }
-}
-
-/**
- * Builds `Filterable` instance for `Either` given a `Monoid` for the left side
- *
- * @since 2.0.0
- */
-export function getFilterable<E>(M: Monoid<E>): Filterable2C<URI, E> {
-  const C = getCompactable(M)
-  const empty = left(M.empty)
-  const onNone = () => M.empty
 
   const partitionMap = <RL, RR, A>(
     ma: Either<E, A>,
@@ -548,29 +529,11 @@ export function getFilterable<E>(M: Monoid<E>): Filterable2C<URI, E> {
   const filter = <A>(ma: Either<E, A>, predicate: Predicate<A>): Either<E, A> =>
     isLeft(ma) ? ma : predicate(ma.right) ? ma : left(M.empty)
 
-  return {
-    ...C,
-    map,
-    partitionMap,
-    filterMap,
-    partition,
-    filter
-  }
-}
-
-/**
- * Builds `Witherable` instance for `Either` given `Monoid` for the left side
- *
- * @since 2.0.0
- */
-export function getWitherable<E>(M: Monoid<E>): Witherable2C<URI, E> {
-  const filterableM = getFilterable(M)
-
   const wither = <F>(
     F: Applicative<F>
   ): (<A, B>(ma: Either<E, A>, f: (a: A) => HKT<F, Option<B>>) => HKT<F, Either<E, B>>) => {
     const traverseF = traverse(F)
-    return (ma, f) => F.map(traverseF(ma, f), filterableM.compact)
+    return (ma, f) => F.map(traverseF(ma, f), compact)
   }
 
   const wilt = <F>(
@@ -580,11 +543,19 @@ export function getWitherable<E>(M: Monoid<E>): Witherable2C<URI, E> {
     f: (a: A) => HKT<F, Either<RL, RR>>
   ) => HKT<F, Separated<Either<E, RL>, Either<E, RR>>>) => {
     const traverseF = traverse(F)
-    return (ma, f) => F.map(traverseF(ma, f), filterableM.separate)
+    return (ma, f) => F.map(traverseF(ma, f), separate)
   }
 
   return {
-    ...filterableM,
+    URI,
+    _L: phantom,
+    map,
+    compact,
+    separate,
+    filter,
+    filterMap,
+    partition,
+    partitionMap,
     traverse,
     sequence,
     reduce,
@@ -592,6 +563,60 @@ export function getWitherable<E>(M: Monoid<E>): Witherable2C<URI, E> {
     reduceRight,
     wither,
     wilt
+  }
+}
+
+/**
+ * @since 2.0.0
+ */
+export function getValidation<E>(S: Semigroup<E>): Monad2C<URI, E> & Alt2C<URI, E> {
+  return {
+    URI,
+    _L: phantom,
+    map: either.map,
+    of: either.of,
+    ap: (mab, ma) =>
+      isLeft(mab)
+        ? isLeft(ma)
+          ? left(S.concat(mab.left, ma.left))
+          : mab
+        : isLeft(ma)
+        ? ma
+        : right(mab.right(ma.right)),
+    chain: either.chain,
+    alt: (fx, f) => {
+      if (isRight(fx)) {
+        return fx
+      }
+      const fy = f()
+      return isLeft(fy) ? left(S.concat(fx.left, fy.left)) : fy
+    }
+  }
+}
+
+/**
+ * @since 2.0.0
+ */
+export function getValidationSemigroup<E, A>(SE: Semigroup<E>, SA: Semigroup<A>): Semigroup<Either<E, A>> {
+  return {
+    concat: (fx, fy) =>
+      isLeft(fx)
+        ? isLeft(fy)
+          ? left(SE.concat(fx.left, fy.left))
+          : fx
+        : isLeft(fy)
+        ? fy
+        : right(SA.concat(fx.right, fy.right))
+  }
+}
+
+/**
+ * @since 2.0.0
+ */
+export function getValidationMonoid<E, A>(SE: Semigroup<E>, SA: Monoid<A>): Monoid<Either<E, A>> {
+  return {
+    concat: getValidationSemigroup(SE, SA).concat,
+    empty: right(SA.empty)
   }
 }
 

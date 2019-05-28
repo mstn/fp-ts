@@ -1,26 +1,23 @@
 import { Applicative } from './Applicative'
+import { augment } from './augment'
 import { Compactable2, Separated } from './Compactable'
 import { Either, isLeft } from './Either'
-import { FilterableWithIndex2C } from './FilterableWithIndex'
-import { Foldable2C, Foldable3, Foldable2, Foldable1, Foldable } from './Foldable'
-import { FoldableWithIndex2C } from './FoldableWithIndex'
-import { Predicate, phantom } from './function'
-import { HKT, Type, Type2, Type3, URIS, URIS2, URIS3 } from './HKT'
-import { Monoid } from './Monoid'
-import { Option, none, some, isSome, isNone, option } from './Option'
-import { Ord } from './Ord'
 import { Eq, fromEquals } from './Eq'
+import { Filterable2 } from './Filterable'
+import { FilterableWithIndex2C } from './FilterableWithIndex'
+import { Foldable, Foldable1, Foldable2, Foldable3 } from './Foldable'
+import { phantom, Predicate } from './function'
+import { Functor2 } from './Functor'
+import { HKT, Type, Type2, Type3, URIS, URIS2, URIS3 } from './HKT'
+import { Magma } from './Magma'
+import { Monoid } from './Monoid'
+import { isNone, isSome, none, Option, option, some } from './Option'
+import { Ord } from './Ord'
+import { Semigroup } from './Semigroup'
+import { Show } from './Show'
 import { TraversableWithIndex2C } from './TraversableWithIndex'
 import { Unfoldable, Unfoldable1 } from './Unfoldable'
-import { Semigroup } from './Semigroup'
 import { Witherable2C } from './Witherable'
-import { FunctorWithIndex2C } from './FunctorWithIndex'
-import { Functor2 } from './Functor'
-import { Traversable2C } from './Traversable'
-import { Filterable2 } from './Filterable'
-import { Show } from './Show'
-import { Magma } from './Magma'
-import { augment } from './augment'
 
 declare module './HKT' {
   interface URI2HKT2<L, A> {
@@ -580,41 +577,14 @@ const filterWithIndex = <K, A>(fa: Map<K, A>, p: (k: K, a: A) => boolean): Map<K
  */
 export const map: Functor2<URI>['map'] = (fa, f) => mapWithIndex(fa, (_, a) => f(a))
 
-const getFunctorWithIndex = <K>(): FunctorWithIndex2C<URI, K, K> => {
-  return {
-    URI,
-    _L: phantom,
-    map,
-    mapWithIndex: mapWithIndex
-  }
-}
-
-const getFoldable = <K>(O: Ord<K>): Foldable2C<URI, K> => {
-  return {
-    URI,
-    _L: phantom,
-    reduce: reduce(O),
-    foldMap: foldMap(O),
-    reduceRight: reduceRight(O)
-  }
-}
-
-const getFoldableWithIndex = <K>(O: Ord<K>): FoldableWithIndex2C<URI, K, K> => {
-  return {
-    ...getFoldable(O),
-    reduceWithIndex: reduceWithIndex(O),
-    foldMapWithIndex: foldMapWithIndex(O),
-    reduceRightWithIndex: reduceRightWithIndex(O)
-  }
-}
-
 /**
  * @since 2.0.0
  */
-export function getFilterableWithIndex<K>(): FilterableWithIndex2C<URI, K, K> {
+export function getFilterableWithIndex<K = never>(): FilterableWithIndex2C<URI, K, K> {
   return {
     ...map_,
-    ...getFunctorWithIndex<K>(),
+    _L: phantom,
+    mapWithIndex,
     partitionMapWithIndex,
     partitionWithIndex,
     filterMapWithIndex,
@@ -622,37 +592,25 @@ export function getFilterableWithIndex<K>(): FilterableWithIndex2C<URI, K, K> {
   }
 }
 
-const getTraversable = <K>(O: Ord<K>): Traversable2C<URI, K> => {
-  return {
-    _L: phantom,
-    ...getFoldable(O),
-    map,
-    traverse,
-    sequence
-  }
-}
-
 /**
  * @since 2.0.0
  */
-export function getWitherable<K>(O: Ord<K>): Witherable2C<URI, K> {
+export function getWitherableWithIndex<K>(O: Ord<K>): Witherable2C<URI, K> & TraversableWithIndex2C<URI, K, K> {
   return {
     ...map_,
-    ...getTraversable(O),
+    _L: phantom,
+    reduce: reduce(O),
+    foldMap: foldMap(O),
+    reduceRight: reduceRight(O),
+    traverse,
+    sequence,
+    mapWithIndex,
+    reduceWithIndex: reduceWithIndex(O),
+    foldMapWithIndex: foldMapWithIndex(O),
+    reduceRightWithIndex: reduceRightWithIndex(O),
+    traverseWithIndex,
     wilt,
     wither
-  }
-}
-
-/**
- * @since 2.0.0
- */
-export function getTraversableWithIndex<K>(O: Ord<K>): TraversableWithIndex2C<URI, K, K> {
-  return {
-    ...getFunctorWithIndex<K>(),
-    ...getFoldableWithIndex(O),
-    ...getTraversable(O),
-    traverseWithIndex
   }
 }
 

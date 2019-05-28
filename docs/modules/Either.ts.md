@@ -61,13 +61,14 @@ either.map(left(23), double) // left(23)
 - [fromPredicate (function)](#frompredicate-function)
 - [getApplyMonoid (function)](#getapplymonoid-function)
 - [getApplySemigroup (function)](#getapplysemigroup-function)
-- [getCompactable (function)](#getcompactable-function)
 - [getEq (function)](#geteq-function)
-- [getFilterable (function)](#getfilterable-function)
 - [getOrElse (function)](#getorelse-function)
 - [getOrElse\$ (function)](#getorelse-function)
 - [getSemigroup (function)](#getsemigroup-function)
 - [getShow (function)](#getshow-function)
+- [getValidation (function)](#getvalidation-function)
+- [getValidationMonoid (function)](#getvalidationmonoid-function)
+- [getValidationSemigroup (function)](#getvalidationsemigroup-function)
 - [getWitherable (function)](#getwitherable-function)
 - [isLeft (function)](#isleft-function)
 - [isRight (function)](#isright-function)
@@ -379,36 +380,12 @@ assert.deepStrictEqual(S.concat(right(1), right(2)), right(3))
 
 Added in v2.0.0
 
-# getCompactable (function)
-
-Builds `Compactable` instance for `Either` given a `Monoid` for the left side
-
-**Signature**
-
-```ts
-export function getCompactable<E>(M: Monoid<E>): Compactable2C<URI, E> { ... }
-```
-
-Added in v2.0.0
-
 # getEq (function)
 
 **Signature**
 
 ```ts
 export function getEq<E, A>(EL: Eq<E>, EA: Eq<A>): Eq<Either<E, A>> { ... }
-```
-
-Added in v2.0.0
-
-# getFilterable (function)
-
-Builds `Filterable` instance for `Either` given a `Monoid` for the left side
-
-**Signature**
-
-```ts
-export function getFilterable<E>(M: Monoid<E>): Filterable2C<URI, E> { ... }
 ```
 
 Added in v2.0.0
@@ -467,6 +444,36 @@ Added in v2.0.0
 
 ```ts
 export function getShow<E, A>(SE: Show<E>, SA: Show<A>): Show<Either<E, A>> { ... }
+```
+
+Added in v2.0.0
+
+# getValidation (function)
+
+**Signature**
+
+```ts
+export function getValidation<E>(S: Semigroup<E>): Monad2C<URI, E> & Alt2C<URI, E> { ... }
+```
+
+Added in v2.0.0
+
+# getValidationMonoid (function)
+
+**Signature**
+
+```ts
+export function getValidationMonoid<E, A>(SE: Semigroup<E>, SA: Monoid<A>): Monoid<Either<E, A>> { ... }
+```
+
+Added in v2.0.0
+
+# getValidationSemigroup (function)
+
+**Signature**
+
+```ts
+export function getValidationSemigroup<E, A>(SE: Semigroup<E>, SA: Semigroup<A>): Semigroup<Either<E, A>> { ... }
 ```
 
 Added in v2.0.0
