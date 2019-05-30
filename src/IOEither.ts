@@ -12,7 +12,10 @@ import { Monad2 } from './Monad'
 import { MonadIO2 } from './MonadIO'
 import { Monoid } from './Monoid'
 import { Option } from './Option'
+import { pipeable } from './pipeable'
 import { Semigroup } from './Semigroup'
+
+import Either = E.Either
 
 const T = getEitherM(io)
 
@@ -35,7 +38,7 @@ export type URI = typeof URI
 /**
  * @since 2.0.0
  */
-export interface IOEither<E, A> extends IO<E.Either<E, A>> {}
+export interface IOEither<E, A> extends IO<Either<E, A>> {}
 
 /**
  * @since 2.0.0
@@ -60,7 +63,7 @@ export const leftIO: <E>(me: IO<E>) => IOEither<E, never> = T.leftM
 /**
  * @since 2.0.0
  */
-export const fromEither: <E, A>(ma: E.Either<E, A>) => IOEither<E, A> = io.of
+export const fromEither: <E, A>(ma: Either<E, A>) => IOEither<E, A> = io.of
 
 /**
  * @since 2.0.0
@@ -85,13 +88,16 @@ export function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => 
 /**
  * @since 2.0.0
  */
-export const fold: <E, A, R>(onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>) => (ma: IOEither<E, A>) => IO<R> =
-  T.fold
+export function fold<E, A, R>(onLeft: (e: E) => IO<R>, onRight: (a: A) => IO<R>): (ma: IOEither<E, A>) => IO<R> {
+  return ma => T.fold(ma, onLeft, onRight)
+}
 
 /**
  * @since 2.0.0
  */
-export const getOrElse: <E, A>(f: (e: E) => IO<A>) => (ma: IOEither<E, A>) => IO<A> = T.getOrElse
+export function getOrElse<E, A>(f: (e: E) => IO<A>): (ma: IOEither<E, A>) => IO<A> {
+  return ma => T.getOrElse(ma, f)
+}
 
 /**
  * @since 2.0.0
@@ -114,7 +120,9 @@ export function filterOrElse<E, A>(
 /**
  * @since 2.0.0
  */
-export const orElse: <E, A, M>(f: (e: E) => IOEither<M, A>) => (ma: IOEither<E, A>) => IOEither<M, A> = T.orElse
+export function orElse<E, A, M>(f: (e: E) => IOEither<M, A>): (ma: IOEither<E, A>) => IOEither<M, A> {
+  return ma => T.orElse(ma, f)
+}
 
 /**
  * @since 2.0.0
@@ -161,11 +169,15 @@ export function tryCatch<E, A>(f: Lazy<A>, onError: (reason: unknown) => E): IOE
  *
  * @since 2.0.0
  */
-export const bracket: <E, A, B>(
+export function bracket<E, A, B>(
   acquire: IOEither<E, A>,
   use: (a: A) => IOEither<E, B>,
-  release: (a: A, e: E.Either<E, B>) => IOEither<E, void>
-) => IOEither<E, B> = T.bracket
+  release: (a: A, e: Either<E, B>) => IOEither<E, void>
+): IOEither<E, B> {
+  return T.chain(acquire, a =>
+    T.chain(io.map(use(a), E.right), e => T.chain(release(a, e), () => (E.isLeft(e) ? T.left(e.left) : T.of(e.right))))
+  )
+}
 
 /**
  * @since 2.0.0
@@ -181,3 +193,7 @@ export const ioEither: Monad2<URI> & Bifunctor2<URI> & Alt2<URI> & MonadIO2<URI>
   alt: T.alt,
   fromIO: rightIO
 }
+
+const { alt, ap, apFirst, apSecond, bimap, chain, chainFirst, flatten, map, mapLeft } = pipeable(ioEither)
+
+export { alt, ap, apFirst, apSecond, bimap, chain, chainFirst, flatten, map, mapLeft }

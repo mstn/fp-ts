@@ -2,13 +2,13 @@
  * @file `Task<A>` represents an asynchronous computation that yields a value of type `A` and **never fails**.
  * If you want to represent an asynchronous computation that may fail, please see `TaskEither`.
  */
-import { identity } from './function'
 import { IO } from './IO'
 import { Monad1 } from './Monad'
 import { MonadIO1 } from './MonadIO'
 import { MonadTask1 } from './MonadTask'
 import { Monoid } from './Monoid'
 import { Semigroup } from './Semigroup'
+import { pipeable } from './pipeable'
 
 declare module './HKT' {
   interface URI2HKT<A> {
@@ -104,6 +104,8 @@ export function fromIO<A>(ma: IO<A>): Task<A> {
   return () => Promise.resolve(ma())
 }
 
+const identity = <A>(a: A): A => a
+
 /**
  * @since 2.0.0
  */
@@ -126,3 +128,7 @@ export const taskSeq: typeof task = {
   ...task,
   ap: (mab, ma) => () => mab().then(f => ma().then(a => f(a)))
 }
+
+const { ap, apFirst, apSecond, chain, chainFirst, flatten, map } = pipeable(task)
+
+export { ap, apFirst, apSecond, chain, chainFirst, flatten, map }

@@ -14,6 +14,7 @@ import { Task } from './Task'
 import * as TE from './TaskEither'
 
 import TaskEither = TE.TaskEither
+import { pipeable } from './pipeable'
 
 const T = getReaderM(TE.taskEither)
 
@@ -185,14 +186,8 @@ export const asks: <R, A>(f: (r: R) => A) => ReaderTaskEither<R, never, A> = T.a
 /**
  * @since 2.0.0
  */
-export const local: <Q, R>(f: (f: Q) => R) => <E, A>(ma: ReaderTaskEither<R, E, A>) => ReaderTaskEither<Q, E, A> =
-  T.local
-
-const alt = <R, E, A>(
-  fx: ReaderTaskEither<R, E, A>,
-  fy: () => ReaderTaskEither<R, E, A>
-): ReaderTaskEither<R, E, A> => {
-  return r => TE.taskEither.alt(fx(r), () => fy()(r))
+export function local<Q, R>(f: (f: Q) => R): <E, A>(ma: ReaderTaskEither<R, E, A>) => ReaderTaskEither<Q, E, A> {
+  return ma => T.local(ma, f)
 }
 
 /**
@@ -204,7 +199,7 @@ export const readerTaskEither: Monad3<URI> & Bifunctor3<URI> & Alt3<URI> & Monad
   of: right,
   ap: T.ap,
   chain: T.chain,
-  alt,
+  alt: (fx, fy) => r => TE.taskEither.alt(fx(r), () => fy()(r)),
   bimap: (ma, f, g) => e => TE.taskEither.bimap(ma(e), f, g),
   mapLeft: (ma, f) => e => TE.taskEither.mapLeft(ma(e), f),
   fromIO: rightIO,
@@ -219,3 +214,7 @@ export const readerTaskEitherSeq: typeof readerTaskEither = {
   ...readerTaskEither,
   ap: (mab, ma) => T.chain(mab, f => T.map(ma, f))
 }
+
+const { alt, ap, apFirst, apSecond, bimap, chain, chainFirst, flatten, map, mapLeft } = pipeable(readerTaskEither)
+
+export { alt, ap, apFirst, apSecond, bimap, chain, chainFirst, flatten, map, mapLeft }

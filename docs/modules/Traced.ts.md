@@ -1,6 +1,6 @@
 ---
 title: Traced.ts
-nav_order: 85
+nav_order: 83
 parent: Modules
 ---
 
@@ -17,6 +17,7 @@ parent: Modules
 - [listen (function)](#listen-function)
 - [listens (function)](#listens-function)
 - [tracks (function)](#tracks-function)
+- [map (export)](#map-export)
 
 ---
 
@@ -119,3 +120,11 @@ export function tracks<P, A>(M: Monoid<P>, f: (a: A) => P): (wa: Traced<P, A>) =
 ```
 
 Added in v2.0.0
+
+# map (export)
+
+**Signature**
+
+```ts
+export { map }
+```

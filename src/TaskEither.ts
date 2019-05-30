@@ -17,6 +17,9 @@ import { getSemigroup as getTaskSemigroup, Task, task } from './Task'
 import { Option } from './Option'
 import { IO } from './IO'
 
+import Either = E.Either
+import { pipeable } from './pipeable'
+
 const T = getEitherM(task)
 
 declare module './HKT' {
@@ -38,7 +41,7 @@ export type URI = typeof URI
 /**
  * @since 2.0.0
  */
-export interface TaskEither<E, A> extends Task<E.Either<E, A>> {}
+export interface TaskEither<E, A> extends Task<Either<E, A>> {}
 
 /**
  * @since 2.0.0
@@ -77,7 +80,7 @@ export const leftTask: <E>(me: Task<E>) => TaskEither<E, never> = T.leftM
 /**
  * @since 2.0.0
  */
-export const fromEither: <E, A>(ma: E.Either<E, A>) => TaskEither<E, A> = task.of
+export const fromEither: <E, A>(ma: Either<E, A>) => TaskEither<E, A> = task.of
 
 /**
  * @since 2.0.0
@@ -107,15 +110,19 @@ export function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => 
 /**
  * @since 2.0.0
  */
-export const fold: <E, A, R>(
+export function fold<E, A, R>(
   onLeft: (e: E) => Task<R>,
   onRight: (a: A) => Task<R>
-) => (ma: TaskEither<E, A>) => Task<R> = T.fold
+): (ma: TaskEither<E, A>) => Task<R> {
+  return ma => T.fold(ma, onLeft, onRight)
+}
 
 /**
  * @since 2.0.0
  */
-export const getOrElse: <E, A>(f: (e: E) => Task<A>) => (ma: TaskEither<E, A>) => Task<A> = T.getOrElse
+export function getOrElse<E, A>(f: (e: E) => Task<A>): (ma: TaskEither<E, A>) => Task<A> {
+  return ma => T.getOrElse(ma, f)
+}
 
 /**
  * @since 2.0.0
@@ -138,7 +145,9 @@ export function filterOrElse<E, A>(
 /**
  * @since 2.0.0
  */
-export const orElse: <E, A, M>(f: (e: E) => TaskEither<M, A>) => (ma: TaskEither<E, A>) => TaskEither<M, A> = T.orElse
+export function orElse<E, A, M>(f: (e: E) => TaskEither<M, A>): (ma: TaskEither<E, A>) => TaskEither<M, A> {
+  return ma => T.orElse(ma, f)
+}
 
 /**
  * @since 2.0.0
@@ -183,11 +192,17 @@ export function tryCatch<E, A>(f: Lazy<Promise<A>>, onRejected: (reason: unknown
  *
  * @since 2.0.0
  */
-export const bracket: <E, A, B>(
+export function bracket<E, A, B>(
   acquire: TaskEither<E, A>,
   use: (a: A) => TaskEither<E, B>,
-  release: (a: A, e: E.Either<E, B>) => TaskEither<E, void>
-) => TaskEither<E, B> = T.bracket
+  release: (a: A, e: Either<E, B>) => TaskEither<E, void>
+): TaskEither<E, B> {
+  return T.chain(acquire, a =>
+    T.chain(task.map(use(a), E.right), e =>
+      T.chain(release(a, e), () => (E.isLeft(e) ? T.left(e.left) : T.of(e.right)))
+    )
+  )
+}
 
 /**
  * Convert a node style callback function to one returning a `TaskEither`
@@ -269,3 +284,7 @@ export const taskEitherSeq: typeof taskEither = {
   ...taskEither,
   ap: (mab, ma) => T.chain(mab, f => T.map(ma, f))
 }
+
+const { alt, ap, apFirst, apSecond, bimap, chain, chainFirst, flatten, map, mapLeft } = pipeable(taskEither)
+
+export { alt, ap, apFirst, apSecond, bimap, chain, chainFirst, flatten, map, mapLeft }

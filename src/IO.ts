@@ -94,6 +94,7 @@ import { identity } from './function'
 import { Monad1 } from './Monad'
 import { MonadIO1 } from './MonadIO'
 import { Monoid } from './Monoid'
+import { pipeable } from './pipeable'
 import { Semigroup } from './Semigroup'
 
 declare module './HKT' {
@@ -132,7 +133,10 @@ export function getSemigroup<A>(S: Semigroup<A>): Semigroup<IO<A>> {
  * @since 2.0.0
  */
 export function getMonoid<A>(M: Monoid<A>): Monoid<IO<A>> {
-  return { ...getSemigroup(M), empty: io.of(M.empty) }
+  return {
+    concat: getSemigroup(M).concat,
+    empty: io.of(M.empty)
+  }
 }
 
 /**
@@ -146,3 +150,7 @@ export const io: Monad1<URI> & MonadIO1<URI> = {
   chain: (ma, f) => () => f(ma())(),
   fromIO: identity
 }
+
+const { ap, apFirst, apSecond, chain, chainFirst, flatten, map } = pipeable(io)
+
+export { ap, apFirst, apSecond, chain, chainFirst, flatten, map }

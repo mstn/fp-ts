@@ -9,6 +9,7 @@ import { Profunctor2 } from './Profunctor'
 import { getReaderM } from './ReaderT'
 import { Semigroup } from './Semigroup'
 import { Strong2 } from './Strong'
+import { pipeable } from './pipeable'
 
 const T = getReaderM(identity)
 
@@ -54,7 +55,9 @@ export const asks: <R, A>(f: (r: R) => A) => Reader<R, A> = T.asks
  *
  * @since 2.0.0
  */
-export const local: <Q, R>(f: (d: Q) => R) => <A>(ma: Reader<R, A>) => Reader<Q, A> = T.local
+export function local<Q, R>(f: (d: Q) => R): <A>(ma: Reader<R, A>) => Reader<Q, A> {
+  return ma => T.local(ma, f)
+}
 
 /**
  * @since 2.0.0
@@ -70,17 +73,9 @@ export function getSemigroup<R, A>(S: Semigroup<A>): Semigroup<Reader<R, A>> {
  */
 export function getMonoid<R, A>(M: Monoid<A>): Monoid<Reader<R, A>> {
   return {
-    ...getSemigroup(M),
+    concat: getSemigroup<R, A>(M).concat,
     empty: () => M.empty
   }
-}
-
-function left<A, B, C>(pab: Reader<A, B>): Reader<E.Either<A, C>, E.Either<B, C>> {
-  return E.fold<A, C, E.Either<B, C>>(a => E.left(pab(a)), E.right)
-}
-
-function right<A, B, C>(pbc: Reader<B, C>): Reader<E.Either<A, B>, E.Either<A, C>> {
-  return E.fold<A, B, E.Either<A, C>>(E.left, b => E.right(pbc(b)))
 }
 
 /**
@@ -97,6 +92,12 @@ export const reader: Monad2<URI> & Profunctor2<URI> & Category2<URI> & Strong2<U
   id: () => id,
   first: pab => ([a, c]) => [pab(a), c],
   second: pbc => ([a, b]) => [a, pbc(b)],
-  left,
-  right
+  left: <A, B, C>(pab: Reader<A, B>): Reader<E.Either<A, C>, E.Either<B, C>> =>
+    E.fold<A, C, E.Either<B, C>>(a => E.left(pab(a)), E.right),
+  right: <A, B, C>(pbc: Reader<B, C>): Reader<E.Either<A, B>, E.Either<A, C>> =>
+    E.fold<A, B, E.Either<A, C>>(E.left, b => E.right(pbc(b)))
 }
+
+const { ap, apFirst, apSecond, chain, chainFirst, compose, flatten, map, promap } = pipeable(reader)
+
+export { ap, apFirst, apSecond, chain, chainFirst, compose, flatten, map, promap }
