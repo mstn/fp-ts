@@ -54,3 +54,5 @@ export declare function experiment<F>(F: Functor<F>): <S>(f: (s: S) => HKT<F, S>
  * @since 2.0.0
  */
 export declare const store: Comonad2<URI>;
+declare const duplicate: <L, A>(ma: Store<L, A>) => Store<L, Store<L, A>>, extend: <L, A, B>(f: (fa: Store<L, A>) => B) => (ma: Store<L, A>) => Store<L, B>, map: <A, B>(f: (a: A) => B) => <L>(fa: Store<L, A>) => Store<L, B>;
+export { duplicate, extend, map };

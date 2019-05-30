@@ -1,11 +1,11 @@
 import { Bifunctor2 } from './Bifunctor';
 import { Either, Left, Right } from './Either';
+import { Eq } from './Eq';
 import { Foldable2 } from './Foldable';
 import { Functor2 } from './Functor';
 import { Monad2C } from './Monad';
 import { Option } from './Option';
 import { Semigroup } from './Semigroup';
-import { Eq } from './Eq';
 import { Show } from './Show';
 import { Traversable2 } from './Traversable';
 declare module './HKT' {
@@ -193,3 +193,5 @@ export declare function fromOptions<E, A>(fe: Option<E>, fa: Option<A>): Option<
  * @since 2.0.0
  */
 export declare const these: Functor2<URI> & Bifunctor2<URI> & Foldable2<URI> & Traversable2<URI>;
+declare const bimap: <L, A, M, B>(f: (l: L) => M, g: (a: A) => B) => (fa: These<L, A>) => These<M, B>, foldMap: <M>(M: import("./Monoid").Monoid<M>) => <A>(f: (a: A) => M) => <L>(fa: These<L, A>) => M, map: <A, B>(f: (a: A) => B) => <L>(fa: These<L, A>) => These<L, B>, mapLeft: <L, A, M>(f: (l: L) => M) => (fa: These<L, A>) => These<M, A>, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => <L>(fa: These<L, A>) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => <L>(fa: These<L, A>) => B;
+export { bimap, foldMap, map, mapLeft, reduce, reduceRight };

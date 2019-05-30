@@ -15,6 +15,7 @@ import { Semigroup } from './Semigroup';
 import { Task } from './Task';
 import { Option } from './Option';
 import { IO } from './IO';
+import Either = E.Either;
 declare module './HKT' {
     interface URI2HKT2<L, A> {
         TaskEither: TaskEither<L, A>;
@@ -31,7 +32,7 @@ export declare type URI = typeof URI;
 /**
  * @since 2.0.0
  */
-export interface TaskEither<E, A> extends Task<E.Either<E, A>> {
+export interface TaskEither<E, A> extends Task<Either<E, A>> {
 }
 /**
  * @since 2.0.0
@@ -60,7 +61,7 @@ export declare const leftTask: <E>(me: Task<E>) => TaskEither<E, never>;
 /**
  * @since 2.0.0
  */
-export declare const fromEither: <E, A>(ma: E.Either<E, A>) => TaskEither<E, A>;
+export declare const fromEither: <E, A>(ma: Either<E, A>) => TaskEither<E, A>;
 /**
  * @since 2.0.0
  */
@@ -77,11 +78,11 @@ export declare function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a
 /**
  * @since 2.0.0
  */
-export declare const fold: <E, A, R>(onLeft: (e: E) => Task<R>, onRight: (a: A) => Task<R>) => (ma: TaskEither<E, A>) => Task<R>;
+export declare function fold<E, A, R>(onLeft: (e: E) => Task<R>, onRight: (a: A) => Task<R>): (ma: TaskEither<E, A>) => Task<R>;
 /**
  * @since 2.0.0
  */
-export declare const getOrElse: <E, A>(f: (e: E) => Task<A>) => (ma: TaskEither<E, A>) => Task<A>;
+export declare function getOrElse<E, A>(f: (e: E) => Task<A>): (ma: TaskEither<E, A>) => Task<A>;
 /**
  * @since 2.0.0
  */
@@ -90,7 +91,7 @@ export declare function filterOrElse<E, A>(predicate: Predicate<A>, onFalse: (a:
 /**
  * @since 2.0.0
  */
-export declare const orElse: <E, A, M>(f: (e: E) => TaskEither<M, A>) => (ma: TaskEither<E, A>) => TaskEither<M, A>;
+export declare function orElse<E, A, M>(f: (e: E) => TaskEither<M, A>): (ma: TaskEither<E, A>) => TaskEither<M, A>;
 /**
  * @since 2.0.0
  */
@@ -118,7 +119,7 @@ export declare function tryCatch<E, A>(f: Lazy<Promise<A>>, onRejected: (reason:
  *
  * @since 2.0.0
  */
-export declare const bracket: <E, A, B>(acquire: TaskEither<E, A>, use: (a: A) => TaskEither<E, B>, release: (a: A, e: E.Either<E, B>) => TaskEither<E, void>) => TaskEither<E, B>;
+export declare function bracket<E, A, B>(acquire: TaskEither<E, A>, use: (a: A) => TaskEither<E, B>, release: (a: A, e: Either<E, B>) => TaskEither<E, void>): TaskEither<E, B>;
 /**
  * Convert a node style callback function to one returning a `TaskEither`
  *
@@ -163,3 +164,5 @@ export declare const taskEither: Monad2<URI> & Bifunctor2<URI> & Alt2<URI> & Mon
  * @since 2.0.0
  */
 export declare const taskEitherSeq: typeof taskEither;
+declare const alt: <L, A>(that: () => TaskEither<L, A>) => (fa: TaskEither<L, A>) => TaskEither<L, A>, ap: <L, A>(fa: TaskEither<L, A>) => <B>(fab: TaskEither<L, (a: A) => B>) => TaskEither<L, B>, apFirst: <L, B>(fb: TaskEither<L, B>) => <A>(fa: TaskEither<L, A>) => TaskEither<L, A>, apSecond: <L, B>(fb: TaskEither<L, B>) => <A>(fa: TaskEither<L, A>) => TaskEither<L, B>, bimap: <L, A, M, B>(f: (l: L) => M, g: (a: A) => B) => (fa: TaskEither<L, A>) => TaskEither<M, B>, chain: <L, A, B>(f: (a: A) => TaskEither<L, B>) => (ma: TaskEither<L, A>) => TaskEither<L, B>, chainFirst: <L, A, B>(f: (a: A) => TaskEither<L, B>) => (ma: TaskEither<L, A>) => TaskEither<L, A>, flatten: <L, A>(mma: TaskEither<L, TaskEither<L, A>>) => TaskEither<L, A>, map: <A, B>(f: (a: A) => B) => <L>(fa: TaskEither<L, A>) => TaskEither<L, B>, mapLeft: <L, A, M>(f: (l: L) => M) => (fa: TaskEither<L, A>) => TaskEither<M, A>;
+export { alt, ap, apFirst, apSecond, bimap, chain, chainFirst, flatten, map, mapLeft };

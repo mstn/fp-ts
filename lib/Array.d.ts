@@ -2,8 +2,9 @@
  * @file Adapted from https://github.com/purescript/purescript-arrays
  */
 import { Alternative1 } from './Alternative';
-import { Compactable1 } from './Compactable';
+import { Compactable1, Separated } from './Compactable';
 import { Either } from './Either';
+import { Eq } from './Eq';
 import { Extend1 } from './Extend';
 import { FilterableWithIndex1 } from './FilterableWithIndex';
 import { Foldable1 } from './Foldable';
@@ -16,7 +17,6 @@ import { NonEmptyArray } from './NonEmptyArray';
 import { Option } from './Option';
 import { Ord } from './Ord';
 import { Plus1 } from './Plus';
-import { Eq } from './Eq';
 import { Show } from './Show';
 import { TraversableWithIndex1 } from './TraversableWithIndex';
 import { Unfoldable1 } from './Unfoldable';
@@ -797,3 +797,17 @@ export declare function difference<A>(E: Eq<A>): (xs: Array<A>, ys: Array<A>) =>
  * @since 2.0.0
  */
 export declare const array: Monad1<URI> & Foldable1<URI> & Unfoldable1<URI> & TraversableWithIndex1<URI, number> & Alternative1<URI> & Plus1<URI> & Extend1<URI> & Compactable1<URI> & FilterableWithIndex1<URI, number> & Witherable1<URI> & FunctorWithIndex1<URI, number> & FoldableWithIndex1<URI, number>;
+declare const alt: <A>(that: () => A[]) => (fa: A[]) => A[], ap: <A>(fa: A[]) => <B>(fab: ((a: A) => B)[]) => B[], apFirst: <B>(fb: B[]) => <A>(fa: A[]) => A[], apSecond: <B>(fb: B[]) => <A>(fa: A[]) => B[], chain: <A, B>(f: (a: A) => B[]) => (ma: A[]) => B[], chainFirst: <A, B>(f: (a: A) => B[]) => (ma: A[]) => A[], duplicate: <A>(ma: A[]) => A[][], extend: <A, B>(f: (fa: A[]) => B) => (ma: A[]) => B[], filter: {
+    <A, B extends A>(refinement: Refinement<A, B>): (fa: A[]) => B[];
+    <A>(predicate: Predicate<A>): (fa: A[]) => A[];
+}, filterMap: <A, B>(f: (a: A) => Option<B>) => (fa: A[]) => B[], filterMapWithIndex: <A, B>(f: (i: number, a: A) => Option<B>) => (fa: A[]) => B[], filterWithIndex: {
+    <A, B extends A>(refinement: import("./FilterableWithIndex").RefinementWithIndex<number, A, B>): (fa: A[]) => B[];
+    <A>(predicate: import("./FilterableWithIndex").PredicateWithIndex<number, A>): (fa: A[]) => A[];
+}, foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: A[]) => M, foldMapWithIndex: <M>(M: Monoid<M>) => <A>(f: (i: number, a: A) => M) => (fa: A[]) => M, map: <A, B>(f: (a: A) => B) => (fa: A[]) => B[], mapWithIndex: <A, B>(f: (i: number, a: A) => B) => (fa: A[]) => B[], partition: {
+    <A, B extends A>(refinement: Refinement<A, B>): (fa: A[]) => Separated<A[], B[]>;
+    <A>(predicate: Predicate<A>): (fa: A[]) => Separated<A[], A[]>;
+}, partitionMap: <A, RL, RR>(f: (a: A) => Either<RL, RR>) => (fa: A[]) => Separated<RL[], RR[]>, partitionMapWithIndex: <A, RL, RR>(f: (i: number, a: A) => Either<RL, RR>) => (fa: A[]) => Separated<RL[], RR[]>, partitionWithIndex: {
+    <A, B extends A>(refinement: import("./FilterableWithIndex").RefinementWithIndex<number, A, B>): (fa: A[]) => Separated<A[], B[]>;
+    <A>(predicate: import("./FilterableWithIndex").PredicateWithIndex<number, A>): (fa: A[]) => Separated<A[], A[]>;
+}, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: A[]) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: A[]) => B, reduceRightWithIndex: <A, B>(b: B, f: (i: number, a: A, b: B) => B) => (fa: A[]) => B, reduceWithIndex: <A, B>(b: B, f: (i: number, b: B, a: A) => B) => (fa: A[]) => B;
+export { alt, ap, apFirst, apSecond, chain, chainFirst, duplicate, extend, filter, filterMap, filterMapWithIndex, filterWithIndex, foldMap, foldMapWithIndex, map, mapWithIndex, partition, partitionMap, partitionMapWithIndex, partitionWithIndex, reduce, reduceRight, reduceRightWithIndex, reduceWithIndex };

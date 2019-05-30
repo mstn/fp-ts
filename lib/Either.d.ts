@@ -27,21 +27,18 @@
  * ```
  */
 import { Alt2, Alt2C } from './Alt';
-import { Applicative2C } from './Applicative';
-import { Bifunctor2, Bifunctor2C } from './Bifunctor';
+import { Bifunctor2 } from './Bifunctor';
 import { ChainRec2 } from './ChainRec';
-import { Compactable2C } from './Compactable';
 import { Eq } from './Eq';
-import { Extend2, Extend2C } from './Extend';
-import { Filterable2C } from './Filterable';
-import { Foldable2, Foldable2C } from './Foldable';
+import { Extend2 } from './Extend';
+import { Foldable2 } from './Foldable';
 import { Lazy, Predicate, Refinement } from './function';
 import { Monad2, Monad2C } from './Monad';
 import { Monoid } from './Monoid';
 import { Option } from './Option';
 import { Semigroup } from './Semigroup';
 import { Show } from './Show';
-import { Traversable2, Traversable2C } from './Traversable';
+import { Traversable2 } from './Traversable';
 import { Witherable2C } from './Witherable';
 declare module './HKT' {
     interface URI2HKT2<L, A> {
@@ -245,30 +242,15 @@ export declare function parseJSON<E>(s: string, onError: (reason: unknown) => E)
  */
 export declare function stringifyJSON<E>(u: unknown, onError: (reason: unknown) => E): Either<E, string>;
 /**
- * Builds `Compactable` instance for `Either` given a `Monoid` for the left side
- *
- * @since 2.0.0
- */
-export declare function getCompactable<E>(M: Monoid<E>): Compactable2C<URI, E>;
-/**
- * Builds `Filterable` instance for `Either` given a `Monoid` for the left side
- *
- * @since 2.0.0
- */
-export declare function getFilterable<E>(M: Monoid<E>): Filterable2C<URI, E>;
-/**
  * Builds `Witherable` instance for `Either` given `Monoid` for the left side
  *
  * @since 2.0.0
  */
 export declare function getWitherable<E>(M: Monoid<E>): Witherable2C<URI, E>;
-export declare function getValidationApplicative<E>(S: Semigroup<E>): Applicative2C<URI, E> & Foldable2C<URI, E> & Traversable2C<URI, E> & Bifunctor2C<URI, E> & Extend2C<URI, E>;
 /**
- * **Note**: This function is here just to avoid switching to / from `Either`
- *
  * @since 2.0.0
  */
-export declare function getValidationMonad<E>(S: Semigroup<E>): Monad2C<URI, E> & Foldable2C<URI, E> & Traversable2C<URI, E> & Bifunctor2C<URI, E> & Extend2C<URI, E>;
+export declare function getValidation<E>(S: Semigroup<E>): Monad2C<URI, E> & Alt2C<URI, E>;
 /**
  * @since 2.0.0
  */
@@ -280,8 +262,6 @@ export declare function getValidationMonoid<E, A>(SE: Semigroup<E>, SA: Monoid<A
 /**
  * @since 2.0.0
  */
-export declare function getValidationAlt<E>(S: Semigroup<E>): Alt2C<URI, E>;
-/**
- * @since 2.0.0
- */
 export declare const either: Monad2<URI> & Foldable2<URI> & Traversable2<URI> & Bifunctor2<URI> & Alt2<URI> & Extend2<URI> & ChainRec2<URI>;
+declare const alt: <L, A>(that: () => Either<L, A>) => (fa: Either<L, A>) => Either<L, A>, ap: <L, A>(fa: Either<L, A>) => <B>(fab: Either<L, (a: A) => B>) => Either<L, B>, apFirst: <L, B>(fb: Either<L, B>) => <A>(fa: Either<L, A>) => Either<L, A>, apSecond: <L, B>(fb: Either<L, B>) => <A>(fa: Either<L, A>) => Either<L, B>, bimap: <L, A, M, B>(f: (l: L) => M, g: (a: A) => B) => (fa: Either<L, A>) => Either<M, B>, chain: <L, A, B>(f: (a: A) => Either<L, B>) => (ma: Either<L, A>) => Either<L, B>, chainFirst: <L, A, B>(f: (a: A) => Either<L, B>) => (ma: Either<L, A>) => Either<L, A>, duplicate: <L, A>(ma: Either<L, A>) => Either<L, Either<L, A>>, extend: <L, A, B>(f: (fa: Either<L, A>) => B) => (ma: Either<L, A>) => Either<L, B>, flatten: <L, A>(mma: Either<L, Either<L, A>>) => Either<L, A>, foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => <L>(fa: Either<L, A>) => M, map: <A, B>(f: (a: A) => B) => <L>(fa: Either<L, A>) => Either<L, B>, mapLeft: <L, A, M>(f: (l: L) => M) => (fa: Either<L, A>) => Either<M, A>, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => <L>(fa: Either<L, A>) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => <L>(fa: Either<L, A>) => B;
+export { alt, ap, apFirst, apSecond, bimap, chain, chainFirst, duplicate, extend, flatten, foldMap, map, mapLeft, reduce, reduceRight };

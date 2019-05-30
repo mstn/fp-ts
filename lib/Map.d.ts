@@ -1,17 +1,20 @@
+import { Separated } from './Compactable';
+import { Either } from './Either';
+import { Eq } from './Eq';
+import { Filterable2 } from './Filterable';
 import { FilterableWithIndex2C } from './FilterableWithIndex';
-import { Foldable3, Foldable2, Foldable1, Foldable } from './Foldable';
+import { Foldable, Foldable1, Foldable2, Foldable3 } from './Foldable';
+import { Predicate } from './function';
 import { HKT, Type, Type2, Type3, URIS, URIS2, URIS3 } from './HKT';
+import { Magma } from './Magma';
 import { Monoid } from './Monoid';
 import { Option } from './Option';
 import { Ord } from './Ord';
-import { Eq } from './Eq';
+import { Semigroup } from './Semigroup';
+import { Show } from './Show';
 import { TraversableWithIndex2C } from './TraversableWithIndex';
 import { Unfoldable, Unfoldable1 } from './Unfoldable';
-import { Semigroup } from './Semigroup';
 import { Witherable2C } from './Witherable';
-import { Filterable2 } from './Filterable';
-import { Show } from './Show';
-import { Magma } from './Magma';
 declare module './HKT' {
     interface URI2HKT2<L, A> {
         Map: Map<L, A>;
@@ -152,16 +155,20 @@ export declare function fromFoldable<F, K, A>(E: Eq<K>, M: Magma<A>, F: Foldable
 /**
  * @since 2.0.0
  */
-export declare function getFilterableWithIndex<K>(): FilterableWithIndex2C<URI, K, K>;
+export declare function getFilterableWithIndex<K = never>(): FilterableWithIndex2C<URI, K, K>;
 /**
  * @since 2.0.0
  */
-export declare function getWitherable<K>(O: Ord<K>): Witherable2C<URI, K>;
+export declare function getWitherable<K>(O: Ord<K>): Witherable2C<URI, K> & TraversableWithIndex2C<URI, K, K>;
 /**
  * @since 2.0.0
  */
-export declare function getTraversableWithIndex<K>(O: Ord<K>): TraversableWithIndex2C<URI, K, K>;
-/**
- * @since 2.0.0
- */
-export declare const map: Filterable2<URI>;
+export declare const map_: Filterable2<URI>;
+declare const filter: {
+    <A, B extends A>(refinement: import("./function").Refinement<A, B>): <L>(fa: Map<L, A>) => Map<L, B>;
+    <A>(predicate: Predicate<A>): <L>(fa: Map<L, A>) => Map<L, A>;
+}, filterMap: <A, B>(f: (a: A) => Option<B>) => <L>(fa: Map<L, A>) => Map<L, B>, map: <A, B>(f: (a: A) => B) => <L>(fa: Map<L, A>) => Map<L, B>, partition: {
+    <A, B extends A>(refinement: import("./function").Refinement<A, B>): <L>(fa: Map<L, A>) => Separated<Map<L, A>, Map<L, B>>;
+    <A>(predicate: Predicate<A>): <L>(fa: Map<L, A>) => Separated<Map<L, A>, Map<L, A>>;
+}, partitionMap: <A, RL, RR>(f: (a: A) => Either<RL, RR>) => <L>(fa: Map<L, A>) => Separated<Map<L, RL>, Map<L, RR>>;
+export { filter, filterMap, map, partition, partitionMap };

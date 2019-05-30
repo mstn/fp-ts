@@ -1,17 +1,16 @@
 import { Applicative, Applicative1, Applicative2, Applicative2C, Applicative3 } from './Applicative';
 import { Compactable1, Separated } from './Compactable';
 import { Either } from './Either';
+import { Eq } from './Eq';
 import { FilterableWithIndex1 } from './FilterableWithIndex';
 import { Foldable, Foldable1, Foldable2, Foldable3 } from './Foldable';
 import { FoldableWithIndex1 } from './FoldableWithIndex';
-import { Predicate, Refinement } from './function';
 import { FunctorWithIndex1 } from './FunctorWithIndex';
 import { HKT, Type, Type2, Type3, URIS, URIS2, URIS3 } from './HKT';
 import { Magma } from './Magma';
 import { Monoid } from './Monoid';
 import { Option } from './Option';
 import { Semigroup } from './Semigroup';
-import { Eq } from './Eq';
 import { Show } from './Show';
 import { TraversableWithIndex1 } from './TraversableWithIndex';
 import { Unfoldable, Unfoldable1 } from './Unfoldable';
@@ -126,11 +125,6 @@ export declare function getMonoid<K extends string, A>(S: Semigroup<A>): Monoid<
  * @since 2.0.0
  */
 export declare function lookup<A>(k: string, fa: Record<string, A>): Option<A>;
-/**
- * @since 2.0.0
- */
-export declare function filter<A, B extends A>(fa: Record<string, A>, refinement: Refinement<A, B>): Record<string, B>;
-export declare function filter<A>(fa: Record<string, A>, predicate: Predicate<A>): Record<string, A>;
 /**
  * @since 2.0.0
  */

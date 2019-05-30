@@ -30,17 +30,7 @@ export declare type URI = typeof URI;
  */
 export interface NonEmptyArray<A> extends Array<A> {
     0: A;
-    map<B>(f: (a: A, index: number, nea: NonEmptyArray<A>) => B): NonEmptyArray<B>;
-    concat(as: Array<A>): NonEmptyArray<A>;
 }
-/**
- * Builds a `NonEmptyArray` from a provably (compile time) non empty `Array`.
- *
- * @since 2.0.0
- */
-export declare function make<A>(as: Array<A> & {
-    0: A;
-}): NonEmptyArray<A>;
 /**
  * Append an element to the front of an array, creating a new non empty array
  *
@@ -72,7 +62,7 @@ export declare function fromArray<A>(as: Array<A>): Option<NonEmptyArray<A>>;
 /**
  * @since 2.0.0
  */
-export declare function getShow<A>(S: Show<A>): Show<NonEmptyArray<A>>;
+export declare const getShow: <A>(S: Show<A>) => Show<NonEmptyArray<A>>;
 /**
  * @since 2.0.0
  */
@@ -101,12 +91,12 @@ export declare function max<A>(ord: Ord<A>): (nea: NonEmptyArray<A>) => A;
 export declare function getSemigroup<A = never>(): Semigroup<NonEmptyArray<A>>;
 /**
  * @example
- * import { make, getEq, cons } from 'fp-ts/lib/NonEmptyArray'
+ * import { getEq, cons } from 'fp-ts/lib/NonEmptyArray'
  * import { eqNumber } from 'fp-ts/lib/Eq'
  *
  * const E = getEq(eqNumber)
- * assert.strictEqual(E.equals(cons(1, [2]), make([1, 2])), true)
- * assert.strictEqual(E.equals(cons(1, [2]), make([1, 3])), false)
+ * assert.strictEqual(E.equals(cons(1, [2]), [1, 2]), true)
+ * assert.strictEqual(E.equals(cons(1, [2]), [1, 3]), false)
  *
  * @since 2.0.0
  */
@@ -211,3 +201,5 @@ export declare function filterWithIndex<A>(nea: NonEmptyArray<A>, predicate: (i:
  * @since 2.0.0
  */
 export declare const nonEmptyArray: Monad1<URI> & Comonad1<URI> & TraversableWithIndex1<URI, number> & FunctorWithIndex1<URI, number> & FoldableWithIndex1<URI, number>;
+declare const ap: <A>(fa: NonEmptyArray<A>) => <B>(fab: NonEmptyArray<(a: A) => B>) => NonEmptyArray<B>, apFirst: <B>(fb: NonEmptyArray<B>) => <A>(fa: NonEmptyArray<A>) => NonEmptyArray<A>, apSecond: <B>(fb: NonEmptyArray<B>) => <A>(fa: NonEmptyArray<A>) => NonEmptyArray<B>, chain: <A, B>(f: (a: A) => NonEmptyArray<B>) => (ma: NonEmptyArray<A>) => NonEmptyArray<B>, chainFirst: <A, B>(f: (a: A) => NonEmptyArray<B>) => (ma: NonEmptyArray<A>) => NonEmptyArray<A>, duplicate: <A>(ma: NonEmptyArray<A>) => NonEmptyArray<NonEmptyArray<A>>, extend: <A, B>(f: (fa: NonEmptyArray<A>) => B) => (ma: NonEmptyArray<A>) => NonEmptyArray<B>, flatten: <A>(mma: NonEmptyArray<NonEmptyArray<A>>) => NonEmptyArray<A>, foldMap: <M>(M: import("./Monoid").Monoid<M>) => <A>(f: (a: A) => M) => (fa: NonEmptyArray<A>) => M, foldMapWithIndex: <M>(M: import("./Monoid").Monoid<M>) => <A>(f: (i: number, a: A) => M) => (fa: NonEmptyArray<A>) => M, map: <A, B>(f: (a: A) => B) => (fa: NonEmptyArray<A>) => NonEmptyArray<B>, mapWithIndex: <A, B>(f: (i: number, a: A) => B) => (fa: NonEmptyArray<A>) => NonEmptyArray<B>, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: NonEmptyArray<A>) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: NonEmptyArray<A>) => B, reduceRightWithIndex: <A, B>(b: B, f: (i: number, a: A, b: B) => B) => (fa: NonEmptyArray<A>) => B, reduceWithIndex: <A, B>(b: B, f: (i: number, b: B, a: A) => B) => (fa: NonEmptyArray<A>) => B;
+export { ap, apFirst, apSecond, chain, chainFirst, duplicate, extend, flatten, foldMap, foldMapWithIndex, map, mapWithIndex, reduce, reduceRight, reduceRightWithIndex, reduceWithIndex };

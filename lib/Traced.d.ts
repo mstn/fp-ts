@@ -52,3 +52,5 @@ export declare function getComonad<P>(monoid: Monoid<P>): Comonad2C<URI, P>;
  * @since 2.0.0
  */
 export declare const traced: Functor2<URI>;
+declare const map: <A, B>(f: (a: A) => B) => <L>(fa: Traced<L, A>) => Traced<L, B>;
+export { map };

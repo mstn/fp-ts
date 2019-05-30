@@ -1,3 +1,7 @@
+/**
+ * @file `Task<A>` represents an asynchronous computation that yields a value of type `A` and **never fails**.
+ * If you want to represent an asynchronous computation that may fail, please see `TaskEither`.
+ */
 import { IO } from './IO';
 import { Monad1 } from './Monad';
 import { MonadIO1 } from './MonadIO';
@@ -57,3 +61,5 @@ export declare const task: Monad1<URI> & MonadIO1<URI> & MonadTask1<URI>;
  * @since 2.0.0
  */
 export declare const taskSeq: typeof task;
+declare const ap: <A>(fa: Task<A>) => <B>(fab: Task<(a: A) => B>) => Task<B>, apFirst: <B>(fb: Task<B>) => <A>(fa: Task<A>) => Task<A>, apSecond: <B>(fb: Task<B>) => <A>(fa: Task<A>) => Task<B>, chain: <A, B>(f: (a: A) => Task<B>) => (ma: Task<A>) => Task<B>, chainFirst: <A, B>(f: (a: A) => Task<B>) => (ma: Task<A>) => Task<A>, flatten: <A>(mma: Task<Task<A>>) => Task<A>, map: <A, B>(f: (a: A) => B) => (fa: Task<A>) => Task<B>;
+export { ap, apFirst, apSecond, chain, chainFirst, flatten, map };

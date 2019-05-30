@@ -81,7 +81,7 @@
  * ```
  */
 import { Alternative1 } from './Alternative';
-import { Compactable1 } from './Compactable';
+import { Compactable1, Separated } from './Compactable';
 import { Either } from './Either';
 import { Eq } from './Eq';
 import { Extend1 } from './Extend';
@@ -393,3 +393,11 @@ export declare function getMonoid<A>(S: Semigroup<A>): Monoid<Option<A>>;
  * @since 2.0.0
  */
 export declare const option: Monad1<URI> & Foldable1<URI> & Plus1<URI> & Traversable1<URI> & Alternative1<URI> & Extend1<URI> & Compactable1<URI> & Filterable1<URI> & Witherable1<URI>;
+declare const alt: <A>(that: () => Option<A>) => (fa: Option<A>) => Option<A>, ap: <A>(fa: Option<A>) => <B>(fab: Option<(a: A) => B>) => Option<B>, apFirst: <B>(fb: Option<B>) => <A>(fa: Option<A>) => Option<A>, apSecond: <B>(fb: Option<B>) => <A>(fa: Option<A>) => Option<B>, chain: <A, B>(f: (a: A) => Option<B>) => (ma: Option<A>) => Option<B>, chainFirst: <A, B>(f: (a: A) => Option<B>) => (ma: Option<A>) => Option<A>, duplicate: <A>(ma: Option<A>) => Option<Option<A>>, extend: <A, B>(f: (fa: Option<A>) => B) => (ma: Option<A>) => Option<B>, filter: {
+    <A, B extends A>(refinement: Refinement<A, B>): (fa: Option<A>) => Option<B>;
+    <A>(predicate: Predicate<A>): (fa: Option<A>) => Option<A>;
+}, filterMap: <A, B>(f: (a: A) => Option<B>) => (fa: Option<A>) => Option<B>, flatten: <A>(mma: Option<Option<A>>) => Option<A>, foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: Option<A>) => M, map: <A, B>(f: (a: A) => B) => (fa: Option<A>) => Option<B>, partition: {
+    <A, B extends A>(refinement: Refinement<A, B>): (fa: Option<A>) => Separated<Option<A>, Option<B>>;
+    <A>(predicate: Predicate<A>): (fa: Option<A>) => Separated<Option<A>, Option<A>>;
+}, partitionMap: <A, RL, RR>(f: (a: A) => Either<RL, RR>) => (fa: Option<A>) => Separated<Option<RL>, Option<RR>>, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: Option<A>) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: Option<A>) => B;
+export { alt, ap, apFirst, apSecond, chain, chainFirst, duplicate, extend, filter, filterMap, flatten, foldMap, map, partition, partitionMap, reduce, reduceRight };

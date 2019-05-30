@@ -111,7 +111,7 @@ export declare const asks: <R, A>(f: (r: R) => A) => ReaderTaskEither<R, never, 
 /**
  * @since 2.0.0
  */
-export declare const local: <Q, R>(f: (f: Q) => R) => <E, A>(ma: ReaderTaskEither<R, E, A>) => ReaderTaskEither<Q, E, A>;
+export declare function local<Q, R>(f: (f: Q) => R): <E, A>(ma: ReaderTaskEither<R, E, A>) => ReaderTaskEither<Q, E, A>;
 /**
  * @since 2.0.0
  */
@@ -121,3 +121,5 @@ export declare const readerTaskEither: Monad3<URI> & Bifunctor3<URI> & Alt3<URI>
  * @since 2.0.0
  */
 export declare const readerTaskEitherSeq: typeof readerTaskEither;
+declare const alt: <U, L, A>(that: () => ReaderTaskEither<U, L, A>) => (fa: ReaderTaskEither<U, L, A>) => ReaderTaskEither<U, L, A>, ap: <U, L, A>(fa: ReaderTaskEither<U, L, A>) => <B>(fab: ReaderTaskEither<U, L, (a: A) => B>) => ReaderTaskEither<U, L, B>, apFirst: <U, L, B>(fb: ReaderTaskEither<U, L, B>) => <A>(fa: ReaderTaskEither<U, L, A>) => ReaderTaskEither<U, L, A>, apSecond: <U, L, B>(fb: ReaderTaskEither<U, L, B>) => <A>(fa: ReaderTaskEither<U, L, A>) => ReaderTaskEither<U, L, B>, bimap: <L, A, M, B>(f: (l: L) => M, g: (a: A) => B) => <U>(fa: ReaderTaskEither<U, L, A>) => ReaderTaskEither<U, M, B>, chain: <U, L, A, B>(f: (a: A) => ReaderTaskEither<U, L, B>) => (ma: ReaderTaskEither<U, L, A>) => ReaderTaskEither<U, L, B>, chainFirst: <U, L, A, B>(f: (a: A) => ReaderTaskEither<U, L, B>) => (ma: ReaderTaskEither<U, L, A>) => ReaderTaskEither<U, L, A>, flatten: <U, L, A>(mma: ReaderTaskEither<U, L, ReaderTaskEither<U, L, A>>) => ReaderTaskEither<U, L, A>, map: <A, B>(f: (a: A) => B) => <U, L>(fa: ReaderTaskEither<U, L, A>) => ReaderTaskEither<U, L, B>, mapLeft: <L, A, M>(f: (l: L) => M) => <U>(fa: ReaderTaskEither<U, L, A>) => ReaderTaskEither<U, M, A>;
+export { alt, ap, apFirst, apSecond, bimap, chain, chainFirst, flatten, map, mapLeft };

@@ -1,5 +1,4 @@
 import * as RTE from './ReaderTaskEither';
-import ReaderTaskEither = RTE.ReaderTaskEither;
 import { Monad4 } from './Monad';
 import { Either } from './Either';
 import { State } from './State';
@@ -9,6 +8,7 @@ import { Reader } from './Reader';
 import { IOEither } from './IOEither';
 import { Option } from './Option';
 import { IO } from './IO';
+import ReaderTaskEither = RTE.ReaderTaskEither;
 declare module './HKT' {
     interface URI2HKT4<X, U, L, A> {
         StateReaderTaskEither: StateReaderTaskEither<X, U, L, A>;
@@ -137,3 +137,5 @@ export declare const stateReaderTaskEither: Monad4<URI>;
  * @since 2.0.0
  */
 export declare const stateReaderTaskEitherSeq: typeof stateReaderTaskEither;
+declare const ap: <X, U, L, A>(fa: StateReaderTaskEither<X, U, L, A>) => <B>(fab: StateReaderTaskEither<X, U, L, (a: A) => B>) => StateReaderTaskEither<X, U, L, B>, apFirst: <X, U, L, B>(fb: StateReaderTaskEither<X, U, L, B>) => <A>(fa: StateReaderTaskEither<X, U, L, A>) => StateReaderTaskEither<X, U, L, A>, apSecond: <X, U, L, B>(fb: StateReaderTaskEither<X, U, L, B>) => <A>(fa: StateReaderTaskEither<X, U, L, A>) => StateReaderTaskEither<X, U, L, B>, chain: <X, U, L, A, B>(f: (a: A) => StateReaderTaskEither<X, U, L, B>) => (ma: StateReaderTaskEither<X, U, L, A>) => StateReaderTaskEither<X, U, L, B>, chainFirst: <X, U, L, A, B>(f: (a: A) => StateReaderTaskEither<X, U, L, B>) => (ma: StateReaderTaskEither<X, U, L, A>) => StateReaderTaskEither<X, U, L, A>, flatten: <X, U, L, A>(mma: StateReaderTaskEither<X, U, L, StateReaderTaskEither<X, U, L, A>>) => StateReaderTaskEither<X, U, L, A>, map: <A, B>(f: (a: A) => B) => <X, U, L>(fa: StateReaderTaskEither<X, U, L, A>) => StateReaderTaskEither<X, U, L, B>;
+export { ap, apFirst, apSecond, chain, chainFirst, flatten, map };

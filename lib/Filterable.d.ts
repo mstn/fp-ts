@@ -3,11 +3,11 @@
  *
  * Adapted from https://github.com/LiamGoodacre/purescript-filterable/blob/master/src/Data/Filterable.purs
  */
-import { Compactable, Compactable1, Compactable2, Compactable2C, Compactable3, CompactableComposition, CompactableComposition11, CompactableComposition12, CompactableComposition12C, CompactableComposition21, CompactableComposition22, Separated } from './Compactable';
+import { Compactable, Compactable1, Compactable2, Compactable2C, Compactable3, CompactableComposition, CompactableComposition11, CompactableComposition12, CompactableComposition12C, CompactableComposition21, CompactableComposition22, Separated, Compactable4 } from './Compactable';
 import { Either } from './Either';
 import { Predicate, Refinement } from './function';
-import { Functor, Functor1, Functor2, Functor2C, Functor3, FunctorComposition, FunctorComposition11, FunctorComposition12, FunctorComposition12C, FunctorComposition21, FunctorComposition22 } from './Functor';
-import { HKT, Type, Type2, Type3, URIS, URIS2, URIS3 } from './HKT';
+import { Functor, Functor1, Functor2, Functor2C, Functor3, FunctorComposition, FunctorComposition11, FunctorComposition12, FunctorComposition12C, FunctorComposition21, FunctorComposition22, Functor4 } from './Functor';
+import { HKT, Type, Type2, Type3, URIS, URIS2, URIS3, URIS4, Type4 } from './HKT';
 import { Option } from './Option';
 /**
  * @since 2.0.0
@@ -135,6 +135,29 @@ export interface Filterable3<F extends URIS3> extends Functor3<F>, Compactable3<
     readonly partition: Partition3<F>;
     readonly filterMap: <U, L, A, B>(fa: Type3<F, U, L, A>, f: (a: A) => Option<B>) => Type3<F, U, L, B>;
     readonly filter: Filter3<F>;
+}
+/**
+ * @since 2.0.0
+ */
+export interface Filter4<F extends URIS4> {
+    <X, U, L, A, B extends A>(fa: Type4<F, X, U, L, A>, refinement: Refinement<A, B>): Type4<F, X, U, L, B>;
+    <X, U, L, A>(fa: Type4<F, X, U, L, A>, predicate: Predicate<A>): Type4<F, X, U, L, A>;
+}
+/**
+ * @since 2.0.0
+ */
+export interface Partition4<F extends URIS4> {
+    <X, U, L, A, B extends A>(fa: Type4<F, X, U, L, A>, refinement: Refinement<A, B>): Separated<Type4<F, X, U, L, A>, Type4<F, X, U, L, B>>;
+    <X, U, L, A>(fa: Type4<F, X, U, L, A>, predicate: Predicate<A>): Separated<Type4<F, X, U, L, A>, Type4<F, X, U, L, A>>;
+}
+/**
+ * @since 2.0.0
+ */
+export interface Filterable4<F extends URIS4> extends Functor4<F>, Compactable4<F> {
+    readonly partitionMap: <RL, RR, X, U, L, A>(fa: Type4<F, X, U, L, A>, f: (a: A) => Either<RL, RR>) => Separated<Type4<F, X, U, L, RL>, Type4<F, X, U, L, RR>>;
+    readonly partition: Partition4<F>;
+    readonly filterMap: <X, U, L, A, B>(fa: Type4<F, X, U, L, A>, f: (a: A) => Option<B>) => Type4<F, X, U, L, B>;
+    readonly filter: Filter4<F>;
 }
 /**
  * @since 2.0.0

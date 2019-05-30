@@ -33,3 +33,5 @@ export declare function getMonoid<A>(M: Monoid<A>): Monoid<IO<A>>;
  * @since 2.0.0
  */
 export declare const io: Monad1<URI> & MonadIO1<URI>;
+declare const ap: <A>(fa: IO<A>) => <B>(fab: IO<(a: A) => B>) => IO<B>, apFirst: <B>(fb: IO<B>) => <A>(fa: IO<A>) => IO<A>, apSecond: <B>(fb: IO<B>) => <A>(fa: IO<A>) => IO<B>, chain: <A, B>(f: (a: A) => IO<B>) => (ma: IO<A>) => IO<B>, chainFirst: <A, B>(f: (a: A) => IO<B>) => (ma: IO<A>) => IO<A>, flatten: <A>(mma: IO<IO<A>>) => IO<A>, map: <A, B>(f: (a: A) => B) => (fa: IO<A>) => IO<B>;
+export { ap, apFirst, apSecond, chain, chainFirst, flatten, map };

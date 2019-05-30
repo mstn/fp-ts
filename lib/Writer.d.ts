@@ -66,3 +66,5 @@ export declare function getMonad<W>(M: Monoid<W>): Monad2C<URI, W>;
  * @since 2.0.0
  */
 export declare const writer: Functor2<URI>;
+declare const map: <A, B>(f: (a: A) => B) => <L>(fa: Writer<L, A>) => Writer<L, B>;
+export { map };

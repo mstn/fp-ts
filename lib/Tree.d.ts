@@ -42,10 +42,6 @@ export declare function getShow<A>(S: Show<A>): Show<Tree<A>>;
  */
 export declare function getEq<A>(E: Eq<A>): Eq<Tree<A>>;
 /**
- * @since 2.0.0
- */
-export declare const tree: Monad1<URI> & Foldable1<URI> & Traversable1<URI> & Comonad1<URI>;
-/**
  * Neat 2-dimensional drawing of a forest
  *
  * @since 2.0.0
@@ -110,3 +106,9 @@ export declare function unfoldForestM<M>(M: Monad<M>): <A, B>(bs: Array<B>, f: (
  * @since 2.0.0
  */
 export declare function elem<A>(E: Eq<A>): (a: A, fa: Tree<A>) => boolean;
+/**
+ * @since 2.0.0
+ */
+export declare const tree: Monad1<URI> & Foldable1<URI> & Traversable1<URI> & Comonad1<URI>;
+declare const ap: <A>(fa: Tree<A>) => <B>(fab: Tree<(a: A) => B>) => Tree<B>, apFirst: <B>(fb: Tree<B>) => <A>(fa: Tree<A>) => Tree<A>, apSecond: <B>(fb: Tree<B>) => <A>(fa: Tree<A>) => Tree<B>, chain: <A, B>(f: (a: A) => Tree<B>) => (ma: Tree<A>) => Tree<B>, chainFirst: <A, B>(f: (a: A) => Tree<B>) => (ma: Tree<A>) => Tree<A>, duplicate: <A>(ma: Tree<A>) => Tree<Tree<A>>, extend: <A, B>(f: (fa: Tree<A>) => B) => (ma: Tree<A>) => Tree<B>, flatten: <A>(mma: Tree<Tree<A>>) => Tree<A>, foldMap: <M>(M: import("./Monoid").Monoid<M>) => <A>(f: (a: A) => M) => (fa: Tree<A>) => M, map: <A, B>(f: (a: A) => B) => (fa: Tree<A>) => Tree<B>, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: Tree<A>) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: Tree<A>) => B;
+export { ap, apFirst, apSecond, chain, chainFirst, duplicate, extend, flatten, foldMap, map, reduce, reduceRight };
