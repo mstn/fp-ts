@@ -136,16 +136,14 @@ export declare function groupSort<A>(O: Ord<A>): (as: Array<A>) => Array<NonEmpt
  * @example
  * import { cons, groupBy } from 'fp-ts/lib/NonEmptyArray'
  *
- * assert.deepStrictEqual(groupBy(['foo', 'bar', 'foobar'], a => String(a.length)), {
+ * assert.deepStrictEqual(groupBy((s: string) => String(s.length))(['foo', 'bar', 'foobar']), {
  *   '3': cons('foo', ['bar']),
  *   '6': cons('foobar', [])
  * })
  *
  * @since 2.0.0
  */
-export declare function groupBy<A>(as: Array<A>, f: (a: A) => string): {
-    [key: string]: NonEmptyArray<A>;
-};
+export declare function groupBy<A>(f: (a: A) => string): (as: Array<A>) => Record<string, NonEmptyArray<A>>;
 /**
  * @since 2.0.0
  */
@@ -157,33 +155,15 @@ export declare function sort<A>(O: Ord<A>): (nea: NonEmptyArray<A>) => NonEmptyA
 /**
  * @since 2.0.0
  */
-export declare function findFirst<A, B extends A>(nea: NonEmptyArray<A>, refinement: Refinement<A, B>): Option<B>;
-export declare function findFirst<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<A>;
+export declare function insertAt<A>(i: number, a: A): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>>;
 /**
  * @since 2.0.0
  */
-export declare function findLast<A, B extends A>(nea: NonEmptyArray<A>, refinement: Refinement<A, B>): Option<B>;
-export declare function findLast<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<A>;
+export declare function updateAt<A>(i: number, a: A): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>>;
 /**
  * @since 2.0.0
  */
-export declare function findIndex<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<number>;
-/**
- * @since 2.0.0
- */
-export declare function findLastIndex<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<number>;
-/**
- * @since 2.0.0
- */
-export declare function insertAt<A>(i: number, a: A, nea: NonEmptyArray<A>): Option<NonEmptyArray<A>>;
-/**
- * @since 2.0.0
- */
-export declare function updateAt<A>(i: number, a: A, nea: NonEmptyArray<A>): Option<NonEmptyArray<A>>;
-/**
- * @since 2.0.0
- */
-export declare function modifyAt<A>(i: number, nea: NonEmptyArray<A>, f: (a: A) => A): Option<NonEmptyArray<A>>;
+export declare function modifyAt<A>(i: number, f: (a: A) => A): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>>;
 /**
  * @since 2.0.0
  */
@@ -191,12 +171,16 @@ export declare const copy: <A>(nea: NonEmptyArray<A>) => NonEmptyArray<A>;
 /**
  * @since 2.0.0
  */
-export declare function filter<A, B extends A>(nea: NonEmptyArray<A>, refinement: Refinement<A, B>): Option<NonEmptyArray<A>>;
-export declare function filter<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<NonEmptyArray<A>>;
+export declare function filter<A, B extends A>(refinement: Refinement<A, B>): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>>;
+export declare function filter<A>(predicate: Predicate<A>): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>>;
 /**
  * @since 2.0.0
  */
-export declare function filterWithIndex<A>(nea: NonEmptyArray<A>, predicate: (i: number, a: A) => boolean): Option<NonEmptyArray<A>>;
+export declare function filterWithIndex<A>(predicate: (i: number, a: A) => boolean): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>>;
+/**
+ * @since 2.0.0
+ */
+export declare const of: <A>(a: A) => NonEmptyArray<A>;
 /**
  * @since 2.0.0
  */

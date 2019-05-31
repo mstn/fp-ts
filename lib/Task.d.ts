@@ -54,6 +54,10 @@ export declare function fromIO<A>(ma: IO<A>): Task<A>;
 /**
  * @since 2.0.0
  */
+export declare function of<A>(a: A): Task<A>;
+/**
+ * @since 2.0.0
+ */
 export declare const task: Monad1<URI> & MonadIO1<URI> & MonadTask1<URI>;
 /**
  * Like `Task` but `ap` is sequential

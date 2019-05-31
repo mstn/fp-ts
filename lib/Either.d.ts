@@ -209,7 +209,7 @@ export declare function getOrElse<E, A>(f: (e: E) => A): (ma: Either<E, A>) => A
 /**
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): <E>(a: A, ma: Either<E, A>) => boolean;
+export declare function elem<A>(E: Eq<A>): (a: A) => <E>(ma: Either<E, A>) => boolean;
 /**
  * @since 2.0.0
  */

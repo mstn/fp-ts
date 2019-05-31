@@ -2,9 +2,10 @@ import { Applicative, Applicative1, Applicative2, Applicative2C, Applicative3 } 
 import { Compactable1, Separated } from './Compactable';
 import { Either } from './Either';
 import { Eq } from './Eq';
-import { FilterableWithIndex1 } from './FilterableWithIndex';
+import { FilterableWithIndex1, PredicateWithIndex, RefinementWithIndex } from './FilterableWithIndex';
 import { Foldable, Foldable1, Foldable2, Foldable3 } from './Foldable';
 import { FoldableWithIndex1 } from './FoldableWithIndex';
+import { Predicate } from './function';
 import { FunctorWithIndex1 } from './FunctorWithIndex';
 import { HKT, Type, Type2, Type3, URIS, URIS2, URIS3 } from './HKT';
 import { Magma } from './Magma';
@@ -54,54 +55,54 @@ export declare function keys<K extends string>(r: Record<K, unknown>): Array<K>;
  * @example
  * import {collect} from 'fp-ts/lib/Record'
  *
- * const ob: {a: string, b: boolean} = {a: 'foo', b: false}
+ * const x: { a: string, b: boolean } = { a: 'foo', b: false }
  * assert.deepStrictEqual(
- *   collect(ob, (key, val) => ({key: key, value: val})),
+ *   collect((key, val) => ({key: key, value: val}))(x),
  *   [{key: 'a', value: 'foo'}, {key: 'b', value: false}]
  * )
  *
  * @since 2.0.0
  */
-export declare function collect<K extends string, A, B>(r: Record<K, A>, f: (k: K, a: A) => B): Array<B>;
+export declare function collect<K extends string, A, B>(f: (k: K, a: A) => B): (r: Record<K, A>) => Array<B>;
 /**
  * @since 2.0.0
  */
-export declare function toArray<K extends string, A>(d: Record<K, A>): Array<[K, A]>;
+export declare const toArray: <K extends string, A>(r: Record<K, A>) => Array<[K, A]>;
 /**
  * Unfolds a record into a list of key/value pairs
  *
  * @since 2.0.0
  */
 export declare function toUnfoldable<F extends URIS>(unfoldable: Unfoldable1<F>): <K extends string, A>(d: Record<K, A>) => Type<F, [K, A]>;
-export declare function toUnfoldable<F>(unfoldable: Unfoldable<F>): <K extends string, A>(d: Record<K, A>) => HKT<F, [K, A]>;
+export declare function toUnfoldable<F>(unfoldable: Unfoldable<F>): <K extends string, A>(r: Record<K, A>) => HKT<F, [K, A]>;
 /**
  * Insert or replace a key/value pair in a map
  *
  * @since 2.0.0
  */
-export declare function insert<KS extends string, K extends string, A>(k: K, a: A, d: Record<KS, A>): Record<KS | K, A>;
+export declare function insert<K extends string, A>(k: K, a: A): <KS extends string>(r: Record<KS, A>) => Record<KS | K, A>;
 /**
  * @since 2.0.0
  */
-export declare function hasOwnProperty<K extends string, A>(k: K, d: Record<K, A>): boolean;
+export declare function hasOwnProperty<K extends string>(k: K): (r: Record<K, unknown>) => boolean;
 /**
  * Delete a key and value from a map
  *
  * @since 2.0.0
  */
-export declare function remove<K extends string, KS extends string, A>(k: K, d: Record<KS, A>): Record<string extends K ? string : Exclude<KS, K>, A>;
+export declare function remove<K extends string>(k: K): <KS extends string, A>(d: Record<KS, A>) => Record<string extends K ? string : Exclude<KS, K>, A>;
 /**
  * Delete a key and value from a map, returning the value as well as the subsequent map
  *
  * @since 2.0.0
  */
-export declare function pop<K extends string, KS extends string, A>(k: K, d: Record<KS, A>): Option<[A, Record<Exclude<KS, K>, A>]>;
+export declare function pop<K extends string>(k: K): <KS extends string, A>(d: Record<KS, A>) => Option<[A, Record<string extends K ? string : Exclude<KS, K>, A>]>;
 /**
  * Test whether one record contains all of the keys and values contained in another record
  *
  * @since 2.0.0
  */
-export declare function isSubrecord<A>(E: Eq<A>): (d1: Record<string, A>, d2: Record<string, A>) => boolean;
+export declare function isSubrecord<A>(E: Eq<A>): (x: Record<string, A>, y: Record<string, A>) => boolean;
 /**
  * @since 2.0.0
  */
@@ -124,7 +125,7 @@ export declare function getMonoid<K extends string, A>(S: Semigroup<A>): Monoid<
  *
  * @since 2.0.0
  */
-export declare function lookup<A>(k: string, fa: Record<string, A>): Option<A>;
+export declare function lookup(k: string): <A>(r: Record<string, A>) => Option<A>;
 /**
  * @since 2.0.0
  */
@@ -134,25 +135,25 @@ export declare const empty: Record<string, never>;
  *
  * @since 2.0.0
  */
-export declare function mapWithIndex<K extends string, A, B>(fa: Record<K, A>, f: (k: K, a: A) => B): Record<K, B>;
+export declare function mapWithIndex<K extends string, A, B>(f: (k: K, a: A) => B): (fa: Record<K, A>) => Record<K, B>;
 /**
  * Map a record passing the values to the iterating function
  *
  * @since 2.0.0
  */
-export declare function map<K extends string, A, B>(fa: Record<K, A>, f: (a: A) => B): Record<K, B>;
+export declare function map<A, B>(f: (a: A) => B): <K extends string>(fa: Record<K, A>) => Record<K, B>;
 /**
  * @since 2.0.0
  */
-export declare function reduceWithIndex<K extends string, A, B>(fa: Record<K, A>, b: B, f: (k: K, b: B, a: A) => B): B;
+export declare function reduceWithIndex<K extends string, A, B>(b: B, f: (k: K, b: B, a: A) => B): (fa: Record<K, A>) => B;
 /**
  * @since 2.0.0
  */
-export declare function foldMapWithIndex<M>(M: Monoid<M>): <K extends string, A>(fa: Record<K, A>, f: (k: K, a: A) => M) => M;
+export declare function foldMapWithIndex<M>(M: Monoid<M>): <K extends string, A>(f: (k: K, a: A) => M) => (fa: Record<K, A>) => M;
 /**
  * @since 2.0.0
  */
-export declare function reduceRightWithIndex<K extends string, A, B>(fa: Record<K, A>, b: B, f: (k: K, a: A, b: B) => B): B;
+export declare function reduceRightWithIndex<K extends string, A, B>(b: B, f: (k: K, a: A, b: B) => B): (fa: Record<K, A>) => B;
 /**
  * Create a record with one key/value pair
  *
@@ -162,18 +163,19 @@ export declare function singleton<K extends string, A>(k: K, a: A): Record<K, A>
 /**
  * @since 2.0.0
  */
-export declare function traverseWithIndex<F extends URIS3>(F: Applicative3<F>): <K extends string, U, L, A, B>(ta: Record<K, A>, f: (k: K, a: A) => Type3<F, U, L, B>) => Type3<F, U, L, Record<K, B>>;
-export declare function traverseWithIndex<F extends URIS2>(F: Applicative2<F>): <K extends string, L, A, B>(ta: Record<K, A>, f: (k: K, a: A) => Type2<F, L, B>) => Type2<F, L, Record<K, B>>;
-export declare function traverseWithIndex<F extends URIS>(F: Applicative1<F>): <K extends string, A, B>(ta: Record<K, A>, f: (k: K, a: A) => Type<F, B>) => Type<F, Record<K, B>>;
-export declare function traverseWithIndex<F>(F: Applicative<F>): <K extends string, A, B>(ta: Record<K, A>, f: (k: K, a: A) => HKT<F, B>) => HKT<F, Record<K, B>>;
+export declare function traverseWithIndex<F extends URIS3>(F: Applicative3<F>): <K extends string, U, L, A, B>(f: (k: K, a: A) => Type3<F, U, L, B>) => (ta: Record<K, A>) => Type3<F, U, L, Record<K, B>>;
+export declare function traverseWithIndex<F extends URIS2>(F: Applicative2<F>): <K extends string, L, A, B>(f: (k: K, a: A) => Type2<F, L, B>) => (ta: Record<K, A>) => Type2<F, L, Record<K, B>>;
+export declare function traverseWithIndex<F extends URIS2, L>(F: Applicative2C<F, L>): <K extends string, A, B>(f: (k: K, a: A) => Type2<F, L, B>) => (ta: Record<K, A>) => Type2<F, L, Record<K, B>>;
+export declare function traverseWithIndex<F extends URIS>(F: Applicative1<F>): <K extends string, A, B>(f: (k: K, a: A) => Type<F, B>) => (ta: Record<K, A>) => Type<F, Record<K, B>>;
+export declare function traverseWithIndex<F>(F: Applicative<F>): <K extends string, A, B>(f: (k: K, a: A) => HKT<F, B>) => (ta: Record<K, A>) => HKT<F, Record<K, B>>;
 /**
  * @since 2.0.0
  */
-export declare function traverse<F extends URIS3>(F: Applicative3<F>): <K extends string, U, L, A, B>(ta: Record<K, A>, f: (a: A) => Type3<F, U, L, B>) => Type3<F, U, L, Record<K, B>>;
-export declare function traverse<F extends URIS2>(F: Applicative2<F>): <K extends string, L, A, B>(ta: Record<K, A>, f: (a: A) => Type2<F, L, B>) => Type2<F, L, Record<K, B>>;
-export declare function traverse<F extends URIS2, L>(F: Applicative2C<F, L>): <K extends string, A, B>(ta: Record<K, A>, f: (a: A) => Type2<F, L, B>) => Type2<F, L, Record<K, B>>;
-export declare function traverse<F extends URIS>(F: Applicative1<F>): <K extends string, A, B>(ta: Record<K, A>, f: (a: A) => Type<F, B>) => Type<F, Record<K, B>>;
-export declare function traverse<F>(F: Applicative<F>): <K extends string, A, B>(ta: Record<K, A>, f: (a: A) => HKT<F, B>) => HKT<F, Record<K, B>>;
+export declare function traverse<F extends URIS3>(F: Applicative3<F>): <U, L, A, B>(f: (a: A) => Type3<F, U, L, B>) => <K extends string>(ta: Record<K, A>) => Type3<F, U, L, Record<K, B>>;
+export declare function traverse<F extends URIS2>(F: Applicative2<F>): <L, A, B>(f: (a: A) => Type2<F, L, B>) => <K extends string>(ta: Record<K, A>) => Type2<F, L, Record<K, B>>;
+export declare function traverse<F extends URIS2, L>(F: Applicative2C<F, L>): <A, B>(f: (a: A) => Type2<F, L, B>) => <K extends string>(ta: Record<K, A>) => Type2<F, L, Record<K, B>>;
+export declare function traverse<F extends URIS>(F: Applicative1<F>): <A, B>(f: (a: A) => Type<F, B>) => <K extends string>(ta: Record<K, A>) => Type<F, Record<K, B>>;
+export declare function traverse<F>(F: Applicative<F>): <A, B>(f: (a: A) => HKT<F, B>) => <K extends string>(ta: Record<K, A>) => HKT<F, Record<K, B>>;
 /**
  * @since 2.0.0
  */
@@ -185,23 +187,21 @@ export declare function sequence<F>(F: Applicative<F>): <K extends string, A>(ta
 /**
  * @since 2.0.0
  */
-export declare function partitionMapWithIndex<K extends string, RL, RR, A>(fa: Record<K, A>, f: (key: K, a: A) => Either<RL, RR>): Separated<Record<string, RL>, Record<string, RR>>;
-export declare function partitionMapWithIndex<RL, RR, A>(fa: Record<string, A>, f: (key: string, a: A) => Either<RL, RR>): Separated<Record<string, RL>, Record<string, RR>>;
+export declare function partitionMapWithIndex<K extends string, RL, RR, A>(f: (key: K, a: A) => Either<RL, RR>): (fa: Record<K, A>) => Separated<Record<string, RL>, Record<string, RR>>;
 /**
  * @since 2.0.0
  */
-export declare function partitionWithIndex<K extends string, A>(fa: Record<K, A>, p: (key: K, a: A) => boolean): Separated<Record<string, A>, Record<string, A>>;
-export declare function partitionWithIndex<A>(fa: Record<string, A>, p: (key: string, a: A) => boolean): Separated<Record<string, A>, Record<string, A>>;
+export declare function partitionWithIndex<K extends string, A, B extends A>(refinementWithIndex: RefinementWithIndex<K, A, B>): (fa: Record<K, A>) => Separated<Record<string, A>, Record<string, B>>;
+export declare function partitionWithIndex<K extends string, A>(predicateWithIndex: PredicateWithIndex<K, A>): (fa: Record<K, A>) => Separated<Record<string, A>, Record<string, A>>;
 /**
  * @since 2.0.0
  */
-export declare function filterMapWithIndex<K extends string, A, B>(fa: Record<K, A>, f: (key: K, a: A) => Option<B>): Record<string, B>;
-export declare function filterMapWithIndex<A, B>(fa: Record<string, A>, f: (key: string, a: A) => Option<B>): Record<string, B>;
+export declare function filterMapWithIndex<K extends string, A, B>(f: (key: K, a: A) => Option<B>): (fa: Record<K, A>) => Record<string, B>;
 /**
  * @since 2.0.0
  */
-export declare function filterWithIndex<K extends string, A>(fa: Record<K, A>, p: (key: K, a: A) => boolean): Record<string, A>;
-export declare function filterWithIndex<A>(fa: Record<string, A>, p: (key: string, a: A) => boolean): Record<string, A>;
+export declare function filterWithIndex<K extends string, A, B extends A>(refinementWithIndex: RefinementWithIndex<K, A, B>): (fa: Record<K, A>) => Record<string, B>;
+export declare function filterWithIndex<K extends string, A>(predicateWithIndex: PredicateWithIndex<K, A>): (fa: Record<K, A>) => Record<string, A>;
 /**
  * Create a record from a foldable collection of key/value pairs, using the
  * specified `Magma` to combine values for duplicate keys.
@@ -256,15 +256,15 @@ export declare function fromFoldableMap<F, B>(M: Magma<B>, F: Foldable<F>): <A, 
 /**
  * @since 2.0.0
  */
-export declare function every<A>(fa: Record<string, A>, predicate: (a: A) => boolean): boolean;
+export declare function every<A>(predicate: Predicate<A>): (r: Record<string, A>) => boolean;
 /**
  * @since 2.0.0
  */
-export declare function some<A>(fa: Record<string, A>, predicate: (a: A) => boolean): boolean;
+export declare function some<A>(predicate: (a: A) => boolean): (r: Record<string, A>) => boolean;
 /**
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): (a: A, fa: Record<string, A>) => boolean;
+export declare function elem<A>(E: Eq<A>): (a: A) => (fa: Record<string, A>) => boolean;
 /**
  * @since 2.0.0
  */

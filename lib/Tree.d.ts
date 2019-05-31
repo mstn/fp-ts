@@ -105,7 +105,11 @@ export declare function unfoldForestM<M>(M: Monad<M>): <A, B>(bs: Array<B>, f: (
 /**
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): (a: A, fa: Tree<A>) => boolean;
+export declare function elem<A>(E: Eq<A>): (a: A) => (fa: Tree<A>) => boolean;
+/**
+ * @since 2.0.0
+ */
+export declare function of<A>(a: A): Tree<A>;
 /**
  * @since 2.0.0
  */

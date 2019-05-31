@@ -183,7 +183,7 @@ export declare function getOrElse<A>(f: () => A): (ma: Option<A>) => A;
 /**
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): (a: A, ma: Option<A>) => boolean;
+export declare function elem<A>(E: Eq<A>): (a: A) => (ma: Option<A>) => boolean;
 /**
  * @since 2.0.0
  */

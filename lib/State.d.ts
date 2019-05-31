@@ -57,6 +57,10 @@ export declare const gets: <S, A>(f: (s: S) => A) => State<S, A>;
 /**
  * @since 2.0.0
  */
+export declare const of: <S, A>(a: A) => State<S, A>;
+/**
+ * @since 2.0.0
+ */
 export declare const state: Monad2<URI>;
 declare const ap: <L, A>(fa: State<L, A>) => <B>(fab: State<L, (a: A) => B>) => State<L, B>, apFirst: <L, B>(fb: State<L, B>) => <A>(fa: State<L, A>) => State<L, A>, apSecond: <L, B>(fb: State<L, B>) => <A>(fa: State<L, A>) => State<L, B>, chain: <L, A, B>(f: (a: A) => State<L, B>) => (ma: State<L, A>) => State<L, B>, chainFirst: <L, A, B>(f: (a: A) => State<L, B>) => (ma: State<L, A>) => State<L, A>, flatten: <L, A>(mma: State<L, State<L, A>>) => State<L, A>, map: <A, B>(f: (a: A) => B) => <L>(fa: State<L, A>) => State<L, B>;
 export { ap, apFirst, apSecond, chain, chainFirst, flatten, map };

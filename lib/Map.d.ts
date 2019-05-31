@@ -49,13 +49,13 @@ export declare function isEmpty<K, A>(d: Map<K, A>): boolean;
  *
  * @since 2.0.0
  */
-export declare function member<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => boolean;
+export declare function member<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => boolean;
 /**
  * Test whether or not a value is a member of a map
  *
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): <K>(a: A, m: Map<K, A>) => boolean;
+export declare function elem<A>(E: Eq<A>): (a: A) => <K>(m: Map<K, A>) => boolean;
 /**
  * Get a sorted array of the keys contained in a map
  *
@@ -71,7 +71,7 @@ export declare function values<A>(O: Ord<A>): <K>(m: Map<K, A>) => Array<A>;
 /**
  * @since 2.0.0
  */
-export declare function collect<K>(O: Ord<K>): <A, B>(m: Map<K, A>, f: (k: K, a: A) => B) => Array<B>;
+export declare function collect<K>(O: Ord<K>): <A, B>(f: (k: K, a: A) => B) => (m: Map<K, A>) => Array<B>;
 /**
  * Get a sorted of the key/value pairs contained in a map
  *
@@ -90,32 +90,32 @@ export declare function toUnfoldable<K, F>(O: Ord<K>, U: Unfoldable<F>): <A>(d: 
  *
  * @since 2.0.0
  */
-export declare function insert<K>(E: Eq<K>): <A>(k: K, a: A, m: Map<K, A>) => Map<K, A>;
+export declare function insert<K>(E: Eq<K>): <A>(k: K, a: A) => (m: Map<K, A>) => Map<K, A>;
 /**
  * Delete a key and value from a map
  *
  * @since 2.0.0
  */
-export declare function remove<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Map<K, A>;
+export declare function remove<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Map<K, A>;
 /**
  * Delete a key and value from a map, returning the value as well as the subsequent map
  *
  * @since 2.0.0
  */
-export declare function pop<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Option<[A, Map<K, A>]>;
+export declare function pop<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Option<[A, Map<K, A>]>;
 /**
  * Lookup the value for a key in a `Map`.
  * If the result is a `Some`, the existing key is also returned.
  *
  * @since 2.0.0
  */
-export declare function lookupWithKey<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Option<[K, A]>;
+export declare function lookupWithKey<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Option<[K, A]>;
 /**
  * Lookup the value for a key in a `Map`.
  *
  * @since 2.0.0
  */
-export declare function lookup<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Option<A>;
+export declare function lookup<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Option<A>;
 /**
  * Test whether or not one Map contains all of the keys and values contained in another Map
  *

@@ -53,6 +53,10 @@ export declare function getMonoid<R, A>(M: Monoid<A>): Monoid<Reader<R, A>>;
 /**
  * @since 2.0.0
  */
+export declare const of: <A>(a: A) => Reader<unknown, A>;
+/**
+ * @since 2.0.0
+ */
 export declare const reader: Monad2<URI> & Profunctor2<URI> & Category2<URI> & Strong2<URI> & Choice2<URI>;
 declare const ap: <L, A>(fa: Reader<L, A>) => <B>(fab: Reader<L, (a: A) => B>) => Reader<L, B>, apFirst: <L, B>(fb: Reader<L, B>) => <A>(fa: Reader<L, A>) => Reader<L, A>, apSecond: <L, B>(fb: Reader<L, B>) => <A>(fa: Reader<L, A>) => Reader<L, B>, chain: <L, A, B>(f: (a: A) => Reader<L, B>) => (ma: Reader<L, A>) => Reader<L, B>, chainFirst: <L, A, B>(f: (a: A) => Reader<L, B>) => (ma: Reader<L, A>) => Reader<L, A>, compose: <L, A>(la: Reader<L, A>) => <B>(ab: Reader<A, B>) => Reader<L, B>, flatten: <L, A>(mma: Reader<L, Reader<L, A>>) => Reader<L, A>, map: <A, B>(f: (a: A) => B) => <L>(fa: Reader<L, A>) => Reader<L, B>, promap: <A, B, C, D>(f: (a: A) => B, g: (c: C) => D) => (fbc: Reader<B, C>) => Reader<A, D>;
 export { ap, apFirst, apSecond, chain, chainFirst, compose, flatten, map, promap };
