@@ -208,14 +208,26 @@ export function unfoldForestM<M>(
 /**
  * @since 2.0.0
  */
-export function elem<A>(E: Eq<A>): (a: A, fa: Tree<A>) => boolean {
-  const go = (a: A, fa: Tree<A>): boolean => {
-    if (E.equals(a, fa.value)) {
-      return true
+export function elem<A>(E: Eq<A>): (a: A) => (fa: Tree<A>) => boolean {
+  return a => {
+    const go = (fa: Tree<A>): boolean => {
+      if (E.equals(a, fa.value)) {
+        return true
+      }
+      return fa.forest.some(tree => go(tree))
     }
-    return fa.forest.some(tree => go(a, tree))
+    return go
   }
-  return go
+}
+
+/**
+ * @since 2.0.0
+ */
+export function of<A>(a: A): Tree<A> {
+  return {
+    value: a,
+    forest: empty
+  }
 }
 
 /**
@@ -227,10 +239,7 @@ export const tree: Monad1<URI> & Foldable1<URI> & Traversable1<URI> & Comonad1<U
     value: f(fa.value),
     forest: fa.forest.map(t => tree.map(t, f))
   }),
-  of: a => ({
-    value: a,
-    forest: empty
-  }),
+  of,
   ap: (fab, fa) => tree.chain(fab, f => tree.map(fa, f)), // <- derived
   chain: <A, B>(fa: Tree<A>, f: (a: A) => Tree<B>): Tree<B> => {
     const { value, forest } = f(fa.value)

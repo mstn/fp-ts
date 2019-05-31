@@ -1,6 +1,6 @@
 ---
 title: NonEmptyArray.ts
-nav_order: 55
+nav_order: 54
 parent: Modules
 ---
 
@@ -20,14 +20,11 @@ Data structure which represents non-empty arrays
 - [getEq (constant)](#geteq-constant)
 - [getShow (constant)](#getshow-constant)
 - [nonEmptyArray (constant)](#nonemptyarray-constant)
+- [of (constant)](#of-constant)
 - [reverse (constant)](#reverse-constant)
 - [snoc (constant)](#snoc-constant)
 - [filter (function)](#filter-function)
 - [filterWithIndex (function)](#filterwithindex-function)
-- [findFirst (function)](#findfirst-function)
-- [findIndex (function)](#findindex-function)
-- [findLast (function)](#findlast-function)
-- [findLastIndex (function)](#findlastindex-function)
 - [fromArray (function)](#fromarray-function)
 - [getSemigroup (function)](#getsemigroup-function)
 - [group (function)](#group-function)
@@ -152,6 +149,16 @@ export const nonEmptyArray: Monad1<URI> &
 
 Added in v2.0.0
 
+# of (constant)
+
+**Signature**
+
+```ts
+export const of: <A>(a: A) => NonEmptyArray<A> = ...
+```
+
+Added in v2.0.0
+
 # reverse (constant)
 
 **Signature**
@@ -187,8 +194,10 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function filter<A, B extends A>(nea: NonEmptyArray<A>, refinement: Refinement<A, B>): Option<NonEmptyArray<A>>
-export function filter<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<NonEmptyArray<A>> { ... }
+export function filter<A, B extends A>(
+  refinement: Refinement<A, B>
+): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>>
+export function filter<A>(predicate: Predicate<A>): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>> { ... }
 ```
 
 Added in v2.0.0
@@ -199,51 +208,8 @@ Added in v2.0.0
 
 ```ts
 export function filterWithIndex<A>(
-  nea: NonEmptyArray<A>,
   predicate: (i: number, a: A) => boolean
-): Option<NonEmptyArray<A>> { ... }
-```
-
-Added in v2.0.0
-
-# findFirst (function)
-
-**Signature**
-
-```ts
-export function findFirst<A, B extends A>(nea: NonEmptyArray<A>, refinement: Refinement<A, B>): Option<B>
-export function findFirst<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<A> { ... }
-```
-
-Added in v2.0.0
-
-# findIndex (function)
-
-**Signature**
-
-```ts
-export function findIndex<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<number> { ... }
-```
-
-Added in v2.0.0
-
-# findLast (function)
-
-**Signature**
-
-```ts
-export function findLast<A, B extends A>(nea: NonEmptyArray<A>, refinement: Refinement<A, B>): Option<B>
-export function findLast<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<A> { ... }
-```
-
-Added in v2.0.0
-
-# findLastIndex (function)
-
-**Signature**
-
-```ts
-export function findLastIndex<A>(nea: NonEmptyArray<A>, predicate: Predicate<A>): Option<number> { ... }
+): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>> { ... }
 ```
 
 Added in v2.0.0
@@ -301,7 +267,7 @@ function on each element, and grouping the results according to values returned
 **Signature**
 
 ```ts
-export function groupBy<A>(as: Array<A>, f: (a: A) => string): { [key: string]: NonEmptyArray<A> } { ... }
+export function groupBy<A>(f: (a: A) => string): (as: Array<A>) => Record<string, NonEmptyArray<A>> { ... }
 ```
 
 **Example**
@@ -309,7 +275,7 @@ export function groupBy<A>(as: Array<A>, f: (a: A) => string): { [key: string]: 
 ```ts
 import { cons, groupBy } from 'fp-ts/lib/NonEmptyArray'
 
-assert.deepStrictEqual(groupBy(['foo', 'bar', 'foobar'], a => String(a.length)), {
+assert.deepStrictEqual(groupBy((s: string) => String(s.length))(['foo', 'bar', 'foobar']), {
   '3': cons('foo', ['bar']),
   '6': cons('foobar', [])
 })
@@ -353,7 +319,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function insertAt<A>(i: number, a: A, nea: NonEmptyArray<A>): Option<NonEmptyArray<A>> { ... }
+export function insertAt<A>(i: number, a: A): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>> { ... }
 ```
 
 Added in v2.0.0
@@ -393,7 +359,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function modifyAt<A>(i: number, nea: NonEmptyArray<A>, f: (a: A) => A): Option<NonEmptyArray<A>> { ... }
+export function modifyAt<A>(i: number, f: (a: A) => A): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>> { ... }
 ```
 
 Added in v2.0.0
@@ -423,7 +389,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function updateAt<A>(i: number, a: A, nea: NonEmptyArray<A>): Option<NonEmptyArray<A>> { ... }
+export function updateAt<A>(i: number, a: A): (nea: NonEmptyArray<A>) => Option<NonEmptyArray<A>> { ... }
 ```
 
 Added in v2.0.0
