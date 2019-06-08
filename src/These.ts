@@ -22,7 +22,6 @@ import { Bifunctor2 } from './Bifunctor'
 import { Either, Left, Right } from './Either'
 import { Eq, fromEquals } from './Eq'
 import { Foldable2 } from './Foldable'
-import { identity, phantom } from './function'
 import { Functor2 } from './Functor'
 import { HKT } from './HKT'
 import { Monad2C } from './Monad'
@@ -172,7 +171,7 @@ export function getMonad<E>(S: Semigroup<E>): Monad2C<URI, E> {
 
   return {
     URI,
-    _L: phantom,
+    _L: undefined as any,
     map: these.map,
     of: right,
     ap: (mab, ma) => chain(mab, f => these.map(ma, f)),
@@ -261,13 +260,13 @@ export function isBoth<E, A>(fa: These<E, A>): fa is Both<E, A> {
  * import { leftOrBoth, left, both } from 'fp-ts/lib/These'
  * import { none, some } from 'fp-ts/lib/Option'
  *
- * assert.deepStrictEqual(leftOrBoth('a', none), left('a'))
- * assert.deepStrictEqual(leftOrBoth('a', some(1)), both('a', 1))
+ * assert.deepStrictEqual(leftOrBoth('a')(none), left('a'))
+ * assert.deepStrictEqual(leftOrBoth('a')(some(1)), both('a', 1))
  *
  * @since 2.0.0
  */
-export function leftOrBoth<E, A>(defaultLeft: E, ma: Option<A>): These<E, A> {
-  return isNone(ma) ? left(defaultLeft) : both(defaultLeft, ma.value)
+export function leftOrBoth<E>(defaultLeft: E): <A>(ma: Option<A>) => These<E, A> {
+  return ma => (isNone(ma) ? left(defaultLeft) : both(defaultLeft, ma.value))
 }
 
 /**
@@ -275,13 +274,13 @@ export function leftOrBoth<E, A>(defaultLeft: E, ma: Option<A>): These<E, A> {
  * import { rightOrBoth, right, both } from 'fp-ts/lib/These'
  * import { none, some } from 'fp-ts/lib/Option'
  *
- * assert.deepStrictEqual(rightOrBoth(1, none), right(1))
- * assert.deepStrictEqual(rightOrBoth(1, some('a')), both('a', 1))
+ * assert.deepStrictEqual(rightOrBoth(1)(none), right(1))
+ * assert.deepStrictEqual(rightOrBoth(1)(some('a')), both('a', 1))
  *
  * @since 2.0.0
  */
-export function rightOrBoth<E, A>(defaultRight: A, me: Option<E>): These<E, A> {
-  return isNone(me) ? right(defaultRight) : both(me.value, defaultRight)
+export function rightOrBoth<A>(defaultRight: A): <E>(me: Option<E>) => These<E, A> {
+  return me => (isNone(me) ? right(defaultRight) : both(me.value, defaultRight))
 }
 
 /**
@@ -342,6 +341,8 @@ export function fromOptions<E, A>(fe: Option<E>, fa: Option<A>): Option<These<E,
     ? some(left(fe.value))
     : some(both(fe.value, fa.value))
 }
+
+const identity = <A>(a: A): A => a
 
 /**
  * @since 2.0.0

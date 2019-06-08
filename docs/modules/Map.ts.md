@@ -13,6 +13,7 @@ parent: Modules
 - [empty (constant)](#empty-constant)
 - [map\_ (constant)](#map_-constant)
 - [collect (function)](#collect-function)
+- [deleteAt (function)](#deleteat-function)
 - [elem (function)](#elem-function)
 - [fromFoldable (function)](#fromfoldable-function)
 - [getEq (function)](#geteq-function)
@@ -20,19 +21,20 @@ parent: Modules
 - [getMonoid (function)](#getmonoid-function)
 - [getShow (function)](#getshow-function)
 - [getWitherable (function)](#getwitherable-function)
-- [insert (function)](#insert-function)
+- [insertAt (function)](#insertat-function)
 - [isEmpty (function)](#isempty-function)
 - [isSubmap (function)](#issubmap-function)
 - [keys (function)](#keys-function)
 - [lookup (function)](#lookup-function)
 - [lookupWithKey (function)](#lookupwithkey-function)
 - [member (function)](#member-function)
+- [modifyAt (function)](#modifyat-function)
 - [pop (function)](#pop-function)
-- [remove (function)](#remove-function)
 - [singleton (function)](#singleton-function)
 - [size (function)](#size-function)
 - [toArray (function)](#toarray-function)
 - [toUnfoldable (function)](#tounfoldable-function)
+- [updateAt (function)](#updateat-function)
 - [values (function)](#values-function)
 
 ---
@@ -87,6 +89,18 @@ export function collect<K>(O: Ord<K>): <A, B>(f: (k: K, a: A) => B) => (m: Map<K
 
 Added in v2.0.0
 
+# deleteAt (function)
+
+Delete a key and value from a map
+
+**Signature**
+
+```ts
+export function deleteAt<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Map<K, A> { ... }
+```
+
+Added in v2.0.0
+
 # elem (function)
 
 Test whether or not a value is a member of a map
@@ -94,7 +108,7 @@ Test whether or not a value is a member of a map
 **Signature**
 
 ```ts
-export function elem<A>(E: Eq<A>): (a: A) => <K>(m: Map<K, A>) => boolean { ... }
+export function elem<A>(E: Eq<A>): <K>(a: A, m: Map<K, A>) => boolean { ... }
 ```
 
 Added in v2.0.0
@@ -179,14 +193,14 @@ export function getWitherable<K>(O: Ord<K>): Witherable2C<URI, K> & TraversableW
 
 Added in v2.0.0
 
-# insert (function)
+# insertAt (function)
 
 Insert or replace a key/value pair in a map
 
 **Signature**
 
 ```ts
-export function insert<K>(E: Eq<K>): <A>(k: K, a: A) => (m: Map<K, A>) => Map<K, A> { ... }
+export function insertAt<K>(E: Eq<K>): <A>(k: K, a: A) => (m: Map<K, A>) => Map<K, A> { ... }
 ```
 
 Added in v2.0.0
@@ -234,7 +248,7 @@ Lookup the value for a key in a `Map`.
 **Signature**
 
 ```ts
-export function lookup<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Option<A> { ... }
+export function lookup<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Option<A> { ... }
 ```
 
 Added in v2.0.0
@@ -247,7 +261,7 @@ If the result is a `Some`, the existing key is also returned.
 **Signature**
 
 ```ts
-export function lookupWithKey<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Option<[K, A]> { ... }
+export function lookupWithKey<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Option<[K, A]> { ... }
 ```
 
 Added in v2.0.0
@@ -259,7 +273,17 @@ Test whether or not a key exists in a map
 **Signature**
 
 ```ts
-export function member<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => boolean { ... }
+export function member<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => boolean { ... }
+```
+
+Added in v2.0.0
+
+# modifyAt (function)
+
+**Signature**
+
+```ts
+export function modifyAt<K>(E: Eq<K>): <A>(k: K, f: (a: A) => A) => (m: Map<K, A>) => Option<Map<K, A>> { ... }
 ```
 
 Added in v2.0.0
@@ -272,18 +296,6 @@ Delete a key and value from a map, returning the value as well as the subsequent
 
 ```ts
 export function pop<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Option<[A, Map<K, A>]> { ... }
-```
-
-Added in v2.0.0
-
-# remove (function)
-
-Delete a key and value from a map
-
-**Signature**
-
-```ts
-export function remove<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Map<K, A> { ... }
 ```
 
 Added in v2.0.0
@@ -333,6 +345,16 @@ Unfolds a map into a list of key/value pairs
 ```ts
 export function toUnfoldable<K, F extends URIS>(O: Ord<K>, U: Unfoldable1<F>): <A>(d: Map<K, A>) => Type<F, [K, A]>
 export function toUnfoldable<K, F>(O: Ord<K>, U: Unfoldable<F>): <A>(d: Map<K, A>) => HKT<F, [K, A]> { ... }
+```
+
+Added in v2.0.0
+
+# updateAt (function)
+
+**Signature**
+
+```ts
+export function updateAt<K>(E: Eq<K>): <A>(k: K, a: A) => (m: Map<K, A>) => Option<Map<K, A>> { ... }
 ```
 
 Added in v2.0.0

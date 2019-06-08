@@ -1,11 +1,4 @@
 /**
- * For use with phantom fields
- *
- * @since 2.0.0
- */
-export const phantom: any = undefined
-
-/**
  * Thunk type
  */
 export type Lazy<A> = () => A
@@ -15,8 +8,6 @@ export type Predicate<A> = (a: A) => boolean
 export type Refinement<A, B extends A> = (a: A) => a is B
 
 export type Endomorphism<A> = (a: A) => A
-
-export type BinaryOperation<A, B> = (a1: A, a2: A) => B
 
 /**
  * @example
@@ -45,20 +36,6 @@ export const unsafeCoerce: <A, B>(a: A) => B = identity as any
  */
 export function not<A>(predicate: Predicate<A>): Predicate<A> {
   return a => !predicate(a)
-}
-
-/**
- * @since 2.0.0
- */
-export function or<A>(p1: Predicate<A>, p2: Predicate<A>): Predicate<A> {
-  return a => p1(a) || p2(a)
-}
-
-/**
- * @since 2.0.0
- */
-export function and<A>(p1: Predicate<A>, p2: Predicate<A>): Predicate<A> {
-  return a => p1(a) && p2(a)
 }
 
 /**
@@ -123,47 +100,59 @@ export function flip<A, B, C>(f: (a: A, b: B) => C): (b: B, a: A) => C {
 }
 
 /**
- * The `on` function is used to change the domain of a binary operator.
+ * Function composition (from left to right).
+ *
+ * @example
+ * import { flow } from 'fp-ts/lib/function'
+ *
+ * const len = (s: string): number => s.length
+ * const double = (n: number): number => n * 2
+ *
+ * const f = flow(len, double)
+ *
+ * assert.strictEqual(f('aaa'), 6)
  *
  * @since 2.0.0
  */
-export function on<A, B, C>(op: BinaryOperation<B, C>, f: (a: A) => B): BinaryOperation<A, C> {
-  return (a1, a2) => op(f(a1), f(a2))
-}
-
-/**
- * @since 2.0.0
- */
-export function pipe<A, B>(ab: (a: A) => B): (a: A) => B
-export function pipe<A, B, C>(ab: (a: A) => B, bc: (b: B) => C): (a: A) => C
-export function pipe<A, B, C, D>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D): (a: A) => D
-export function pipe<A, B, C, D, E>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E): (a: A) => E
-export function pipe<A, B, C, D, E, F>(
-  ab: (a: A) => B,
+export function flow<A extends Array<unknown>, B>(ab: (...a: A) => B): (...a: A) => B
+export function flow<A extends Array<unknown>, B, C>(ab: (...a: A) => B, bc: (b: B) => C): (...a: A) => C
+export function flow<A extends Array<unknown>, B, C, D>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D
+): (...a: A) => D
+export function flow<A extends Array<unknown>, B, C, D, E>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E
+): (...a: A) => E
+export function flow<A extends Array<unknown>, B, C, D, E, F>(
+  ab: (...a: A) => B,
   bc: (b: B) => C,
   cd: (c: C) => D,
   de: (d: D) => E,
   ef: (e: E) => F
-): (a: A) => F
-export function pipe<A, B, C, D, E, F, G>(
-  ab: (a: A) => B,
+): (...a: A) => F
+export function flow<A extends Array<unknown>, B, C, D, E, F, G>(
+  ab: (...a: A) => B,
   bc: (b: B) => C,
   cd: (c: C) => D,
   de: (d: D) => E,
   ef: (e: E) => F,
   fg: (f: F) => G
-): (a: A) => G
-export function pipe<A, B, C, D, E, F, G, H>(
-  ab: (a: A) => B,
+): (...a: A) => G
+export function flow<A extends Array<unknown>, B, C, D, E, F, G, H>(
+  ab: (...a: A) => B,
   bc: (b: B) => C,
   cd: (c: C) => D,
   de: (d: D) => E,
   ef: (e: E) => F,
   fg: (f: F) => G,
   gh: (g: G) => H
-): (a: A) => H
-export function pipe<A, B, C, D, E, F, G, H, I>(
-  ab: (a: A) => B,
+): (...a: A) => H
+export function flow<A extends Array<unknown>, B, C, D, E, F, G, H, I>(
+  ab: (...a: A) => B,
   bc: (b: B) => C,
   cd: (c: C) => D,
   de: (d: D) => E,
@@ -171,9 +160,9 @@ export function pipe<A, B, C, D, E, F, G, H, I>(
   fg: (f: F) => G,
   gh: (g: G) => H,
   hi: (h: H) => I
-): (a: A) => I
-export function pipe<A, B, C, D, E, F, G, H, I, J>(
-  ab: (a: A) => B,
+): (...a: A) => I
+export function flow<A extends Array<unknown>, B, C, D, E, F, G, H, I, J>(
+  ab: (...a: A) => B,
   bc: (b: B) => C,
   cd: (c: C) => D,
   de: (d: D) => E,
@@ -182,82 +171,16 @@ export function pipe<A, B, C, D, E, F, G, H, I, J>(
   gh: (g: G) => H,
   hi: (h: H) => I,
   ij: (i: I) => J
-): (a: A) => J
-export function pipe(...fns: Array<Function>): Function {
+): (...a: A) => J
+export function flow(...fns: Array<Function>): Function {
   const len = fns.length - 1
-  return function(this: any, x: any) {
-    let y = x
-    for (let i = 0; i <= len; i++) {
+  return function(this: any, ...x: Array<any>) {
+    let y = fns[0].apply(this, x)
+    for (let i = 1; i <= len; i++) {
       y = fns[i].call(this, y)
     }
     return y
   }
-}
-
-/**
- * @since 2.0.0
- */
-export function pipeOp<A>(a: A): A
-export function pipeOp<A, B>(a: A, ab: (a: A) => B): B
-export function pipeOp<A, B, C>(a: A, ab: (a: A) => B, bc: (b: B) => C): C
-export function pipeOp<A, B, C, D>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D): D
-export function pipeOp<A, B, C, D, E>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E): E
-export function pipeOp<A, B, C, D, E, F>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F
-): F
-export function pipeOp<A, B, C, D, E, F, G>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G
-): G
-export function pipeOp<A, B, C, D, E, F, G, H>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G,
-  gh: (g: G) => H
-): H
-export function pipeOp<A, B, C, D, E, F, G, H, I>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G,
-  gh: (g: G) => H,
-  hi: (h: H) => I
-): I
-export function pipeOp<A, B, C, D, E, F, G, H, I, J>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G,
-  gh: (g: G) => H,
-  hi: (h: H) => I,
-  ij: (i: I) => J
-): J
-export function pipeOp(a: unknown, ...fns: Array<Function>): unknown {
-  let r: unknown = a
-  for (let i = 0; i < fns.length; i++) {
-    r = fns[i](r)
-  }
-  return r
 }
 
 /**

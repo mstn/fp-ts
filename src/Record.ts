@@ -16,6 +16,7 @@ import { Show, showString } from './Show'
 import { TraversableWithIndex1 } from './TraversableWithIndex'
 import { Unfoldable, Unfoldable1 } from './Unfoldable'
 import { Witherable1 } from './Witherable'
+import { pipeable } from './pipeable'
 
 declare module './HKT' {
   interface URI2HKT<A> {
@@ -108,7 +109,7 @@ export const toArray: <K extends string, A>(r: Record<K, A>) => Array<[K, A]> = 
  */
 export function toUnfoldable<F extends URIS>(
   unfoldable: Unfoldable1<F>
-): <K extends string, A>(d: Record<K, A>) => Type<F, [K, A]>
+): <K extends string, A>(r: Record<K, A>) => Type<F, [K, A]>
 export function toUnfoldable<F>(unfoldable: Unfoldable<F>): <K extends string, A>(r: Record<K, A>) => HKT<F, [K, A]>
 export function toUnfoldable<F>(unfoldable: Unfoldable<F>): <A>(r: Record<string, A>) => HKT<F, [string, A]> {
   return r => {
@@ -123,8 +124,8 @@ export function toUnfoldable<F>(unfoldable: Unfoldable<F>): <A>(r: Record<string
  *
  * @since 2.0.0
  */
-export function insert<K extends string, A>(k: K, a: A): <KS extends string>(r: Record<KS, A>) => Record<KS | K, A>
-export function insert<A>(k: string, a: A): (r: Record<string, A>) => Record<string, A> {
+export function insertAt<K extends string, A>(k: K, a: A): <KS extends string>(r: Record<KS, A>) => Record<KS | K, A>
+export function insertAt<A>(k: string, a: A): (r: Record<string, A>) => Record<string, A> {
   return r => {
     if (r[k] === a) {
       return r
@@ -140,8 +141,8 @@ const _hasOwnProperty = Object.prototype.hasOwnProperty
 /**
  * @since 2.0.0
  */
-export function hasOwnProperty<K extends string>(k: K): (r: Record<K, unknown>) => boolean {
-  return r => _hasOwnProperty.call(r, k)
+export function hasOwnProperty<K extends string>(k: K, r: Record<K, unknown>): boolean {
+  return _hasOwnProperty.call(r, k)
 }
 
 /**
@@ -149,10 +150,10 @@ export function hasOwnProperty<K extends string>(k: K): (r: Record<K, unknown>) 
  *
  * @since 2.0.0
  */
-export function remove<K extends string>(
+export function deleteAt<K extends string>(
   k: K
-): <KS extends string, A>(d: Record<KS, A>) => Record<string extends K ? string : Exclude<KS, K>, A>
-export function remove(k: string): <A>(r: Record<string, A>) => Record<string, A> {
+): <KS extends string, A>(r: Record<KS, A>) => Record<string extends K ? string : Exclude<KS, K>, A>
+export function deleteAt(k: string): <A>(r: Record<string, A>) => Record<string, A> {
   return r => {
     if (!_hasOwnProperty.call(r, k)) {
       return r
@@ -164,17 +165,49 @@ export function remove(k: string): <A>(r: Record<string, A>) => Record<string, A
 }
 
 /**
+ * @since 2.0.0
+ */
+export function updateAt<K extends string, A>(k: K, a: A): (r: Record<K, A>) => Option<Record<K, A>> {
+  return r => {
+    if (!hasOwnProperty(k, r)) {
+      return none
+    }
+    if (r[k] === a) {
+      return optionSome(r)
+    }
+    const out = Object.assign({}, r)
+    out[k] = a
+    return optionSome(out)
+  }
+}
+
+/**
+ * @since 2.0.0
+ */
+export function modifyAt<K extends string, A>(k: K, f: (a: A) => A): (r: Record<K, A>) => Option<Record<K, A>> {
+  return r => {
+    if (!hasOwnProperty(k, r)) {
+      return none
+    }
+    const out = Object.assign({}, r)
+    out[k] = f(r[k])
+    return optionSome(out)
+  }
+}
+
+/**
  * Delete a key and value from a map, returning the value as well as the subsequent map
  *
  * @since 2.0.0
  */
 export function pop<K extends string>(
   k: K
-): <KS extends string, A>(d: Record<KS, A>) => Option<[A, Record<string extends K ? string : Exclude<KS, K>, A>]>
+): <KS extends string, A>(r: Record<KS, A>) => Option<[A, Record<string extends K ? string : Exclude<KS, K>, A>]>
 export function pop(k: string): <A>(r: Record<string, A>) => Option<[A, Record<string, A>]> {
+  const deleteAtk = deleteAt(k)
   return r => {
-    const a = lookup(k)(r)
-    return isNone(a) ? none : optionSome([a.value, remove(k)(r)])
+    const oa = lookup(k, r)
+    return isNone(oa) ? none : optionSome([oa.value, deleteAtk(r)])
   }
 }
 
@@ -246,8 +279,8 @@ export function getMonoid<A>(S: Semigroup<A>): Monoid<Record<string, A>> {
  *
  * @since 2.0.0
  */
-export function lookup(k: string): <A>(r: Record<string, A>) => Option<A> {
-  return r => (_hasOwnProperty.call(r, k) ? optionSome(r[k]) : none)
+export function lookup<A>(k: string, r: Record<string, A>): Option<A> {
+  return _hasOwnProperty.call(r, k) ? optionSome(r[k]) : none
 }
 
 /**
@@ -558,8 +591,15 @@ export function some<A>(predicate: (a: A) => boolean): (r: Record<string, A>) =>
 /**
  * @since 2.0.0
  */
-export function elem<A>(E: Eq<A>): (a: A) => (fa: Record<string, A>) => boolean {
-  return a => some(x => E.equals(x, a))
+export function elem<A>(E: Eq<A>): (a: A, fa: Record<string, A>) => boolean {
+  return (a, fa) => {
+    for (const k in fa) {
+      if (E.equals(fa[k], a)) {
+        return true
+      }
+    }
+    return false
+  }
 }
 
 /**
@@ -760,3 +800,7 @@ export const record: FunctorWithIndex1<URI, string> &
     return changed ? out : fa
   }
 }
+
+const { filter, filterMap, foldMap, partition, partitionMap, reduce, reduceRight, compact, separate } = pipeable(record)
+
+export { filter, filterMap, foldMap, partition, partitionMap, reduce, reduceRight, compact, separate }

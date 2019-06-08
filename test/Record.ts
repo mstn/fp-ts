@@ -3,7 +3,7 @@ import * as R from '../src/Record'
 import { semigroupSum, getLastSemigroup, getFirstSemigroup } from '../src/Semigroup'
 import { monoidString } from '../src/Monoid'
 import { identity } from '../src/function'
-import { option, some, none, Option, getOrElse } from '../src/Option'
+import { option, some, none, Option, getOrElse, isSome } from '../src/Option'
 import { eqNumber } from '../src/Eq'
 import { array, zip } from '../src/Array'
 import { left, right } from '../src/Either'
@@ -82,9 +82,9 @@ describe('Record', () => {
   })
 
   it('lookup', () => {
-    assert.deepStrictEqual(R.lookup('a')({ a: 1 }), some(1))
-    assert.deepStrictEqual(R.lookup('b')({ a: 1 }), none)
-    assert.deepStrictEqual(R.lookup('b')(noPrototype), none)
+    assert.deepStrictEqual(R.lookup('a', { a: 1 }), some(1))
+    assert.deepStrictEqual(R.lookup('b', { a: 1 }), none)
+    assert.deepStrictEqual(R.lookup('b', noPrototype), none)
   })
 
   it('fromFoldable', () => {
@@ -126,20 +126,20 @@ describe('Record', () => {
     assert.strictEqual(R.isEmpty({ a: 1 }), false)
   })
 
-  it('insert', () => {
-    assert.deepStrictEqual(R.insert('a', 1)({}), { a: 1 })
-    assert.deepStrictEqual(R.insert('c', 3)({ a: 1, b: 2 }), { a: 1, b: 2, c: 3 })
+  it('insertAt', () => {
+    assert.deepStrictEqual(R.insertAt('a', 1)({}), { a: 1 })
+    assert.deepStrictEqual(R.insertAt('c', 3)({ a: 1, b: 2 }), { a: 1, b: 2, c: 3 })
     // should return the same reference if the value is already there
     const x = { a: 1 }
-    assert.strictEqual(R.insert('a', 1)(x), x)
+    assert.strictEqual(R.insertAt('a', 1)(x), x)
   })
 
-  it('remove', () => {
-    assert.deepStrictEqual(R.remove('a')({ a: 1, b: 2 }), { b: 2 })
+  it('deleteAt', () => {
+    assert.deepStrictEqual(R.deleteAt('a')({ a: 1, b: 2 }), { b: 2 })
     // should return the same reference if the key is missing
     const x = { a: 1 }
-    assert.strictEqual(R.remove('b')(x), x)
-    assert.strictEqual(R.remove('b')(noPrototype), noPrototype)
+    assert.strictEqual(R.deleteAt('b')(x), x)
+    assert.strictEqual(R.deleteAt('b')(noPrototype), noPrototype)
   })
 
   it('pop', () => {
@@ -245,8 +245,8 @@ describe('Record', () => {
   })
 
   it('elem', () => {
-    assert.strictEqual(R.elem(eqNumber)(1)({ a: 1, b: 2 }), true)
-    assert.strictEqual(R.elem(eqNumber)(3)({ a: 1, b: 2 }), false)
+    assert.strictEqual(R.elem(eqNumber)(1, { a: 1, b: 2 }), true)
+    assert.strictEqual(R.elem(eqNumber)(3, { a: 1, b: 2 }), false)
   })
 
   it('fromFoldableMap', () => {
@@ -285,8 +285,8 @@ describe('Record', () => {
 
   it('hasOwnProperty', () => {
     const x: Record<string, number> = { a: 1 }
-    assert.strictEqual(R.hasOwnProperty('a')(x), true)
-    assert.strictEqual(R.hasOwnProperty('b')(x), false)
+    assert.strictEqual(R.hasOwnProperty('a', x), true)
+    assert.strictEqual(R.hasOwnProperty('b', x), false)
   })
 
   it('partitionMapWithIndex', () => {
@@ -309,5 +309,23 @@ describe('Record', () => {
 
   it('filterWithIndex', () => {
     assert.deepStrictEqual(R.filterWithIndex((_, a: number) => a > 1)({ a: 1, b: 2 }), { b: 2 })
+  })
+
+  it('updateAt', () => {
+    const x: Record<string, number> = { a: 1 }
+    assert.deepStrictEqual(R.updateAt('b', 2)(x), none)
+    assert.deepStrictEqual(R.updateAt('a', 2)(x), some({ a: 2 }))
+    const r = R.updateAt('a', 1)(x)
+    if (isSome(r)) {
+      assert.strictEqual(r.value, x)
+    } else {
+      assert.fail()
+    }
+  })
+
+  it('modifyAt', () => {
+    const x: Record<string, number> = { a: 1 }
+    assert.deepStrictEqual(R.modifyAt('b', (n: number) => n * 2)(x), none)
+    assert.deepStrictEqual(R.modifyAt('a', (n: number) => n * 2)(x), some({ a: 2 }))
   })
 })

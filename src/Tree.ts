@@ -61,7 +61,7 @@ export function make<A>(value: A, forest: Forest<A> = empty): Tree<A> {
  */
 export function getShow<A>(S: Show<A>): Show<Tree<A>> {
   const show = (t: Tree<A>): string => {
-    return t.forest === empty
+    return t.forest === empty || t.forest.length === 0
       ? `make(${S.show(t.value)})`
       : `make(${S.show(t.value)}, [${t.forest.map(show).join(', ')}])`
   }
@@ -208,26 +208,14 @@ export function unfoldForestM<M>(
 /**
  * @since 2.0.0
  */
-export function elem<A>(E: Eq<A>): (a: A) => (fa: Tree<A>) => boolean {
-  return a => {
-    const go = (fa: Tree<A>): boolean => {
-      if (E.equals(a, fa.value)) {
-        return true
-      }
-      return fa.forest.some(tree => go(tree))
+export function elem<A>(E: Eq<A>): (a: A, fa: Tree<A>) => boolean {
+  const go = (a: A, fa: Tree<A>): boolean => {
+    if (E.equals(a, fa.value)) {
+      return true
     }
-    return go
+    return fa.forest.some(tree => go(a, tree))
   }
-}
-
-/**
- * @since 2.0.0
- */
-export function of<A>(a: A): Tree<A> {
-  return {
-    value: a,
-    forest: empty
-  }
+  return go
 }
 
 /**
@@ -239,7 +227,10 @@ export const tree: Monad1<URI> & Foldable1<URI> & Traversable1<URI> & Comonad1<U
     value: f(fa.value),
     forest: fa.forest.map(t => tree.map(t, f))
   }),
-  of,
+  of: a => ({
+    value: a,
+    forest: empty
+  }),
   ap: (fab, fa) => tree.chain(fab, f => tree.map(fa, f)), // <- derived
   chain: <A, B>(fa: Tree<A>, f: (a: A) => Tree<B>): Tree<B> => {
     const { value, forest } = f(fa.value)

@@ -1,6 +1,5 @@
 import * as assert from 'assert'
 import {
-  and,
   constFalse,
   constNull,
   constTrue,
@@ -11,12 +10,9 @@ import {
   identity,
   increment,
   not,
-  on,
-  or,
-  pipe,
   unsafeCoerce,
   absurd,
-  pipeOp
+  flow
 } from '../src/function'
 
 const f = (n: number) => n + 1
@@ -28,157 +24,11 @@ describe('function', () => {
     assert.strictEqual(flip(f)('aaa', 2), -1)
   })
 
-  it('on', () => {
-    const sub = on((a: number, b: number) => a - b, (s: string) => s.length)
-    assert.strictEqual(sub('abcde', 'ab'), 3)
-  })
-
-  it('pipe', () => {
-    assert.strictEqual(pipe(f)(2), 3)
-    assert.strictEqual(
-      pipe(
-        f,
-        g
-      )(2),
-      6
-    )
-    assert.strictEqual(
-      pipe(
-        f,
-        g,
-        f
-      )(2),
-      7
-    )
-    assert.strictEqual(
-      pipe(
-        f,
-        g,
-        f,
-        g
-      )(2),
-      14
-    )
-    assert.strictEqual(
-      pipe(
-        f,
-        g,
-        f,
-        g,
-        f
-      )(2),
-      15
-    )
-    assert.strictEqual(
-      pipe(
-        f,
-        g,
-        f,
-        g,
-        f,
-        g
-      )(2),
-      30
-    )
-    assert.strictEqual(
-      pipe(
-        f,
-        g,
-        f,
-        g,
-        f,
-        g,
-        f
-      )(2),
-      31
-    )
-    assert.strictEqual(
-      pipe(
-        f,
-        g,
-        f,
-        g,
-        f,
-        g,
-        f,
-        g
-      )(2),
-      62
-    )
-    assert.strictEqual(
-      pipe(
-        f,
-        g,
-        f,
-        g,
-        f,
-        g,
-        f,
-        g,
-        f
-      )(2),
-      63
-    )
-  })
-
-  it('pipeOp', () => {
-    assert.strictEqual(pipeOp(2, f), 3)
-    assert.strictEqual(pipeOp(2, f, g), 6)
-    assert.strictEqual(pipeOp(2, f, g, f), 7)
-    assert.strictEqual(pipeOp(2, f, g, f, g), 14)
-    assert.strictEqual(pipeOp(2, f, g, f, g, f), 15)
-    assert.strictEqual(pipeOp(2, f, g, f, g, f, g), 30)
-    assert.strictEqual(pipeOp(2, f, g, f, g, f, g, f), 31)
-    assert.strictEqual(pipeOp(2, f, g, f, g, f, g, f, g), 62)
-    assert.strictEqual(pipeOp(2, f, g, f, g, f, g, f, g, f), 63)
-  })
-
   it('not', () => {
     const n = not(Boolean)
     assert.strictEqual(n(false), true)
     assert.strictEqual(n(1), false)
     assert.strictEqual(n(''), true)
-  })
-
-  it('or', () => {
-    // as predicate
-    const gt3 = (n: number) => n > 3
-    const lt2 = (n: number) => n < 2
-    const outside2and3 = or(lt2, gt3)
-    assert.strictEqual(outside2and3(1), true)
-    assert.strictEqual(outside2and3(4), true)
-    assert.strictEqual(outside2and3(2.5), false)
-
-    // as custom guard
-    class A {}
-    class B extends A {
-      _tag = 'B' as 'B'
-    }
-    class C extends A {
-      _tag = 'C' as 'C'
-    }
-    const isB = (a: A): a is B => a instanceof B
-    const isC = (a: A): a is C => a instanceof C
-    const isBOrC = or(isB, isC)
-    function f(a: any): 'B' | 'C' | 'else' {
-      if (isBOrC(a)) {
-        return a._tag
-      }
-      return 'else'
-    }
-    assert.strictEqual(f(new A()), 'else')
-    assert.strictEqual(f(new B()), 'B')
-    assert.strictEqual(f(new C()), 'C')
-  })
-
-  it('and', () => {
-    // as predicate
-    const lt3 = (n: number) => n < 3
-    const gt2 = (n: number) => n > 2
-    const between2and3 = and(gt2, lt3)
-    assert.strictEqual(between2and3(1), false)
-    assert.strictEqual(between2and3(4), false)
-    assert.strictEqual(between2and3(2.5), true)
   })
 
   it('unsafeCoerce', () => {
@@ -215,5 +65,93 @@ describe('function', () => {
 
   it('absurd', () => {
     assert.throws(() => absurd<string>((null as any) as never))
+  })
+
+  it('flow', () => {
+    assert.strictEqual(flow(f)(2), 3)
+    assert.strictEqual(
+      flow(
+        f,
+        g
+      )(2),
+      6
+    )
+    assert.strictEqual(
+      flow(
+        f,
+        g,
+        f
+      )(2),
+      7
+    )
+    assert.strictEqual(
+      flow(
+        f,
+        g,
+        f,
+        g
+      )(2),
+      14
+    )
+    assert.strictEqual(
+      flow(
+        f,
+        g,
+        f,
+        g,
+        f
+      )(2),
+      15
+    )
+    assert.strictEqual(
+      flow(
+        f,
+        g,
+        f,
+        g,
+        f,
+        g
+      )(2),
+      30
+    )
+    assert.strictEqual(
+      flow(
+        f,
+        g,
+        f,
+        g,
+        f,
+        g,
+        f
+      )(2),
+      31
+    )
+    assert.strictEqual(
+      flow(
+        f,
+        g,
+        f,
+        g,
+        f,
+        g,
+        f,
+        g
+      )(2),
+      62
+    )
+    assert.strictEqual(
+      flow(
+        f,
+        g,
+        f,
+        g,
+        f,
+        g,
+        f,
+        g,
+        f
+      )(2),
+      63
+    )
   })
 })

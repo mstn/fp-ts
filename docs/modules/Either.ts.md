@@ -149,7 +149,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function elem<A>(E: Eq<A>): (a: A) => <E>(ma: Either<E, A>) => boolean { ... }
+export function elem<A>(E: Eq<A>): <E>(a: A, ma: Either<E, A>) => boolean { ... }
 ```
 
 Added in v2.0.0
@@ -186,7 +186,7 @@ the provided default as a `Left`
 **Signature**
 
 ```ts
-export function fromNullable<E, A>(a: A | null | undefined, e: E): Either<E, A> { ... }
+export function fromNullable<E>(e: E): <A>(a: A | null | undefined) => Either<E, A> { ... }
 ```
 
 Added in v2.0.0
@@ -196,7 +196,7 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function fromOption<E, A>(ma: Option<A>, onNone: () => E): Either<E, A> { ... }
+export function fromOption<E>(onNone: () => E): <A>(ma: Option<A>) => Either<E, A> { ... }
 ```
 
 Added in v2.0.0
@@ -207,7 +207,7 @@ Added in v2.0.0
 
 ```ts
 export function fromPredicate<E, A, B extends A>(
-  predicate: Refinement<A, B>,
+  refinement: Refinement<A, B>,
   onFalse: (a: A) => E
 ): (a: A) => Either<E, B>
 export function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (a: A) => Either<E, A> { ... }

@@ -1,11 +1,12 @@
 import * as assert from 'assert'
-import { identity, pipeOp as pipe } from '../src/function'
+import { identity } from '../src/function'
 import { monoidString, monoidSum } from '../src/Monoid'
 import { none, option, some } from '../src/Option'
 import { semigroupString } from '../src/Semigroup'
 import { eqNumber } from '../src/Eq'
 import { showString } from '../src/Show'
 import * as _ from '../src/These'
+import { pipe } from '../src/pipeable'
 
 describe('These', () => {
   it('getEq', () => {
@@ -152,13 +153,13 @@ describe('These', () => {
   })
 
   it('leftOrBoth', () => {
-    assert.deepStrictEqual(_.leftOrBoth('a', none), _.left('a'))
-    assert.deepStrictEqual(_.leftOrBoth('a', some(1)), _.both('a', 1))
+    assert.deepStrictEqual(_.leftOrBoth('a')(none), _.left('a'))
+    assert.deepStrictEqual(_.leftOrBoth('a')(some(1)), _.both('a', 1))
   })
 
   it('rightOrBoth', () => {
-    assert.deepStrictEqual(_.rightOrBoth(1, none), _.right(1))
-    assert.deepStrictEqual(_.rightOrBoth(1, some('a')), _.both('a', 1))
+    assert.deepStrictEqual(_.rightOrBoth(1)(none), _.right(1))
+    assert.deepStrictEqual(_.rightOrBoth(1)(some('a')), _.both('a', 1))
   })
 
   it('getLeftOnly', () => {

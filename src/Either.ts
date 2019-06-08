@@ -106,15 +106,15 @@ export function right<A>(a: A): Either<never, A> {
 /**
  * @since 2.0.0
  */
-export function fromOption<E, A>(ma: Option<A>, onNone: () => E): Either<E, A> {
-  return ma._tag === 'None' ? left(onNone()) : right(ma.value)
+export function fromOption<E>(onNone: () => E): <A>(ma: Option<A>) => Either<E, A> {
+  return ma => (ma._tag === 'None' ? left(onNone()) : right(ma.value))
 }
 
 /**
  * @since 2.0.0
  */
 export function fromPredicate<E, A, B extends A>(
-  predicate: Refinement<A, B>,
+  refinement: Refinement<A, B>,
   onFalse: (a: A) => E
 ): (a: A) => Either<E, B>
 export function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (a: A) => Either<E, A>
@@ -128,8 +128,8 @@ export function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => 
  *
  * @since 2.0.0
  */
-export function fromNullable<E, A>(a: A | null | undefined, e: E): Either<E, A> {
-  return a == null ? left(e) : right(a)
+export function fromNullable<E>(e: E): <A>(a: A | null | undefined) => Either<E, A> {
+  return a => (a == null ? left(e) : right(a))
 }
 
 /**
@@ -300,8 +300,8 @@ export function getOrElse<E, A>(f: (e: E) => A): (ma: Either<E, A>) => A {
 /**
  * @since 2.0.0
  */
-export function elem<A>(E: Eq<A>): (a: A) => <E>(ma: Either<E, A>) => boolean {
-  return a => ma => (isLeft(ma) ? false : E.equals(a, ma.right))
+export function elem<A>(E: Eq<A>): <E>(a: A, ma: Either<E, A>) => boolean {
+  return (a, ma) => (isLeft(ma) ? false : E.equals(a, ma.right))
 }
 
 /**
@@ -357,10 +357,9 @@ const phantom: any = undefined
  */
 export function getWitherable<E>(M: Monoid<E>): Witherable2C<URI, E> {
   const empty = left(M.empty)
-  const onNone = () => M.empty
 
   const compact = <A>(ma: Either<E, Option<A>>): Either<E, A> => {
-    return isLeft(ma) ? ma : fromOption(ma.right, onNone)
+    return isLeft(ma) ? ma : ma.right._tag === 'None' ? left(M.empty) : right(ma.right.value)
   }
 
   const separate = <A, B>(ma: Either<E, Either<A, B>>): Separated<Either<E, A>, Either<E, B>> => {
@@ -391,7 +390,11 @@ export function getWitherable<E>(M: Monoid<E>): Witherable2C<URI, E> {
   }
 
   const filterMap = <A, B>(ma: Either<E, A>, f: (a: A) => Option<B>): Either<E, B> => {
-    return isLeft(ma) ? ma : fromOption(f(ma.right), onNone)
+    if (isLeft(ma)) {
+      return ma
+    }
+    const ob = f(ma.right)
+    return ob._tag === 'None' ? left(M.empty) : right(ob.value)
   }
 
   const filter = <A>(ma: Either<E, A>, predicate: Predicate<A>): Either<E, A> =>

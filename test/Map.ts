@@ -71,27 +71,27 @@ describe('Map', () => {
   it('member', () => {
     const a1b2 = new Map<User, number>([[{ id: 'a' }, 1], [{ id: 'b' }, 2]])
     const memberS = M.member(eqUser)
-    assert.deepStrictEqual(memberS({ id: 'a' })(a1b2), true)
-    assert.deepStrictEqual(memberS({ id: 'c' })(a1b2), false)
+    assert.deepStrictEqual(memberS({ id: 'a' }, a1b2), true)
+    assert.deepStrictEqual(memberS({ id: 'c' }, a1b2), false)
 
     const member = M.member(eqKey)
-    assert.deepStrictEqual(member({ id: 1 })(repo), true)
-    assert.deepStrictEqual(member({ id: 2 })(repo), true)
-    assert.deepStrictEqual(member({ id: 4 })(repo), true)
-    assert.deepStrictEqual(member({ id: 3 })(repo), false)
+    assert.deepStrictEqual(member({ id: 1 }, repo), true)
+    assert.deepStrictEqual(member({ id: 2 }, repo), true)
+    assert.deepStrictEqual(member({ id: 4 }, repo), true)
+    assert.deepStrictEqual(member({ id: 3 }, repo), false)
   })
 
   it('elem', () => {
     const a1b2 = new Map<string, number>([['a', 1], ['b', 2]])
     const elemS = M.elem(eqNumber)
-    assert.deepStrictEqual(elemS(2)(a1b2), true)
-    assert.deepStrictEqual(elemS(3)(a1b2), false)
+    assert.deepStrictEqual(elemS(2, a1b2), true)
+    assert.deepStrictEqual(elemS(3, a1b2), false)
 
     const elem = M.elem(eqValue)
-    assert.deepStrictEqual(elem({ value: 1 })(repo), true)
-    assert.deepStrictEqual(elem({ value: 2 })(repo), true)
-    assert.deepStrictEqual(elem({ value: 4 })(repo), true)
-    assert.deepStrictEqual(elem({ value: 3 })(repo), false)
+    assert.deepStrictEqual(elem({ value: 1 }, repo), true)
+    assert.deepStrictEqual(elem({ value: 2 }, repo), true)
+    assert.deepStrictEqual(elem({ value: 4 }, repo), true)
+    assert.deepStrictEqual(elem({ value: 3 }, repo), false)
   })
 
   it('keys', () => {
@@ -165,19 +165,19 @@ describe('Map', () => {
     assert.deepStrictEqual(toUnfoldable(new Map([[{ id: 2 }, 2], [{ id: 4 }, 1]])), [[{ id: 4 }, 1], [{ id: 2 }, 2]])
   })
 
-  it('insert', () => {
+  it('insertAt', () => {
     const emptyMap = new Map<User, number>()
     const a1 = new Map<User, number>([[{ id: 'a' }, 1]])
     const a1b2 = new Map<User, number>([[{ id: 'a' }, 1], [{ id: 'b' }, 2]])
     const a2b2 = new Map<User, number>([[{ id: 'a' }, 2], [{ id: 'b' }, 2]])
     const a1b2c3 = new Map<User, number>([[{ id: 'a' }, 1], [{ id: 'b' }, 2], [{ id: 'c' }, 3]])
-    const insertS = M.insert(eqUser)
+    const insertS = M.insertAt(eqUser)
     assert.deepStrictEqual(insertS({ id: 'a' }, 1)(emptyMap), a1)
     assert.deepStrictEqual(insertS({ id: 'a' }, 1)(a1b2), a1b2)
     assert.deepStrictEqual(insertS({ id: 'a' }, 2)(a1b2), a2b2)
     assert.deepStrictEqual(insertS({ id: 'c' }, 3)(a1b2), a1b2c3)
 
-    const insert = M.insert(eqKey)
+    const insert = M.insertAt(eqKey)
     assert.deepStrictEqual(insert({ id: 1 }, { value: 1 })(M.empty), new Map([[{ id: 1 }, { value: 1 }]]))
     const x = insert({ id: 1 }, value1)(repo)
     assert.deepStrictEqual(x, new Map<Key, Value>([[{ id: 1 }, { value: 1 }], [{ id: 2 }, { value: 2 }]]))
@@ -198,16 +198,16 @@ describe('Map', () => {
     assert.deepStrictEqual(repo, new Map([[{ id: 1 }, { value: 1 }], [{ id: 2 }, { value: 2 }]]))
   })
 
-  it('remove', () => {
+  it('deleteAt', () => {
     const a1b2 = new Map<User, number>([[{ id: 'a' }, 1], [{ id: 'b' }, 2]])
     const a1b2_ = new Map<User, number>([[{ id: 'a' }, 1], [{ id: 'b' }, 2]])
     const b2 = new Map<User, number>([[{ id: 'b' }, 2]])
-    const removeS = M.remove(eqUser)
+    const removeS = M.deleteAt(eqUser)
     assert.deepStrictEqual(removeS({ id: 'a' })(a1b2), b2)
     assert.deepStrictEqual(a1b2, a1b2_)
     assert.deepStrictEqual(removeS({ id: 'c' })(a1b2), a1b2)
 
-    const remove = M.remove(eqKey)
+    const remove = M.deleteAt(eqKey)
     assert.deepStrictEqual(remove({ id: 1 })(repo), new Map([[{ id: 2 }, { value: 2 }]]))
     assert.deepStrictEqual(remove({ id: 4 })(repo), new Map([[{ id: 2 }, { value: 2 }]]))
     assert.deepStrictEqual(remove({ id: 3 })(repo), repo)
@@ -233,25 +233,25 @@ describe('Map', () => {
   it('lookupWithKey', () => {
     const a1 = new Map<User, number>([[{ id: 'a' }, 1]])
     const lookupWithKeyS = M.lookupWithKey(eqUser)
-    assert.deepStrictEqual(lookupWithKeyS({ id: 'a' })(a1), some([{ id: 'a' }, 1]))
-    assert.deepStrictEqual(lookupWithKeyS({ id: 'b' })(a1), none)
+    assert.deepStrictEqual(lookupWithKeyS({ id: 'a' }, a1), some([{ id: 'a' }, 1]))
+    assert.deepStrictEqual(lookupWithKeyS({ id: 'b' }, a1), none)
 
     const lookupWithKey = M.lookupWithKey(eqKey)
-    assert.deepStrictEqual(lookupWithKey({ id: 1 })(repo), some([{ id: 1 }, { value: 1 }]))
-    assert.deepStrictEqual(lookupWithKey({ id: 4 })(repo), some([{ id: 1 }, { value: 1 }]))
-    assert.deepStrictEqual(lookupWithKey({ id: 3 })(repo), none)
+    assert.deepStrictEqual(lookupWithKey({ id: 1 }, repo), some([{ id: 1 }, { value: 1 }]))
+    assert.deepStrictEqual(lookupWithKey({ id: 4 }, repo), some([{ id: 1 }, { value: 1 }]))
+    assert.deepStrictEqual(lookupWithKey({ id: 3 }, repo), none)
   })
 
   it('lookup', () => {
     const a1 = new Map<User, number>([[{ id: 'a' }, 1]])
     const lookupS = M.lookup(eqUser)
-    assert.deepStrictEqual(lookupS({ id: 'a' })(a1), some(1))
-    assert.deepStrictEqual(lookupS({ id: 'b' })(a1), none)
+    assert.deepStrictEqual(lookupS({ id: 'a' }, a1), some(1))
+    assert.deepStrictEqual(lookupS({ id: 'b' }, a1), none)
 
     const lookup = M.lookup(eqKey)
-    assert.deepStrictEqual(lookup({ id: 1 })(repo), some({ value: 1 }))
-    assert.deepStrictEqual(lookup({ id: 4 })(repo), some({ value: 1 }))
-    assert.deepStrictEqual(lookup({ id: 3 })(repo), none)
+    assert.deepStrictEqual(lookup({ id: 1 }, repo), some({ value: 1 }))
+    assert.deepStrictEqual(lookup({ id: 4 }, repo), some({ value: 1 }))
+    assert.deepStrictEqual(lookup({ id: 3 }, repo), none)
   })
 
   it('isSubmap', () => {
@@ -588,5 +588,22 @@ describe('Map', () => {
     assert.strictEqual(S.show(m2), `new Map([[{ id: "a" }, "b"]])`)
     const m3 = new Map<User, string>([[{ id: 'a' }, 'b'], [{ id: 'c' }, 'd']])
     assert.strictEqual(S.show(m3), `new Map([[{ id: "a" }, "b"], [{ id: "c" }, "d"]])`)
+  })
+
+  it('updateAt', () => {
+    const m1 = new Map<User, string>([])
+    assert.deepStrictEqual(M.updateAt(eqUser)({ id: 'a' }, 'a')(m1), none)
+    const m2 = new Map<User, string>([[{ id: 'a' }, 'b']])
+    assert.deepStrictEqual(M.updateAt(eqUser)({ id: 'a' }, 'a')(m2), some(new Map<User, string>([[{ id: 'a' }, 'a']])))
+  })
+
+  it('modifyAt', () => {
+    const m1 = new Map<User, number>([])
+    assert.deepStrictEqual(M.modifyAt(eqUser)({ id: 'a' }, (n: number) => n * 2)(m1), none)
+    const m2 = new Map<User, number>([[{ id: 'a' }, 1]])
+    assert.deepStrictEqual(
+      M.modifyAt(eqUser)({ id: 'a' }, (n: number) => n * 2)(m2),
+      some(new Map<User, number>([[{ id: 'a' }, 2]]))
+    )
   })
 })

@@ -5,7 +5,7 @@ import * as _ from '../src/IOEither'
 import { monoidString } from '../src/Monoid'
 import { semigroupSum } from '../src/Semigroup'
 import { none, some } from '../src/Option'
-import { pipeOp as pipe } from '../src/function'
+import { pipe } from '../src/pipeable'
 
 describe('IOEither', () => {
   it('fold', () => {
@@ -73,8 +73,8 @@ describe('IOEither', () => {
   })
 
   it('fromOption', () => {
-    assert.deepStrictEqual(_.fromOption(none, () => 'err')(), E.left('err'))
-    assert.deepStrictEqual(_.fromOption(some(1), () => 'err')(), E.right(1))
+    assert.deepStrictEqual(_.fromOption(() => 'err')(none)(), E.left('err'))
+    assert.deepStrictEqual(_.fromOption(() => 'err')(some(1))(), E.right(1))
   })
 
   it('fromPredicate', () => {

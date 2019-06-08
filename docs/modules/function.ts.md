@@ -8,16 +8,13 @@ parent: Modules
 
 <h2 class="text-delta">Table of contents</h2>
 
-- [BinaryOperation (type alias)](#binaryoperation-type-alias)
 - [Endomorphism (type alias)](#endomorphism-type-alias)
 - [FunctionN (type alias)](#functionn-type-alias)
 - [Lazy (type alias)](#lazy-type-alias)
 - [Predicate (type alias)](#predicate-type-alias)
 - [Refinement (type alias)](#refinement-type-alias)
-- [phantom (constant)](#phantom-constant)
 - [unsafeCoerce (constant)](#unsafecoerce-constant)
 - [absurd (function)](#absurd-function)
-- [and (function)](#and-function)
 - [constFalse (function)](#constfalse-function)
 - [constNull (function)](#constnull-function)
 - [constTrue (function)](#consttrue-function)
@@ -26,24 +23,13 @@ parent: Modules
 - [constant (function)](#constant-function)
 - [decrement (function)](#decrement-function)
 - [flip (function)](#flip-function)
+- [flow (function)](#flow-function)
 - [identity (function)](#identity-function)
 - [increment (function)](#increment-function)
 - [not (function)](#not-function)
-- [on (function)](#on-function)
-- [or (function)](#or-function)
-- [pipe (function)](#pipe-function)
-- [pipeOp (function)](#pipeop-function)
 - [tuple (function)](#tuple-function)
 
 ---
-
-# BinaryOperation (type alias)
-
-**Signature**
-
-```ts
-export type BinaryOperation<A, B> = (a1: A, a2: A) => B
-```
 
 # Endomorphism (type alias)
 
@@ -97,18 +83,6 @@ export type Predicate<A> = (a: A) => boolean
 export type Refinement<A, B extends A> = (a: A) => a is B
 ```
 
-# phantom (constant)
-
-For use with phantom fields
-
-**Signature**
-
-```ts
-export const phantom: any = ...
-```
-
-Added in v2.0.0
-
 # unsafeCoerce (constant)
 
 **Signature**
@@ -125,16 +99,6 @@ Added in v2.0.0
 
 ```ts
 export function absurd<A>(_: never): A { ... }
-```
-
-Added in v2.0.0
-
-# and (function)
-
-**Signature**
-
-```ts
-export function and<A>(p1: Predicate<A>, p2: Predicate<A>): Predicate<A> { ... }
 ```
 
 Added in v2.0.0
@@ -231,6 +195,91 @@ export function flip<A, B, C>(f: (a: A, b: B) => C): (b: B, a: A) => C { ... }
 
 Added in v2.0.0
 
+# flow (function)
+
+Function composition (from left to right).
+
+**Signature**
+
+```ts
+export function flow<A extends Array<unknown>, B>(ab: (...a: A) => B): (...a: A) => B
+export function flow<A extends Array<unknown>, B, C>(ab: (...a: A) => B, bc: (b: B) => C): (...a: A) => C
+export function flow<A extends Array<unknown>, B, C, D>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D
+): (...a: A) => D
+export function flow<A extends Array<unknown>, B, C, D, E>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E
+): (...a: A) => E
+export function flow<A extends Array<unknown>, B, C, D, E, F>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F
+): (...a: A) => F
+export function flow<A extends Array<unknown>, B, C, D, E, F, G>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F,
+  fg: (f: F) => G
+): (...a: A) => G
+export function flow<A extends Array<unknown>, B, C, D, E, F, G, H>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F,
+  fg: (f: F) => G,
+  gh: (g: G) => H
+): (...a: A) => H
+export function flow<A extends Array<unknown>, B, C, D, E, F, G, H, I>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F,
+  fg: (f: F) => G,
+  gh: (g: G) => H,
+  hi: (h: H) => I
+): (...a: A) => I
+export function flow<A extends Array<unknown>, B, C, D, E, F, G, H, I, J>(
+  ab: (...a: A) => B,
+  bc: (b: B) => C,
+  cd: (c: C) => D,
+  de: (d: D) => E,
+  ef: (e: E) => F,
+  fg: (f: F) => G,
+  gh: (g: G) => H,
+  hi: (h: H) => I,
+  ij: (i: I) => J
+): (...a: A) => J { ... }
+```
+
+**Example**
+
+```ts
+import { flow } from 'fp-ts/lib/function'
+
+const len = (s: string): number => s.length
+const double = (n: number): number => n * 2
+
+const f = flow(
+  len,
+  double
+)
+
+assert.strictEqual(f('aaa'), 6)
+```
+
+Added in v2.0.0
+
 # identity (function)
 
 **Signature**
@@ -257,150 +306,6 @@ Added in v2.0.0
 
 ```ts
 export function not<A>(predicate: Predicate<A>): Predicate<A> { ... }
-```
-
-Added in v2.0.0
-
-# on (function)
-
-The `on` function is used to change the domain of a binary operator.
-
-**Signature**
-
-```ts
-export function on<A, B, C>(op: BinaryOperation<B, C>, f: (a: A) => B): BinaryOperation<A, C> { ... }
-```
-
-Added in v2.0.0
-
-# or (function)
-
-**Signature**
-
-```ts
-export function or<A>(p1: Predicate<A>, p2: Predicate<A>): Predicate<A> { ... }
-```
-
-Added in v2.0.0
-
-# pipe (function)
-
-**Signature**
-
-```ts
-export function pipe<A, B>(ab: (a: A) => B): (a: A) => B
-export function pipe<A, B, C>(ab: (a: A) => B, bc: (b: B) => C): (a: A) => C
-export function pipe<A, B, C, D>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D): (a: A) => D
-export function pipe<A, B, C, D, E>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E): (a: A) => E
-export function pipe<A, B, C, D, E, F>(
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F
-): (a: A) => F
-export function pipe<A, B, C, D, E, F, G>(
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G
-): (a: A) => G
-export function pipe<A, B, C, D, E, F, G, H>(
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G,
-  gh: (g: G) => H
-): (a: A) => H
-export function pipe<A, B, C, D, E, F, G, H, I>(
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G,
-  gh: (g: G) => H,
-  hi: (h: H) => I
-): (a: A) => I
-export function pipe<A, B, C, D, E, F, G, H, I, J>(
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G,
-  gh: (g: G) => H,
-  hi: (h: H) => I,
-  ij: (i: I) => J
-): (a: A) => J { ... }
-```
-
-Added in v2.0.0
-
-# pipeOp (function)
-
-**Signature**
-
-```ts
-export function pipeOp<A>(a: A): A
-export function pipeOp<A, B>(a: A, ab: (a: A) => B): B
-export function pipeOp<A, B, C>(a: A, ab: (a: A) => B, bc: (b: B) => C): C
-export function pipeOp<A, B, C, D>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D): D
-export function pipeOp<A, B, C, D, E>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E): E
-export function pipeOp<A, B, C, D, E, F>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F
-): F
-export function pipeOp<A, B, C, D, E, F, G>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G
-): G
-export function pipeOp<A, B, C, D, E, F, G, H>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G,
-  gh: (g: G) => H
-): H
-export function pipeOp<A, B, C, D, E, F, G, H, I>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G,
-  gh: (g: G) => H,
-  hi: (h: H) => I
-): I
-export function pipeOp<A, B, C, D, E, F, G, H, I, J>(
-  a: A,
-  ab: (a: A) => B,
-  bc: (b: B) => C,
-  cd: (c: C) => D,
-  de: (d: D) => E,
-  ef: (e: E) => F,
-  fg: (f: F) => G,
-  gh: (g: G) => H,
-  hi: (h: H) => I,
-  ij: (i: I) => J
-): J { ... }
 ```
 
 Added in v2.0.0

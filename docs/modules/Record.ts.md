@@ -14,6 +14,7 @@ parent: Modules
 - [record (constant)](#record-constant)
 - [toArray (constant)](#toarray-constant)
 - [collect (function)](#collect-function)
+- [deleteAt (function)](#deleteat-function)
 - [elem (function)](#elem-function)
 - [every (function)](#every-function)
 - [filterMapWithIndex (function)](#filtermapwithindex-function)
@@ -25,19 +26,19 @@ parent: Modules
 - [getMonoid (function)](#getmonoid-function)
 - [getShow (function)](#getshow-function)
 - [hasOwnProperty (function)](#hasownproperty-function)
-- [insert (function)](#insert-function)
+- [insertAt (function)](#insertat-function)
 - [isEmpty (function)](#isempty-function)
 - [isSubrecord (function)](#issubrecord-function)
 - [keys (function)](#keys-function)
 - [lookup (function)](#lookup-function)
 - [map (function)](#map-function)
 - [mapWithIndex (function)](#mapwithindex-function)
+- [modifyAt (function)](#modifyat-function)
 - [partitionMapWithIndex (function)](#partitionmapwithindex-function)
 - [partitionWithIndex (function)](#partitionwithindex-function)
 - [pop (function)](#pop-function)
 - [reduceRightWithIndex (function)](#reducerightwithindex-function)
 - [reduceWithIndex (function)](#reducewithindex-function)
-- [remove (function)](#remove-function)
 - [sequence (function)](#sequence-function)
 - [singleton (function)](#singleton-function)
 - [size (function)](#size-function)
@@ -45,6 +46,7 @@ parent: Modules
 - [toUnfoldable (function)](#tounfoldable-function)
 - [traverse (function)](#traverse-function)
 - [traverseWithIndex (function)](#traversewithindex-function)
+- [updateAt (function)](#updateat-function)
 
 ---
 
@@ -128,12 +130,26 @@ assert.deepStrictEqual(collect((key, val) => ({ key: key, value: val }))(x), [
 
 Added in v2.0.0
 
+# deleteAt (function)
+
+Delete a key and value from a map
+
+**Signature**
+
+```ts
+export function deleteAt<K extends string>(
+  k: K
+): <KS extends string, A>(r: Record<KS, A>) => Record<string extends K ? string : Exclude<KS, K>, A> { ... }
+```
+
+Added in v2.0.0
+
 # elem (function)
 
 **Signature**
 
 ```ts
-export function elem<A>(E: Eq<A>): (a: A) => (fa: Record<string, A>) => boolean { ... }
+export function elem<A>(E: Eq<A>): (a: A, fa: Record<string, A>) => boolean { ... }
 ```
 
 Added in v2.0.0
@@ -317,19 +333,19 @@ Added in v2.0.0
 **Signature**
 
 ```ts
-export function hasOwnProperty<K extends string>(k: K): (r: Record<K, unknown>) => boolean { ... }
+export function hasOwnProperty<K extends string>(k: K, r: Record<K, unknown>): boolean { ... }
 ```
 
 Added in v2.0.0
 
-# insert (function)
+# insertAt (function)
 
 Insert or replace a key/value pair in a map
 
 **Signature**
 
 ```ts
-export function insert<K extends string, A>(k: K, a: A): <KS extends string>(r: Record<KS, A>) => Record<KS | K, A> { ... }
+export function insertAt<K extends string, A>(k: K, a: A): <KS extends string>(r: Record<KS, A>) => Record<KS | K, A> { ... }
 ```
 
 Added in v2.0.0
@@ -375,7 +391,7 @@ Lookup the value for a key in a record
 **Signature**
 
 ```ts
-export function lookup(k: string): <A>(r: Record<string, A>) => Option<A> { ... }
+export function lookup<A>(k: string, r: Record<string, A>): Option<A> { ... }
 ```
 
 Added in v2.0.0
@@ -400,6 +416,16 @@ Map a record passing the keys to the iterating function
 
 ```ts
 export function mapWithIndex<K extends string, A, B>(f: (k: K, a: A) => B): (fa: Record<K, A>) => Record<K, B> { ... }
+```
+
+Added in v2.0.0
+
+# modifyAt (function)
+
+**Signature**
+
+```ts
+export function modifyAt<K extends string, A>(k: K, f: (a: A) => A): (r: Record<K, A>) => Option<Record<K, A>> { ... }
 ```
 
 Added in v2.0.0
@@ -440,7 +466,7 @@ Delete a key and value from a map, returning the value as well as the subsequent
 ```ts
 export function pop<K extends string>(
   k: K
-): <KS extends string, A>(d: Record<KS, A>) => Option<[A, Record<string extends K ? string : Exclude<KS, K>, A>]> { ... }
+): <KS extends string, A>(r: Record<KS, A>) => Option<[A, Record<string extends K ? string : Exclude<KS, K>, A>]> { ... }
 ```
 
 Added in v2.0.0
@@ -461,20 +487,6 @@ Added in v2.0.0
 
 ```ts
 export function reduceWithIndex<K extends string, A, B>(b: B, f: (k: K, b: B, a: A) => B): (fa: Record<K, A>) => B { ... }
-```
-
-Added in v2.0.0
-
-# remove (function)
-
-Delete a key and value from a map
-
-**Signature**
-
-```ts
-export function remove<K extends string>(
-  k: K
-): <KS extends string, A>(d: Record<KS, A>) => Record<string extends K ? string : Exclude<KS, K>, A> { ... }
 ```
 
 Added in v2.0.0
@@ -544,7 +556,7 @@ Unfolds a record into a list of key/value pairs
 ```ts
 export function toUnfoldable<F extends URIS>(
   unfoldable: Unfoldable1<F>
-): <K extends string, A>(d: Record<K, A>) => Type<F, [K, A]>
+): <K extends string, A>(r: Record<K, A>) => Type<F, [K, A]>
 export function toUnfoldable<F>(unfoldable: Unfoldable<F>): <K extends string, A>(r: Record<K, A>) => HKT<F, [K, A]> { ... }
 ```
 
@@ -596,6 +608,16 @@ export function traverseWithIndex<F extends URIS>(
 export function traverseWithIndex<F>(
   F: Applicative<F>
 ): <K extends string, A, B>(f: (k: K, a: A) => HKT<F, B>) => (ta: Record<K, A>) => HKT<F, Record<K, B>> { ... }
+```
+
+Added in v2.0.0
+
+# updateAt (function)
+
+**Signature**
+
+```ts
+export function updateAt<K extends string, A>(k: K, a: A): (r: Record<K, A>) => Option<Record<K, A>> { ... }
 ```
 
 Added in v2.0.0

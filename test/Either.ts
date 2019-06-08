@@ -1,12 +1,13 @@
 import * as assert from 'assert'
 import * as _ from '../src/Either'
 import { eqNumber, eqString } from '../src/Eq'
-import { identity, pipeOp as pipe } from '../src/function'
+import { identity } from '../src/function'
 import * as I from '../src/Identity'
 import { monoidString, monoidSum } from '../src/Monoid'
 import { none, option, some } from '../src/Option'
 import { semigroupString, semigroupSum } from '../src/Semigroup'
 import { showString } from '../src/Show'
+import { pipe } from '../src/pipeable'
 
 describe('Either', () => {
   it('fold', () => {
@@ -42,9 +43,9 @@ describe('Either', () => {
   })
 
   it('elem', () => {
-    assert.deepStrictEqual(_.elem(eqNumber)(2)(_.left('a')), false)
-    assert.deepStrictEqual(_.elem(eqNumber)(2)(_.right(2)), true)
-    assert.deepStrictEqual(_.elem(eqNumber)(1)(_.right(2)), false)
+    assert.deepStrictEqual(_.elem(eqNumber)(2, _.left('a')), false)
+    assert.deepStrictEqual(_.elem(eqNumber)(2, _.right(2)), true)
+    assert.deepStrictEqual(_.elem(eqNumber)(1, _.right(2)), false)
   })
 
   it('filterOrElse', () => {
@@ -233,9 +234,9 @@ describe('Either', () => {
     })
 
     it('fromNullable', () => {
-      assert.deepStrictEqual(_.fromNullable(null, 'default'), _.left('default'))
-      assert.deepStrictEqual(_.fromNullable(undefined, 'default'), _.left('default'))
-      assert.deepStrictEqual(_.fromNullable(1, 'default'), _.right(1))
+      assert.deepStrictEqual(_.fromNullable('default')(null), _.left('default'))
+      assert.deepStrictEqual(_.fromNullable('default')(undefined), _.left('default'))
+      assert.deepStrictEqual(_.fromNullable('default')(1), _.right(1))
     })
 
     it('tryCatch', () => {
@@ -504,5 +505,10 @@ describe('Either', () => {
       assert.deepStrictEqual(M.concat(_.left('foo'), _.right(1)), _.left('foo'))
       assert.deepStrictEqual(M.concat(_.left('foo'), _.left('bar')), _.left('foobar'))
     })
+  })
+
+  it('fromOption', () => {
+    assert.deepStrictEqual(_.fromOption(() => 'none')(none), _.left('none'))
+    assert.deepStrictEqual(_.fromOption(() => 'none')(some(1)), _.right(1))
   })
 })
