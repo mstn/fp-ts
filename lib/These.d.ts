@@ -128,23 +128,23 @@ export declare function isBoth<E, A>(fa: These<E, A>): fa is Both<E, A>;
  * import { leftOrBoth, left, both } from 'fp-ts/lib/These'
  * import { none, some } from 'fp-ts/lib/Option'
  *
- * assert.deepStrictEqual(leftOrBoth('a', none), left('a'))
- * assert.deepStrictEqual(leftOrBoth('a', some(1)), both('a', 1))
+ * assert.deepStrictEqual(leftOrBoth('a')(none), left('a'))
+ * assert.deepStrictEqual(leftOrBoth('a')(some(1)), both('a', 1))
  *
  * @since 2.0.0
  */
-export declare function leftOrBoth<E, A>(defaultLeft: E, ma: Option<A>): These<E, A>;
+export declare function leftOrBoth<E>(defaultLeft: E): <A>(ma: Option<A>) => These<E, A>;
 /**
  * @example
  * import { rightOrBoth, right, both } from 'fp-ts/lib/These'
  * import { none, some } from 'fp-ts/lib/Option'
  *
- * assert.deepStrictEqual(rightOrBoth(1, none), right(1))
- * assert.deepStrictEqual(rightOrBoth(1, some('a')), both('a', 1))
+ * assert.deepStrictEqual(rightOrBoth(1)(none), right(1))
+ * assert.deepStrictEqual(rightOrBoth(1)(some('a')), both('a', 1))
  *
  * @since 2.0.0
  */
-export declare function rightOrBoth<E, A>(defaultRight: A, me: Option<E>): These<E, A>;
+export declare function rightOrBoth<A>(defaultRight: A): <E>(me: Option<E>) => These<E, A>;
 /**
  * Returns the `L` value if and only if the value is constructed with `Left`
  *

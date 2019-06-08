@@ -183,7 +183,7 @@ export declare function getOrElse<A>(f: () => A): (ma: Option<A>) => A;
 /**
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): (a: A) => (ma: Option<A>) => boolean;
+export declare function elem<A>(E: Eq<A>): (a: A, ma: Option<A>) => boolean;
 /**
  * @since 2.0.0
  */
@@ -399,5 +399,5 @@ declare const alt: <A>(that: () => Option<A>) => (fa: Option<A>) => Option<A>, a
 }, filterMap: <A, B>(f: (a: A) => Option<B>) => (fa: Option<A>) => Option<B>, flatten: <A>(mma: Option<Option<A>>) => Option<A>, foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: Option<A>) => M, map: <A, B>(f: (a: A) => B) => (fa: Option<A>) => Option<B>, partition: {
     <A, B extends A>(refinement: Refinement<A, B>): (fa: Option<A>) => Separated<Option<A>, Option<B>>;
     <A>(predicate: Predicate<A>): (fa: Option<A>) => Separated<Option<A>, Option<A>>;
-}, partitionMap: <A, RL, RR>(f: (a: A) => Either<RL, RR>) => (fa: Option<A>) => Separated<Option<RL>, Option<RR>>, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: Option<A>) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: Option<A>) => B;
-export { alt, ap, apFirst, apSecond, chain, chainFirst, duplicate, extend, filter, filterMap, flatten, foldMap, map, partition, partitionMap, reduce, reduceRight };
+}, partitionMap: <A, RL, RR>(f: (a: A) => Either<RL, RR>) => (fa: Option<A>) => Separated<Option<RL>, Option<RR>>, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: Option<A>) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: Option<A>) => B, compact: <A>(fa: Option<Option<A>>) => Option<A>, separate: <A, B>(fa: Option<Either<A, B>>) => Separated<Option<A>, Option<B>>;
+export { alt, ap, apFirst, apSecond, chain, chainFirst, duplicate, extend, filter, filterMap, flatten, foldMap, map, partition, partitionMap, reduce, reduceRight, compact, separate };

@@ -73,30 +73,38 @@ export declare const toArray: <K extends string, A>(r: Record<K, A>) => Array<[K
  *
  * @since 2.0.0
  */
-export declare function toUnfoldable<F extends URIS>(unfoldable: Unfoldable1<F>): <K extends string, A>(d: Record<K, A>) => Type<F, [K, A]>;
+export declare function toUnfoldable<F extends URIS>(unfoldable: Unfoldable1<F>): <K extends string, A>(r: Record<K, A>) => Type<F, [K, A]>;
 export declare function toUnfoldable<F>(unfoldable: Unfoldable<F>): <K extends string, A>(r: Record<K, A>) => HKT<F, [K, A]>;
 /**
  * Insert or replace a key/value pair in a map
  *
  * @since 2.0.0
  */
-export declare function insert<K extends string, A>(k: K, a: A): <KS extends string>(r: Record<KS, A>) => Record<KS | K, A>;
+export declare function insertAt<K extends string, A>(k: K, a: A): <KS extends string>(r: Record<KS, A>) => Record<KS | K, A>;
 /**
  * @since 2.0.0
  */
-export declare function hasOwnProperty<K extends string>(k: K): (r: Record<K, unknown>) => boolean;
+export declare function hasOwnProperty<K extends string>(k: K, r: Record<K, unknown>): boolean;
 /**
  * Delete a key and value from a map
  *
  * @since 2.0.0
  */
-export declare function remove<K extends string>(k: K): <KS extends string, A>(d: Record<KS, A>) => Record<string extends K ? string : Exclude<KS, K>, A>;
+export declare function deleteAt<K extends string>(k: K): <KS extends string, A>(r: Record<KS, A>) => Record<string extends K ? string : Exclude<KS, K>, A>;
+/**
+ * @since 2.0.0
+ */
+export declare function updateAt<K extends string, A>(k: K, a: A): (r: Record<K, A>) => Option<Record<K, A>>;
+/**
+ * @since 2.0.0
+ */
+export declare function modifyAt<K extends string, A>(k: K, f: (a: A) => A): (r: Record<K, A>) => Option<Record<K, A>>;
 /**
  * Delete a key and value from a map, returning the value as well as the subsequent map
  *
  * @since 2.0.0
  */
-export declare function pop<K extends string>(k: K): <KS extends string, A>(d: Record<KS, A>) => Option<[A, Record<string extends K ? string : Exclude<KS, K>, A>]>;
+export declare function pop<K extends string>(k: K): <KS extends string, A>(r: Record<KS, A>) => Option<[A, Record<string extends K ? string : Exclude<KS, K>, A>]>;
 /**
  * Test whether one record contains all of the keys and values contained in another record
  *
@@ -125,7 +133,7 @@ export declare function getMonoid<K extends string, A>(S: Semigroup<A>): Monoid<
  *
  * @since 2.0.0
  */
-export declare function lookup(k: string): <A>(r: Record<string, A>) => Option<A>;
+export declare function lookup<A>(k: string, r: Record<string, A>): Option<A>;
 /**
  * @since 2.0.0
  */
@@ -264,8 +272,16 @@ export declare function some<A>(predicate: (a: A) => boolean): (r: Record<string
 /**
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): (a: A) => (fa: Record<string, A>) => boolean;
+export declare function elem<A>(E: Eq<A>): (a: A, fa: Record<string, A>) => boolean;
 /**
  * @since 2.0.0
  */
 export declare const record: FunctorWithIndex1<URI, string> & Foldable1<URI> & TraversableWithIndex1<URI, string> & Compactable1<URI> & FilterableWithIndex1<URI, string> & Witherable1<URI> & FoldableWithIndex1<URI, string>;
+declare const filter: {
+    <A, B extends A>(refinement: import("./function").Refinement<A, B>): (fa: Record<string, A>) => Record<string, B>;
+    <A>(predicate: Predicate<A>): (fa: Record<string, A>) => Record<string, A>;
+}, filterMap: <A, B>(f: (a: A) => Option<B>) => (fa: Record<string, A>) => Record<string, B>, foldMap: <M>(M: Monoid<M>) => <A>(f: (a: A) => M) => (fa: Record<string, A>) => M, partition: {
+    <A, B extends A>(refinement: import("./function").Refinement<A, B>): (fa: Record<string, A>) => Separated<Record<string, A>, Record<string, B>>;
+    <A>(predicate: Predicate<A>): (fa: Record<string, A>) => Separated<Record<string, A>, Record<string, A>>;
+}, partitionMap: <A, RL, RR>(f: (a: A) => Either<RL, RR>) => (fa: Record<string, A>) => Separated<Record<string, RL>, Record<string, RR>>, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: Record<string, A>) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: Record<string, A>) => B, compact: <A>(fa: Record<string, Option<A>>) => Record<string, A>, separate: <A, B>(fa: Record<string, Either<A, B>>) => Separated<Record<string, A>, Record<string, B>>;
+export { filter, filterMap, foldMap, partition, partitionMap, reduce, reduceRight, compact, separate };

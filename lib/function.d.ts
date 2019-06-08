@@ -1,17 +1,10 @@
 /**
- * For use with phantom fields
- *
- * @since 2.0.0
- */
-export declare const phantom: any;
-/**
  * Thunk type
  */
 export declare type Lazy<A> = () => A;
 export declare type Predicate<A> = (a: A) => boolean;
 export declare type Refinement<A, B extends A> = (a: A) => a is B;
 export declare type Endomorphism<A> = (a: A) => A;
-export declare type BinaryOperation<A, B> = (a1: A, a2: A) => B;
 /**
  * @example
  * import { FunctionN } from 'fp-ts/lib/function'
@@ -33,14 +26,6 @@ export declare const unsafeCoerce: <A, B>(a: A) => B;
  * @since 2.0.0
  */
 export declare function not<A>(predicate: Predicate<A>): Predicate<A>;
-/**
- * @since 2.0.0
- */
-export declare function or<A>(p1: Predicate<A>, p2: Predicate<A>): Predicate<A>;
-/**
- * @since 2.0.0
- */
-export declare function and<A>(p1: Predicate<A>, p2: Predicate<A>): Predicate<A>;
 /**
  * @since 2.0.0
  */
@@ -82,36 +67,29 @@ export declare const constVoid: () => void;
  */
 export declare function flip<A, B, C>(f: (a: A, b: B) => C): (b: B, a: A) => C;
 /**
- * The `on` function is used to change the domain of a binary operator.
+ * Function composition (from left to right).
+ *
+ * @example
+ * import { flow } from 'fp-ts/lib/function'
+ *
+ * const len = (s: string): number => s.length
+ * const double = (n: number): number => n * 2
+ *
+ * const f = flow(len, double)
+ *
+ * assert.strictEqual(f('aaa'), 6)
  *
  * @since 2.0.0
  */
-export declare function on<A, B, C>(op: BinaryOperation<B, C>, f: (a: A) => B): BinaryOperation<A, C>;
-/**
- * @since 2.0.0
- */
-export declare function pipe<A, B>(ab: (a: A) => B): (a: A) => B;
-export declare function pipe<A, B, C>(ab: (a: A) => B, bc: (b: B) => C): (a: A) => C;
-export declare function pipe<A, B, C, D>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D): (a: A) => D;
-export declare function pipe<A, B, C, D, E>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E): (a: A) => E;
-export declare function pipe<A, B, C, D, E, F>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F): (a: A) => F;
-export declare function pipe<A, B, C, D, E, F, G>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G): (a: A) => G;
-export declare function pipe<A, B, C, D, E, F, G, H>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G, gh: (g: G) => H): (a: A) => H;
-export declare function pipe<A, B, C, D, E, F, G, H, I>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G, gh: (g: G) => H, hi: (h: H) => I): (a: A) => I;
-export declare function pipe<A, B, C, D, E, F, G, H, I, J>(ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G, gh: (g: G) => H, hi: (h: H) => I, ij: (i: I) => J): (a: A) => J;
-/**
- * @since 2.0.0
- */
-export declare function pipeOp<A>(a: A): A;
-export declare function pipeOp<A, B>(a: A, ab: (a: A) => B): B;
-export declare function pipeOp<A, B, C>(a: A, ab: (a: A) => B, bc: (b: B) => C): C;
-export declare function pipeOp<A, B, C, D>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D): D;
-export declare function pipeOp<A, B, C, D, E>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E): E;
-export declare function pipeOp<A, B, C, D, E, F>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F): F;
-export declare function pipeOp<A, B, C, D, E, F, G>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G): G;
-export declare function pipeOp<A, B, C, D, E, F, G, H>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G, gh: (g: G) => H): H;
-export declare function pipeOp<A, B, C, D, E, F, G, H, I>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G, gh: (g: G) => H, hi: (h: H) => I): I;
-export declare function pipeOp<A, B, C, D, E, F, G, H, I, J>(a: A, ab: (a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G, gh: (g: G) => H, hi: (h: H) => I, ij: (i: I) => J): J;
+export declare function flow<A extends Array<unknown>, B>(ab: (...a: A) => B): (...a: A) => B;
+export declare function flow<A extends Array<unknown>, B, C>(ab: (...a: A) => B, bc: (b: B) => C): (...a: A) => C;
+export declare function flow<A extends Array<unknown>, B, C, D>(ab: (...a: A) => B, bc: (b: B) => C, cd: (c: C) => D): (...a: A) => D;
+export declare function flow<A extends Array<unknown>, B, C, D, E>(ab: (...a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E): (...a: A) => E;
+export declare function flow<A extends Array<unknown>, B, C, D, E, F>(ab: (...a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F): (...a: A) => F;
+export declare function flow<A extends Array<unknown>, B, C, D, E, F, G>(ab: (...a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G): (...a: A) => G;
+export declare function flow<A extends Array<unknown>, B, C, D, E, F, G, H>(ab: (...a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G, gh: (g: G) => H): (...a: A) => H;
+export declare function flow<A extends Array<unknown>, B, C, D, E, F, G, H, I>(ab: (...a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G, gh: (g: G) => H, hi: (h: H) => I): (...a: A) => I;
+export declare function flow<A extends Array<unknown>, B, C, D, E, F, G, H, I, J>(ab: (...a: A) => B, bc: (b: B) => C, cd: (c: C) => D, de: (d: D) => E, ef: (e: E) => F, fg: (f: F) => G, gh: (g: G) => H, hi: (h: H) => I, ij: (i: I) => J): (...a: A) => J;
 /**
  * @since 2.0.0
  */

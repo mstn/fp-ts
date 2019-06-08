@@ -47,23 +47,23 @@ export declare const execState: <S, R, E, A>(ma: StateReaderTaskEither<S, R, E, 
 /**
  * @since 2.0.0
  */
-export declare function left<S, E>(e: E): StateReaderTaskEither<S, unknown, E, never>;
+export declare function left<S, R, E>(e: E): StateReaderTaskEither<S, R, E, never>;
 /**
  * @since 2.0.0
  */
-export declare const right: <S, A>(a: A) => StateReaderTaskEither<S, unknown, never, A>;
+export declare const right: <S, R, A>(a: A) => StateReaderTaskEither<S, R, never, A>;
 /**
  * @since 2.0.0
  */
-export declare function rightTask<S, A>(ma: Task<A>): StateReaderTaskEither<S, unknown, never, A>;
+export declare function rightTask<S, R, A>(ma: Task<A>): StateReaderTaskEither<S, R, never, A>;
 /**
  * @since 2.0.0
  */
-export declare function leftTask<S, E>(me: Task<E>): StateReaderTaskEither<S, unknown, E, never>;
+export declare function leftTask<S, R, E>(me: Task<E>): StateReaderTaskEither<S, R, E, never>;
 /**
  * @since 2.0.0
  */
-export declare function fromTaskEither<S, E, A>(ma: TaskEither<E, A>): StateReaderTaskEither<S, unknown, E, A>;
+export declare function fromTaskEither<S, R, E, A>(ma: TaskEither<E, A>): StateReaderTaskEither<S, R, E, A>;
 /**
  * @since 2.0.0
  */
@@ -75,31 +75,31 @@ export declare function leftReader<S, R, E>(me: Reader<R, E>): StateReaderTaskEi
 /**
  * @since 2.0.0
  */
-export declare function fromIOEither<S, E, A>(ma: IOEither<E, A>): StateReaderTaskEither<S, unknown, E, A>;
+export declare function fromIOEither<S, R, E, A>(ma: IOEither<E, A>): StateReaderTaskEither<S, R, E, A>;
 /**
  * @since 2.0.0
  */
-export declare function fromEither<S, E, A>(ma: Either<E, A>): StateReaderTaskEither<S, unknown, E, A>;
+export declare function fromEither<S, R, E, A>(ma: Either<E, A>): StateReaderTaskEither<S, R, E, A>;
 /**
  * @since 2.0.0
  */
-export declare function fromOption<S, E, A>(ma: Option<A>, onNone: () => E): StateReaderTaskEither<S, unknown, E, A>;
+export declare function fromOption<E>(onNone: () => E): <S, R, A>(ma: Option<A>) => StateReaderTaskEither<S, R, E, A>;
 /**
  * @since 2.0.0
  */
-export declare function rightIO<S, A>(ma: IO<A>): StateReaderTaskEither<S, unknown, never, A>;
+export declare function rightIO<S, R, A>(ma: IO<A>): StateReaderTaskEither<S, R, never, A>;
 /**
  * @since 2.0.0
  */
-export declare function leftIO<S, E>(me: IO<E>): StateReaderTaskEither<S, unknown, E, never>;
+export declare function leftIO<S, R, E>(me: IO<E>): StateReaderTaskEither<S, R, E, never>;
 /**
  * @since 2.0.0
  */
-export declare const rightState: <S, A>(ma: State<S, A>) => StateReaderTaskEither<S, unknown, never, A>;
+export declare const rightState: <S, R, A>(ma: State<S, A>) => StateReaderTaskEither<S, R, never, A>;
 /**
  * @since 2.0.0
  */
-export declare function leftState<S, E>(me: State<S, E>): StateReaderTaskEither<S, unknown, E, never>;
+export declare function leftState<S, R, E>(me: State<S, E>): StateReaderTaskEither<S, R, E, never>;
 /**
  * @since 2.0.0
  */
@@ -109,25 +109,25 @@ export declare const fromReaderTaskEither: <S, R, E, A>(ma: ReaderTaskEither<R, 
  *
  * @since 2.0.0
  */
-export declare const get: <S>() => StateReaderTaskEither<S, unknown, never, S>;
+export declare const get: <S, R>() => StateReaderTaskEither<S, R, never, S>;
 /**
  * Set the state
  *
  * @since 2.0.0
  */
-export declare const put: <S>(s: S) => StateReaderTaskEither<S, unknown, never, void>;
+export declare const put: <S, R>(s: S) => StateReaderTaskEither<S, R, never, void>;
 /**
  * Modify the state by applying a function to the current state
  *
  * @since 2.0.0
  */
-export declare const modify: <S>(f: (s: S) => S) => StateReaderTaskEither<S, unknown, never, void>;
+export declare const modify: <S, R>(f: (s: S) => S) => StateReaderTaskEither<S, R, never, void>;
 /**
  * Get a value which depends on the current state
  *
  * @since 2.0.0
  */
-export declare const gets: <S, A>(f: (s: S) => A) => StateReaderTaskEither<S, unknown, never, A>;
+export declare const gets: <S, R, A>(f: (s: S) => A) => StateReaderTaskEither<S, R, never, A>;
 /**
  * @since 2.0.0
  */

@@ -88,11 +88,11 @@ export declare function right<A>(a: A): Either<never, A>;
 /**
  * @since 2.0.0
  */
-export declare function fromOption<E, A>(ma: Option<A>, onNone: () => E): Either<E, A>;
+export declare function fromOption<E>(onNone: () => E): <A>(ma: Option<A>) => Either<E, A>;
 /**
  * @since 2.0.0
  */
-export declare function fromPredicate<E, A, B extends A>(predicate: Refinement<A, B>, onFalse: (a: A) => E): (a: A) => Either<E, B>;
+export declare function fromPredicate<E, A, B extends A>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (a: A) => Either<E, B>;
 export declare function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (a: A) => Either<E, A>;
 /**
  * Takes a default and a nullable value, if the value is not nully, turn it into a `Right`, if the value is nully use
@@ -100,7 +100,7 @@ export declare function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a
  *
  * @since 2.0.0
  */
-export declare function fromNullable<E, A>(a: A | null | undefined, e: E): Either<E, A>;
+export declare function fromNullable<E>(e: E): <A>(a: A | null | undefined) => Either<E, A>;
 /**
  * Default value for the `onError` argument of `tryCatch`
  *
@@ -209,7 +209,7 @@ export declare function getOrElse<E, A>(f: (e: E) => A): (ma: Either<E, A>) => A
 /**
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): (a: A) => <E>(ma: Either<E, A>) => boolean;
+export declare function elem<A>(E: Eq<A>): <E>(a: A, ma: Either<E, A>) => boolean;
 /**
  * @since 2.0.0
  */

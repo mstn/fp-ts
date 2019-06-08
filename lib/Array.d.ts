@@ -134,14 +134,14 @@ export declare function flatten<A>(mma: Array<Array<A>>): Array<A>;
  * Break an array into its first element and remaining elements
  *
  * @example
- * import { fold } from 'fp-ts/lib/Array'
+ * import { foldLeft } from 'fp-ts/lib/Array'
  *
- * const len: <A>(as: Array<A>) => number = fold(() => 0, (_, tail) => 1 + len(tail))
+ * const len: <A>(as: Array<A>) => number = foldLeft(() => 0, (_, tail) => 1 + len(tail))
  * assert.strictEqual(len([1, 2, 3]), 3)
  *
  * @since 2.0.0
  */
-export declare function fold<A, B>(onNil: () => B, onCons: (head: A, tail: Array<A>) => B): (as: Array<A>) => B;
+export declare function foldLeft<A, B>(onNil: () => B, onCons: (head: A, tail: Array<A>) => B): (as: Array<A>) => B;
 /**
  * Break an array into its initial elements and the last element
  *
@@ -152,14 +152,14 @@ export declare function foldRight<A, B>(onNil: () => B, onCons: (init: Array<A>,
  * Same as `reduce` but it carries over the intermediate steps
  *
  * ```ts
- * import { scan } from 'fp-ts/lib/Array'
+ * import { scanLeft } from 'fp-ts/lib/Array'
  *
- * assert.deepStrictEqual(scan(10, (b, a: number) => b - a)([1, 2, 3]), [10, 9, 7, 4])
+ * assert.deepStrictEqual(scanLeft(10, (b, a: number) => b - a)([1, 2, 3]), [10, 9, 7, 4])
  * ```
  *
  * @since 2.0.0
  */
-export declare function scan<A, B>(b: B, f: (b: B, a: A) => B): (as: Array<A>) => Array<B>;
+export declare function scanLeft<A, B>(b: B, f: (b: B, a: A) => B): (as: Array<A>) => Array<B>;
 /**
  * Fold an array from the right, keeping all intermediate results instead of only the final result
  *
@@ -183,11 +183,17 @@ export declare function scanRight<A, B>(b: B, f: (a: A, b: B) => B): (as: Array<
  */
 export declare function isEmpty<A>(as: Array<A>): boolean;
 /**
+ * Test whether an array is non empty narrowing down the type to `NonEmptyArray<A>`
+ *
+ * @since 2.0.0
+ */
+export declare function isNonEmpty<A>(as: Array<A>): as is NonEmptyArray<A>;
+/**
  * Test whether an array contains a particular index
  *
  * @since 2.0.0
  */
-export declare function isOutOfBound<A>(i: number): (as: Array<A>) => boolean;
+export declare function isOutOfBound<A>(i: number, as: Array<A>): boolean;
 /**
  * This function provides a safe way to read a value at a particular index from an array
  *
@@ -195,12 +201,12 @@ export declare function isOutOfBound<A>(i: number): (as: Array<A>) => boolean;
  * import { lookup } from 'fp-ts/lib/Array'
  * import { some, none } from 'fp-ts/lib/Option'
  *
- * assert.deepStrictEqual(lookup(1)([1, 2, 3]), some(2))
- * assert.deepStrictEqual(lookup(3)([1, 2, 3]), none)
+ * assert.deepStrictEqual(lookup(1, [1, 2, 3]), some(2))
+ * assert.deepStrictEqual(lookup(3, [1, 2, 3]), none)
  *
  * @since 2.0.0
  */
-export declare function lookup(i: number): <A>(as: Array<A>) => Option<A>;
+export declare function lookup<A>(i: number, as: Array<A>): Option<A>;
 /**
  * Attaches an element to the front of an array, creating a new non empty array
  *
@@ -280,13 +286,13 @@ export declare function init<A>(as: Array<A>): Option<Array<A>>;
  * `n` must be a natural number
  *
  * @example
- * import { take } from 'fp-ts/lib/Array'
+ * import { takeLeft } from 'fp-ts/lib/Array'
  *
- * assert.deepStrictEqual(take(2)([1, 2, 3]), [1, 2])
+ * assert.deepStrictEqual(takeLeft(2)([1, 2, 3]), [1, 2])
  *
  * @since 2.0.0
  */
-export declare function take(n: number): <A>(as: Array<A>) => Array<A>;
+export declare function takeLeft(n: number): <A>(as: Array<A>) => Array<A>;
 /**
  * Keep only a number of elements from the end of an array, creating a new array.
  * `n` must be a natural number
@@ -303,31 +309,31 @@ export declare function takeRight(n: number): <A>(as: Array<A>) => Array<A>;
  * Calculate the longest initial subarray for which all element satisfy the specified predicate, creating a new array
  *
  * @example
- * import { takeWhile } from 'fp-ts/lib/Array'
+ * import { takeLeftWhile } from 'fp-ts/lib/Array'
  *
- * assert.deepStrictEqual(takeWhile((n: number) => n % 2 === 0)([2, 4, 3, 6]), [2, 4])
+ * assert.deepStrictEqual(takeLeftWhile((n: number) => n % 2 === 0)([2, 4, 3, 6]), [2, 4])
  *
  * @since 2.0.0
  */
-export declare function takeWhile<A, B extends A>(refinement: Refinement<A, B>): (as: Array<A>) => Array<B>;
-export declare function takeWhile<A>(predicate: Predicate<A>): (as: Array<A>) => Array<A>;
+export declare function takeLeftWhile<A, B extends A>(refinement: Refinement<A, B>): (as: Array<A>) => Array<B>;
+export declare function takeLeftWhile<A>(predicate: Predicate<A>): (as: Array<A>) => Array<A>;
 /**
  * Split an array into two parts:
  * 1. the longest initial subarray for which all elements satisfy the specified predicate
  * 2. the remaining elements
  *
  * @example
- * import { span } from 'fp-ts/lib/Array'
+ * import { spanLeft } from 'fp-ts/lib/Array'
  *
- * assert.deepStrictEqual(span((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), { init: [1, 3], rest: [2, 4, 5] })
+ * assert.deepStrictEqual(spanLeft((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), { init: [1, 3], rest: [2, 4, 5] })
  *
  * @since 2.0.0
  */
-export declare function span<A, B extends A>(refinement: Refinement<A, B>): (as: Array<A>) => {
+export declare function spanLeft<A, B extends A>(refinement: Refinement<A, B>): (as: Array<A>) => {
     init: Array<B>;
     rest: Array<A>;
 };
-export declare function span<A>(predicate: Predicate<A>): (as: Array<A>) => {
+export declare function spanLeft<A>(predicate: Predicate<A>): (as: Array<A>) => {
     init: Array<A>;
     rest: Array<A>;
 };
@@ -335,13 +341,13 @@ export declare function span<A>(predicate: Predicate<A>): (as: Array<A>) => {
  * Drop a number of elements from the start of an array, creating a new array
  *
  * @example
- * import { drop } from 'fp-ts/lib/Array'
+ * import { dropLeft } from 'fp-ts/lib/Array'
  *
- * assert.deepStrictEqual(drop(2)([1, 2, 3]), [3])
+ * assert.deepStrictEqual(dropLeft(2)([1, 2, 3]), [3])
  *
  * @since 2.0.0
  */
-export declare function drop(n: number): <A>(as: Array<A>) => Array<A>;
+export declare function dropLeft(n: number): <A>(as: Array<A>) => Array<A>;
 /**
  * Drop a number of elements from the end of an array, creating a new array
  *
@@ -357,13 +363,13 @@ export declare function dropRight(n: number): <A>(as: Array<A>) => Array<A>;
  * Remove the longest initial subarray for which all element satisfy the specified predicate, creating a new array
  *
  * @example
- * import { dropWhile } from 'fp-ts/lib/Array'
+ * import { dropLeftWhile } from 'fp-ts/lib/Array'
  *
- * assert.deepStrictEqual(dropWhile((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), [2, 4, 5])
+ * assert.deepStrictEqual(dropLeftWhile((n: number) => n % 2 === 1)([1, 3, 2, 4, 5]), [2, 4, 5])
  *
  * @since 2.0.0
  */
-export declare function dropWhile<A>(predicate: Predicate<A>): (as: Array<A>) => Array<A>;
+export declare function dropLeftWhile<A>(predicate: Predicate<A>): (as: Array<A>) => Array<A>;
 /**
  * Find the first index for which a predicate holds
  *
@@ -633,12 +639,12 @@ export declare function rotate(n: number): <A>(as: Array<A>) => Array<A>;
  * import { elem } from 'fp-ts/lib/Array'
  * import { eqNumber } from 'fp-ts/lib/Eq'
  *
- * assert.strictEqual(elem(eqNumber)(1)([1, 2, 3]), true)
- * assert.strictEqual(elem(eqNumber)(4)([1, 2, 3]), false)
+ * assert.strictEqual(elem(eqNumber)(1, [1, 2, 3]), true)
+ * assert.strictEqual(elem(eqNumber)(4, [1, 2, 3]), false)
  *
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): (a: A) => (as: Array<A>) => boolean;
+export declare function elem<A>(E: Eq<A>): (a: A, as: Array<A>) => boolean;
 /**
  * Remove duplicates from an array, keeping the first occurance of an element.
  *
@@ -686,11 +692,11 @@ export declare function sortBy<A>(ords: Array<Ord<A>>): (as: Array<A>) => Array<
  *
  * @example
  * import { Eq, eqNumber } from 'fp-ts/lib/Eq'
- * import { chop, span } from 'fp-ts/lib/Array'
+ * import { chop, spanLeft } from 'fp-ts/lib/Array'
  *
  * const group = <A>(S: Eq<A>): ((as: Array<A>) => Array<Array<A>>) => {
  *   return chop(as => {
- *     const { init, rest } = span((a: A) => S.equals(a, as[0]))(as)
+ *     const { init, rest } = spanLeft((a: A) => S.equals(a, as[0]))(as)
  *     return [init, rest]
  *   })
  * }
@@ -698,7 +704,7 @@ export declare function sortBy<A>(ords: Array<Ord<A>>): (as: Array<A>) => Array<
  *
  * @since 2.0.0
  */
-export declare function chop<A, B>(f: (as: Array<A>) => [B, Array<A>]): (as: Array<A>) => Array<B>;
+export declare function chop<A, B>(f: (as: NonEmptyArray<A>) => [B, Array<A>]): (as: Array<A>) => Array<B>;
 /**
  * Splits an array into two pieces, the first piece has `n` elements.
  *
@@ -712,11 +718,11 @@ export declare function chop<A, B>(f: (as: Array<A>) => [B, Array<A>]): (as: Arr
 export declare function splitAt(n: number): <A>(as: Array<A>) => [Array<A>, Array<A>];
 /**
  * Splits an array into length-`n` pieces. The last piece will be shorter if `n` does not evenly divide the length of
- * the array. Note that `chunksOf([], n)` is `[]`, not `[[]]`. This is intentional, and is consistent with a recursive
+ * the array. Note that `chunksOf(n)([])` is `[]`, not `[[]]`. This is intentional, and is consistent with a recursive
  * definition of `chunksOf`; it satisfies the property that
  *
  * ```ts
- * chunksOf(xs, n).concat(chunksOf(ys, n)) == chunksOf(xs.concat(ys)), n)
+ * chunksOf(n)(xs).concat(chunksOf(n)(ys)) == chunksOf(n)(xs.concat(ys)))
  * ```
  *
  * whenever `n` evenly divides the length of `xs`.
@@ -813,5 +819,5 @@ declare const alt: <A>(that: () => A[]) => (fa: A[]) => A[], ap: <A>(fa: A[]) =>
 }, partitionMap: <A, RL, RR>(f: (a: A) => Either<RL, RR>) => (fa: A[]) => Separated<RL[], RR[]>, partitionMapWithIndex: <A, RL, RR>(f: (i: number, a: A) => Either<RL, RR>) => (fa: A[]) => Separated<RL[], RR[]>, partitionWithIndex: {
     <A, B extends A>(refinementWithIndex: import("./FilterableWithIndex").RefinementWithIndex<number, A, B>): (fa: A[]) => Separated<A[], B[]>;
     <A>(predicateWithIndex: import("./FilterableWithIndex").PredicateWithIndex<number, A>): (fa: A[]) => Separated<A[], A[]>;
-}, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: A[]) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: A[]) => B, reduceRightWithIndex: <A, B>(b: B, f: (i: number, a: A, b: B) => B) => (fa: A[]) => B, reduceWithIndex: <A, B>(b: B, f: (i: number, b: B, a: A) => B) => (fa: A[]) => B;
-export { alt, ap, apFirst, apSecond, chain, chainFirst, duplicate, extend, filter, filterMap, filterMapWithIndex, filterWithIndex, foldMap, foldMapWithIndex, map, mapWithIndex, partition, partitionMap, partitionMapWithIndex, partitionWithIndex, reduce, reduceRight, reduceRightWithIndex, reduceWithIndex };
+}, reduce: <A, B>(b: B, f: (b: B, a: A) => B) => (fa: A[]) => B, reduceRight: <A, B>(b: B, f: (a: A, b: B) => B) => (fa: A[]) => B, reduceRightWithIndex: <A, B>(b: B, f: (i: number, a: A, b: B) => B) => (fa: A[]) => B, reduceWithIndex: <A, B>(b: B, f: (i: number, b: B, a: A) => B) => (fa: A[]) => B, compact: <A>(fa: Option<A>[]) => A[], separate: <A, B>(fa: Either<A, B>[]) => Separated<A[], B[]>;
+export { alt, ap, apFirst, apSecond, chain, chainFirst, duplicate, extend, filter, filterMap, filterMapWithIndex, filterWithIndex, foldMap, foldMapWithIndex, map, mapWithIndex, partition, partitionMap, partitionMapWithIndex, partitionWithIndex, reduce, reduceRight, reduceRightWithIndex, reduceWithIndex, compact, separate };

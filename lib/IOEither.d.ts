@@ -54,11 +54,11 @@ export declare const fromEither: <E, A>(ma: Either<E, A>) => IOEither<E, A>;
 /**
  * @since 2.0.0
  */
-export declare function fromOption<E, A>(ma: Option<A>, onNone: () => E): IOEither<E, A>;
+export declare function fromOption<E>(onNone: () => E): <A>(ma: Option<A>) => IOEither<E, A>;
 /**
  * @since 2.0.0
  */
-export declare function fromPredicate<E, A, B extends A>(predicate: Refinement<A, B>, onFalse: (a: A) => E): (a: A) => IOEither<E, B>;
+export declare function fromPredicate<E, A, B extends A>(refinement: Refinement<A, B>, onFalse: (a: A) => E): (a: A) => IOEither<E, B>;
 export declare function fromPredicate<E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): (a: A) => IOEither<E, A>;
 /**
  * @since 2.0.0

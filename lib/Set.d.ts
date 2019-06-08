@@ -62,7 +62,7 @@ export declare function partition<A>(predicate: Predicate<A>): (set: Set<A>) => 
  *
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): (a: A) => (set: Set<A>) => boolean;
+export declare function elem<A>(E: Eq<A>): (a: A, set: Set<A>) => boolean;
 /**
  * Form the union of two sets
  *

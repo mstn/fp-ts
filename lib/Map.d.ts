@@ -49,13 +49,13 @@ export declare function isEmpty<K, A>(d: Map<K, A>): boolean;
  *
  * @since 2.0.0
  */
-export declare function member<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => boolean;
+export declare function member<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => boolean;
 /**
  * Test whether or not a value is a member of a map
  *
  * @since 2.0.0
  */
-export declare function elem<A>(E: Eq<A>): (a: A) => <K>(m: Map<K, A>) => boolean;
+export declare function elem<A>(E: Eq<A>): <K>(a: A, m: Map<K, A>) => boolean;
 /**
  * Get a sorted array of the keys contained in a map
  *
@@ -90,13 +90,21 @@ export declare function toUnfoldable<K, F>(O: Ord<K>, U: Unfoldable<F>): <A>(d: 
  *
  * @since 2.0.0
  */
-export declare function insert<K>(E: Eq<K>): <A>(k: K, a: A) => (m: Map<K, A>) => Map<K, A>;
+export declare function insertAt<K>(E: Eq<K>): <A>(k: K, a: A) => (m: Map<K, A>) => Map<K, A>;
 /**
  * Delete a key and value from a map
  *
  * @since 2.0.0
  */
-export declare function remove<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Map<K, A>;
+export declare function deleteAt<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Map<K, A>;
+/**
+ * @since 2.0.0
+ */
+export declare function updateAt<K>(E: Eq<K>): <A>(k: K, a: A) => (m: Map<K, A>) => Option<Map<K, A>>;
+/**
+ * @since 2.0.0
+ */
+export declare function modifyAt<K>(E: Eq<K>): <A>(k: K, f: (a: A) => A) => (m: Map<K, A>) => Option<Map<K, A>>;
 /**
  * Delete a key and value from a map, returning the value as well as the subsequent map
  *
@@ -109,13 +117,13 @@ export declare function pop<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Option<
  *
  * @since 2.0.0
  */
-export declare function lookupWithKey<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Option<[K, A]>;
+export declare function lookupWithKey<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Option<[K, A]>;
 /**
  * Lookup the value for a key in a `Map`.
  *
  * @since 2.0.0
  */
-export declare function lookup<K>(E: Eq<K>): (k: K) => <A>(m: Map<K, A>) => Option<A>;
+export declare function lookup<K>(E: Eq<K>): <A>(k: K, m: Map<K, A>) => Option<A>;
 /**
  * Test whether or not one Map contains all of the keys and values contained in another Map
  *
@@ -170,5 +178,5 @@ declare const filter: {
 }, filterMap: <A, B>(f: (a: A) => Option<B>) => <L>(fa: Map<L, A>) => Map<L, B>, map: <A, B>(f: (a: A) => B) => <L>(fa: Map<L, A>) => Map<L, B>, partition: {
     <A, B extends A>(refinement: import("./function").Refinement<A, B>): <L>(fa: Map<L, A>) => Separated<Map<L, A>, Map<L, B>>;
     <A>(predicate: Predicate<A>): <L>(fa: Map<L, A>) => Separated<Map<L, A>, Map<L, A>>;
-}, partitionMap: <A, RL, RR>(f: (a: A) => Either<RL, RR>) => <L>(fa: Map<L, A>) => Separated<Map<L, RL>, Map<L, RR>>;
-export { filter, filterMap, map, partition, partitionMap };
+}, partitionMap: <A, RL, RR>(f: (a: A) => Either<RL, RR>) => <L>(fa: Map<L, A>) => Separated<Map<L, RL>, Map<L, RR>>, compact: <L, A>(fa: Map<L, Option<A>>) => Map<L, A>, separate: <L, A, B>(fa: Map<L, Either<A, B>>) => Separated<Map<L, A>, Map<L, B>>;
+export { filter, filterMap, map, partition, partitionMap, compact, separate };
