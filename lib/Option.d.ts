@@ -122,6 +122,7 @@ export declare class None<A> {
      * import { some } from 'fp-ts/lib/Option'
      *
      * assert.deepStrictEqual(some(1).map(n => n * 2), some(2))
+     * @obsolete
      */
     map<B>(f: (a: A) => B): Option<B>;
     /**
@@ -154,6 +155,7 @@ export declare class None<A> {
      *     .mapNullable(bar => bar.baz),
      *   none
      * )
+     * @obsolete
      */
     mapNullable<B>(f: (a: A) => B | null | undefined): Option<B>;
     /**
@@ -165,6 +167,7 @@ export declare class None<A> {
      *
      * assert.deepStrictEqual(some(2).ap(some((x: number) => x + 1)), some(3))
      * assert.deepStrictEqual(none.ap(some((x: number) => x + 1)), none)
+     * @obsolete
      */
     ap<B>(fab: Option<(a: A) => B>): Option<B>;
     /**
@@ -175,14 +178,17 @@ export declare class None<A> {
      *
      * assert.deepStrictEqual(some((x: number) => x + 1).ap_(some(2)), some(3))
      * assert.deepStrictEqual(none.ap_(some(2)), none)
+     * @obsolete
      */
     ap_<B, C>(this: Option<(b: B) => C>, fb: Option<B>): Option<C>;
     /**
      * Returns the result of applying f to this `Option`'s value if this `Option` is nonempty. Returns `None` if this
      * `Option` is empty. Slightly different from `map` in that `f` is expected to return an `Option` (which could be
      * `None`)
+     * @obsolete
      */
     chain<B>(f: (a: A) => Option<B>): Option<B>;
+    /** @obsolete */
     reduce<B>(b: B, f: (b: B, a: A) => B): B;
     /**
      * `alt` short for alternative, takes another `Option`. If this `Option` is a `Some` type then it will be returned, if
@@ -194,6 +200,7 @@ export declare class None<A> {
      * assert.deepStrictEqual(some(2).alt(some(4)), some(2))
      * const fa: Option<number> = none
      * assert.deepStrictEqual(fa.alt(some(4)), some(4))
+     * @obsolete
      */
     alt(fa: Option<A>): Option<A>;
     /**
@@ -205,8 +212,10 @@ export declare class None<A> {
      * assert.deepStrictEqual(some(1).orElse(() => some(2)), some(1))
      *
      * @since 1.6.0
+     * @obsolete
      */
     orElse(fa: Lazy<Option<A>>): Option<A>;
+    /** @obsolete */
     extend<B>(f: (ea: Option<A>) => B): Option<B>;
     /**
      * Applies a function to each case in the data structure
@@ -216,9 +225,13 @@ export declare class None<A> {
      *
      * assert.strictEqual(some(1).fold('none', a => `some: ${a}`), 'some: 1')
      * assert.strictEqual(none.fold('none', a => `some: ${a}`), 'none')
+     * @obsolete
      */
     fold<B>(b: B, onSome: (a: A) => B): B;
-    /** Lazy version of `fold` */
+    /**
+     * Lazy version of `fold`
+     * @obsolete
+     */
     foldL<B>(onNone: () => B, onSome: (a: A) => B): B;
     /**
      * Returns the value from this `Some` or the given argument if this is a `None`
@@ -229,29 +242,50 @@ export declare class None<A> {
      * assert.strictEqual(some(1).getOrElse(0), 1)
      * const fa: Option<number> = none
      * assert.strictEqual(fa.getOrElse(0), 0)
+     * @obsolete
      */
     getOrElse(a: A): A;
-    /** Lazy version of `getOrElse` */
+    /**
+     * Lazy version of `getOrElse`
+     * @obsolete
+     */
     getOrElseL(f: () => A): A;
-    /** Returns the value from this `Some` or `null` if this is a `None` */
+    /**
+     * Returns the value from this `Some` or `null` if this is a `None`
+     * @obsolete
+     */
     toNullable(): A | null;
-    /** Returns the value from this `Some` or `undefined` if this is a `None` */
+    /**
+     * Returns the value from this `Some` or `undefined` if this is a `None`
+     * @obsolete
+     */
     toUndefined(): A | undefined;
     inspect(): string;
     toString(): string;
-    /** Returns `true` if the option has an element that is equal (as determined by `S`) to `a`, `false` otherwise */
+    /**
+     * Returns `true` if the option has an element that is equal (as determined by `S`) to `a`, `false` otherwise
+     * @obsolete
+     */
     contains(E: Eq<A>, a: A): boolean;
-    /** Returns `true` if the option is `None`, `false` otherwise */
+    /**
+     * Returns `true` if the option is `None`, `false` otherwise
+     * @obsolete
+     */
     isNone(): this is None<A>;
-    /** Returns `true` if the option is an instance of `Some`, `false` otherwise */
+    /**
+     * Returns `true` if the option is an instance of `Some`, `false` otherwise
+     * @obsolete
+     */
     isSome(): this is Some<A>;
     /**
      * Returns `true` if this option is non empty and the predicate `p` returns `true` when applied to this Option's value
+     * @obsolete
      */
     exists(p: (a: A) => boolean): boolean;
     /**
      * Returns this option if it is non empty and the predicate `p` return `true` when applied to this Option's value.
      * Otherwise returns `None`
+     * @obsolete
      */
     filter<B extends A>(p: Refinement<A, B>): Option<B>;
     filter(p: Predicate<A>): Option<A>;

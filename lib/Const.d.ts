@@ -27,8 +27,11 @@ export declare class Const<L, A> {
      * @deprecated
      */
     constructor(value: L);
+    /** @obsolete */
     map<B>(f: (a: A) => B): Const<L, B>;
+    /** @obsolete */
     contramap<B>(f: (b: B) => A): Const<L, B>;
+    /** @obsolete */
     fold<B>(f: (l: L) => B): B;
     inspect(): string;
     toString(): string;

@@ -19,10 +19,16 @@ export declare class Store<S, A> {
     readonly _L: S;
     readonly _URI: URI;
     constructor(peek: (s: S) => A, pos: S);
-    /** Reposition the focus at the specified position */
+    /**
+     * Reposition the focus at the specified position
+     * @obsolete
+     */
     seek(s: S): Store<S, A>;
+    /** @obsolete */
     map<B>(f: (a: A) => B): Store<S, B>;
+    /** @obsolete */
     extract(): A;
+    /** @obsolete */
     extend<B>(f: (sa: Store<S, A>) => B): Store<S, B>;
     inspect(): string;
     toString(): string;

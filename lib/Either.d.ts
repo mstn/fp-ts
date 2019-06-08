@@ -63,16 +63,26 @@ export declare class Left<L, A> {
     readonly _L: L;
     readonly _URI: URI;
     constructor(value: L);
-    /** The given function is applied if this is a `Right` */
+    /**
+     * The given function is applied if this is a `Right`
+     * @obsolete
+     */
     map<B>(f: (a: A) => B): Either<L, B>;
+    /** @obsolete */
     ap<B>(fab: Either<L, (a: A) => B>): Either<L, B>;
     /**
      * Flipped version of `ap`
+     * @obsolete
      */
     ap_<B, C>(this: Either<L, (b: B) => C>, fb: Either<L, B>): Either<L, C>;
-    /** Binds the given function across `Right` */
+    /**
+     * Binds the given function across `Right`
+     * @obsolete
+     */
     chain<B>(f: (a: A) => Either<L, B>): Either<L, B>;
+    /** @obsolete */
     bimap<V, B>(f: (l: L) => V, g: (a: A) => B): Either<V, B>;
+    /** @obsolete */
     alt(fy: Either<L, A>): Either<L, A>;
     /**
      * Lazy version of `alt`
@@ -83,25 +93,49 @@ export declare class Left<L, A> {
      * assert.deepStrictEqual(right(1).orElse(() => right(2)), right(1))
      *
      * @since 1.6.0
+     * @obsolete
      */
     orElse<M>(fy: (l: L) => Either<M, A>): Either<M, A>;
+    /** @obsolete */
     extend<B>(f: (ea: Either<L, A>) => B): Either<L, B>;
+    /** @obsolete */
     reduce<B>(b: B, f: (b: B, a: A) => B): B;
-    /** Applies a function to each case in the data structure */
+    /**
+     * Applies a function to each case in the data structure
+     * @obsolete
+     */
     fold<B>(onLeft: (l: L) => B, onRight: (a: A) => B): B;
-    /** Returns the value from this `Right` or the given argument if this is a `Left` */
+    /**
+     * Returns the value from this `Right` or the given argument if this is a `Left`
+     * @obsolete
+     */
     getOrElse(a: A): A;
-    /** Returns the value from this `Right` or the result of given argument if this is a `Left` */
+    /**
+     * Returns the value from this `Right` or the result of given argument if this is a `Left`
+     * @obsolete
+     */
     getOrElseL(f: (l: L) => A): A;
-    /** Maps the left side of the disjunction */
+    /**
+     * Maps the left side of the disjunction
+     * @obsolete
+     */
     mapLeft<M>(f: (l: L) => M): Either<M, A>;
     inspect(): string;
     toString(): string;
-    /** Returns `true` if the either is an instance of `Left`, `false` otherwise */
+    /**
+     * Returns `true` if the either is an instance of `Left`, `false` otherwise
+     * @obsolete
+     */
     isLeft(): this is Left<L, A>;
-    /** Returns `true` if the either is an instance of `Right`, `false` otherwise */
+    /**
+     * Returns `true` if the either is an instance of `Right`, `false` otherwise
+     * @obsolete
+     */
     isRight(): this is Right<L, A>;
-    /** Swaps the disjunction values */
+    /**
+     * Swaps the disjunction values
+     * @obsolete
+     */
     swap(): Either<A, L>;
     /**
      * Returns `Right` with the existing value of `Right` if this is a `Right` and the given predicate `p` holds for the
@@ -116,12 +150,14 @@ export declare class Left<L, A> {
      * assert.deepStrictEqual(left<number, number>(12).filterOrElse(n => n > 10, -1), left(12))
      *
      * @since 1.3.0
+     * @obsolete
      */
     filterOrElse<B extends A>(p: Refinement<A, B>, zero: L): Either<L, B>;
     filterOrElse(p: Predicate<A>, zero: L): Either<L, A>;
     /**
      * Lazy version of `filterOrElse`
      * @since 1.3.0
+     * @obsolete
      */
     filterOrElseL<B extends A>(p: Refinement<A, B>, zero: (a: A) => L): Either<L, B>;
     filterOrElseL(p: Predicate<A>, zero: (a: A) => L): Either<L, A>;
@@ -260,13 +296,13 @@ export declare const fromRefinement: <L, A, B extends A>(refinement: Refinement<
  *
  * @since 1.0.0
  */
-export declare const fromOption: <L>(defaultValue: L) => <A>(fa: Option<A>) => Either<L, A>;
+export declare const fromOption: <L>(onNone: L) => <A>(fa: Option<A>) => Either<L, A>;
 /**
  * Lazy version of `fromOption`
  *
  * @since 1.3.0
  */
-export declare const fromOptionL: <L>(defaultValue: Lazy<L>) => <A>(fa: Option<A>) => Either<L, A>;
+export declare const fromOptionL: <L>(onNone: Lazy<L>) => <A>(fa: Option<A>) => Either<L, A>;
 /**
  * Takes a default and a nullable value, if the value is not nully, turn it into a `Right`, if the value is nully use
  * the provided default as a `Left`

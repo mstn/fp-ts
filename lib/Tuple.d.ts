@@ -33,16 +33,26 @@ export declare class Tuple<L, A> {
     readonly _L: L;
     readonly _URI: URI;
     constructor(fst: L, snd: A);
+    /** @obsolete */
     compose<B>(ab: Tuple<A, B>): Tuple<L, B>;
+    /** @obsolete */
     map<B>(f: (a: A) => B): Tuple<L, B>;
+    /** @obsolete */
     bimap<M, B>(f: (l: L) => M, g: (a: A) => B): Tuple<M, B>;
+    /** @obsolete */
     extract(): A;
+    /** @obsolete */
     extend<B>(f: (fa: Tuple<L, A>) => B): Tuple<L, B>;
+    /** @obsolete */
     reduce<B>(b: B, f: (b: B, a: A) => B): B;
-    /** Exchange the first and second components of a tuple */
+    /**
+     * Exchange the first and second components of a tuple
+     * @obsolete
+     */
     swap(): Tuple<A, L>;
     inspect(): string;
     toString(): string;
+    /** @obsolete */
     toTuple(): [L, A];
 }
 /**

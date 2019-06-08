@@ -22,16 +22,23 @@ export declare class Tree<A> {
     readonly _A: A;
     readonly _URI: URI;
     constructor(value: A, forest: Forest<A>);
+    /** @obsolete */
     map<B>(f: (a: A) => B): Tree<B>;
+    /** @obsolete */
     ap<B>(fab: Tree<(a: A) => B>): Tree<B>;
     /**
      * Flipped version of `ap`
      * @since 1.6.0
+     * @obsolete
      */
     ap_<B, C>(this: Tree<(b: B) => C>, fb: Tree<B>): Tree<C>;
+    /** @obsolete */
     chain<B>(f: (a: A) => Tree<B>): Tree<B>;
+    /** @obsolete */
     extract(): A;
+    /** @obsolete */
     extend<B>(f: (fa: Tree<A>) => B): Tree<B>;
+    /** @obsolete */
     reduce<B>(b: B, f: (b: B, a: A) => B): B;
     inspect(): string;
     toString(): string;

@@ -17,8 +17,11 @@ export declare class Writer<W, A> {
     readonly _L: W;
     readonly _URI: URI;
     constructor(run: () => [A, W]);
+    /** @obsolete */
     eval(): A;
+    /** @obsolete */
     exec(): W;
+    /** @obsolete */
     map<B>(f: (a: A) => B): Writer<W, B>;
 }
 /**

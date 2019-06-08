@@ -29,37 +29,50 @@ export declare class IOEither<L, A> {
      * Runs the inner io
      */
     run(): Either<L, A>;
+    /** @obsolete */
     map<B>(f: (a: A) => B): IOEither<L, B>;
+    /** @obsolete */
     ap<B>(fab: IOEither<L, (a: A) => B>): IOEither<L, B>;
     /**
      * Flipped version of `ap`
+     * @obsolete
      */
     ap_<B, C>(this: IOEither<L, (b: B) => C>, fb: IOEither<L, B>): IOEither<L, C>;
     /**
      * Combine two effectful actions, keeping only the result of the first
+     * @obsolete
      */
     applyFirst<B>(fb: IOEither<L, B>): IOEither<L, A>;
     /**
      * Combine two effectful actions, keeping only the result of the second
+     * @obsolete
      */
     applySecond<B>(fb: IOEither<L, B>): IOEither<L, B>;
+    /** @obsolete */
     chain<B>(f: (a: A) => IOEither<L, B>): IOEither<L, B>;
+    /** @obsolete */
     fold<R>(left: (l: L) => R, right: (a: A) => R): IO<R>;
     /**
      * Similar to `fold`, but the result is flattened.
      *
      * @since 1.19.0
+     * @obsolete
      */
     foldIO<R>(left: (l: L) => IO<R>, right: (a: A) => IO<R>): IO<R>;
     /**
      * Similar to `fold`, but the result is flattened.
      *
      * @since 1.19.0
+     * @obsolete
      */
     foldIOEither<M, B>(onLeft: (l: L) => IOEither<M, B>, onRight: (a: A) => IOEither<M, B>): IOEither<M, B>;
+    /** @obsolete */
     mapLeft<M>(f: (l: L) => M): IOEither<M, A>;
+    /** @obsolete */
     orElse<M>(f: (l: L) => IOEither<M, A>): IOEither<M, A>;
+    /** @obsolete */
     alt(fy: IOEither<L, A>): IOEither<L, A>;
+    /** @obsolete */
     bimap<V, B>(f: (l: L) => V, g: (a: A) => B): IOEither<V, B>;
 }
 /**

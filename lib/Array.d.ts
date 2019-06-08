@@ -782,7 +782,7 @@ export declare const sortBy: <A>(ords: Ord<A>[]) => Option<Endomorphism<A[]>>;
  */
 export declare const sortBy1: <A>(head: Ord<A>, tail: Ord<A>[]) => Endomorphism<A[]>;
 /**
- * Use `array.filterMap`
+ * Use `filterMap`
  *
  * Apply a function to each element in an array, keeping only the results which contain a value, creating a new array.
  *
@@ -798,7 +798,7 @@ export declare const sortBy1: <A>(head: Ord<A>, tail: Ord<A>[]) => Endomorphism<
  */
 export declare const mapOption: <A, B>(as: A[], f: (a: A) => Option<B>) => B[];
 /**
- * Use `array.compact`
+ * Use `compact`
  *
  * Filter an array of optional values, keeping only the elements which contain a value, creating a new array.
  *

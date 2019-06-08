@@ -15,24 +15,32 @@ export declare class State<S, A> {
     readonly _L: S;
     readonly _URI: URI;
     constructor(run: (s: S) => [A, S]);
+    /** @obsolete */
     eval(s: S): A;
+    /** @obsolete */
     exec(s: S): S;
+    /** @obsolete */
     map<B>(f: (a: A) => B): State<S, B>;
+    /** @obsolete */
     ap<B>(fab: State<S, (a: A) => B>): State<S, B>;
     /**
      * Flipped version of `ap`
+     * @obsolete
      */
     ap_<B, C>(this: State<S, (b: B) => C>, fb: State<S, B>): State<S, C>;
     /**
      * Combine two effectful actions, keeping only the result of the first
      * @since 1.7.0
+     * @obsolete
      */
     applyFirst<B>(fb: State<S, B>): State<S, A>;
     /**
      * Combine two effectful actions, keeping only the result of the second
      * @since 1.7.0
+     * @obsolete
      */
     applySecond<B>(fb: State<S, B>): State<S, B>;
+    /** @obsolete */
     chain<B>(f: (a: A) => State<S, B>): State<S, B>;
 }
 /**

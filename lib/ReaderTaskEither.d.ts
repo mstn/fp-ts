@@ -31,31 +31,43 @@ export declare class ReaderTaskEither<E, L, A> {
     constructor(value: (e: E) => TaskEither<L, A>);
     /** Runs the inner `TaskEither` */
     run(e: E): Promise<Either<L, A>>;
+    /** @obsolete */
     map<B>(f: (a: A) => B): ReaderTaskEither<E, L, B>;
+    /** @obsolete */
     ap<B>(fab: ReaderTaskEither<E, L, (a: A) => B>): ReaderTaskEither<E, L, B>;
     /**
      * Flipped version of `ap`
+     * @obsolete
      */
     ap_<B, C>(this: ReaderTaskEither<E, L, (b: B) => C>, fb: ReaderTaskEither<E, L, B>): ReaderTaskEither<E, L, C>;
     /**
      * Combine two effectful actions, keeping only the result of the first
+     * @obsolete
      */
     applyFirst<B>(fb: ReaderTaskEither<E, L, B>): ReaderTaskEither<E, L, A>;
     /**
      * Combine two effectful actions, keeping only the result of the second
+     * @obsolete
      */
     applySecond<B>(fb: ReaderTaskEither<E, L, B>): ReaderTaskEither<E, L, B>;
+    /** @obsolete */
     chain<B>(f: (a: A) => ReaderTaskEither<E, L, B>): ReaderTaskEither<E, L, B>;
+    /** @obsolete */
     fold<R>(left: (l: L) => R, right: (a: A) => R): Reader<E, Task<R>>;
+    /** @obsolete */
     mapLeft<M>(f: (l: L) => M): ReaderTaskEither<E, M, A>;
     /**
      * Transforms the failure value of the `ReaderTaskEither` into a new `ReaderTaskEither`
+     * @obsolete
      */
     orElse<M>(f: (l: L) => ReaderTaskEither<E, M, A>): ReaderTaskEither<E, M, A>;
+    /** @obsolete */
     alt(fy: ReaderTaskEither<E, L, A>): ReaderTaskEither<E, L, A>;
+    /** @obsolete */
     bimap<V, B>(f: (l: L) => V, g: (a: A) => B): ReaderTaskEither<E, V, B>;
     /**
      * @since 1.6.1
+     * @obsolete
      */
     local<E2 = E>(f: (e: E2) => E): ReaderTaskEither<E2, L, A>;
 }
@@ -139,19 +151,19 @@ export declare const readerTaskEitherSeq: typeof readerTaskEither;
 /**
  * @since 1.19.0
  */
-export declare const left2v: <E>(e: E) => ReaderTaskEither<unknown, E, never>;
+export declare const left2v: <E, L>(e: L) => ReaderTaskEither<E, L, never>;
 /**
  * @since 1.19.0
  */
-export declare const right2v: <A>(a: A) => ReaderTaskEither<unknown, never, A>;
+export declare const right2v: <E, A>(a: A) => ReaderTaskEither<E, never, A>;
 /**
  * @since 1.19.0
  */
-export declare const rightReader: <R, A>(ma: Reader<R, A>) => ReaderTaskEither<R, never, A>;
+export declare const rightReader: <E, A>(ma: Reader<E, A>) => ReaderTaskEither<E, never, A>;
 /**
  * @since 1.19.0
  */
-export declare const rightIO: <A>(ma: IO<A>) => ReaderTaskEither<unknown, never, A>;
+export declare const rightIO: <E, A>(ma: IO<A>) => ReaderTaskEither<E, never, A>;
 /**
  * @since 1.19.0
  */

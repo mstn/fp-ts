@@ -21,15 +21,20 @@ export declare class Reader<E, A> {
     readonly _L: E;
     readonly _URI: URI;
     constructor(run: (e: E) => A);
+    /** @obsolete */
     map<B>(f: (a: A) => B): Reader<E, B>;
+    /** @obsolete */
     ap<B>(fab: Reader<E, (a: A) => B>): Reader<E, B>;
     /**
      * Flipped version of `ap`
+     * @obsolete
      */
     ap_<B, C>(this: Reader<E, (b: B) => C>, fb: Reader<E, B>): Reader<E, C>;
+    /** @obsolete */
     chain<B>(f: (a: A) => Reader<E, B>): Reader<E, B>;
     /**
      * @since 1.6.1
+     * @obsolete
      */
     local<E2 = E>(f: (e: E2) => E): Reader<E2, A>;
 }

@@ -17,6 +17,7 @@ export declare class Traced<P, A> {
     readonly _L: P;
     readonly _URI: URI;
     constructor(run: (p: P) => A);
+    /** @obsolete */
     map<B>(f: (a: A) => B): Traced<P, B>;
 }
 /**

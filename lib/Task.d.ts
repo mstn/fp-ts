@@ -25,22 +25,28 @@ export declare class Task<A> {
     readonly _A: A;
     readonly _URI: URI;
     constructor(run: Lazy<Promise<A>>);
+    /** @obsolete */
     map<B>(f: (a: A) => B): Task<B>;
+    /** @obsolete */
     ap<B>(fab: Task<(a: A) => B>): Task<B>;
     /**
      * Flipped version of `ap`
+     * @obsolete
      */
     ap_<B, C>(this: Task<(b: B) => C>, fb: Task<B>): Task<C>;
     /**
      * Combine two effectful actions, keeping only the result of the first
      * @since 1.6.0
+     * @obsolete
      */
     applyFirst<B>(fb: Task<B>): Task<A>;
     /**
      * Combine two effectful actions, keeping only the result of the second
      * @since 1.5.0
+     * @obsolete
      */
     applySecond<B>(fb: Task<B>): Task<B>;
+    /** @obsolete */
     chain<B>(f: (a: A) => Task<B>): Task<B>;
     inspect(): string;
     toString(): string;

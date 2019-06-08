@@ -33,78 +33,98 @@ export declare class TaskEither<L, A> {
     constructor(value: Task<Either<L, A>>);
     /** Runs the inner `Task` */
     run(): Promise<Either<L, A>>;
+    /** @obsolete */
     map<B>(f: (a: A) => B): TaskEither<L, B>;
+    /** @obsolete */
     ap<B>(fab: TaskEither<L, (a: A) => B>): TaskEither<L, B>;
     /**
      * Flipped version of `ap`
+     * @obsolete
      */
     ap_<B, C>(this: TaskEither<L, (b: B) => C>, fb: TaskEither<L, B>): TaskEither<L, C>;
     /**
      * Combine two (parallel) effectful actions, keeping only the result of the first
      * @since 1.6.0
+     * @obsolete
      */
     applyFirst<B>(fb: TaskEither<L, B>): TaskEither<L, A>;
     /**
      * Combine two (parallel) effectful actions, keeping only the result of the second
      * @since 1.5.0
+     * @obsolete
      */
     applySecond<B>(fb: TaskEither<L, B>): TaskEither<L, B>;
     /**
      * Combine two (sequential) effectful actions, keeping only the result of the first
      * @since 1.12.0
+     * @obsolete
      */
     chainFirst<B>(fb: TaskEither<L, B>): TaskEither<L, A>;
     /**
      * Combine two (sequential) effectful actions, keeping only the result of the second
      * @since 1.12.0
+     * @obsolete
      */
     chainSecond<B>(fb: TaskEither<L, B>): TaskEither<L, B>;
+    /** @obsolete */
     chain<B>(f: (a: A) => TaskEither<L, B>): TaskEither<L, B>;
+    /** @obsolete */
     fold<R>(onLeft: (l: L) => R, onRight: (a: A) => R): Task<R>;
     /**
      * Similar to `fold`, but the result is flattened.
      * @since 1.10.0
+     * @obsolete
      */
     foldTask<R>(onLeft: (l: L) => Task<R>, onRight: (a: A) => Task<R>): Task<R>;
     /**
      * Similar to `fold`, but the result is flattened.
      * @since 1.10.0
+     * @obsolete
      */
     foldTaskEither<M, B>(onLeft: (l: L) => TaskEither<M, B>, onRight: (a: A) => TaskEither<M, B>): TaskEither<M, B>;
     /**
      * Similar to `fold`, return the value from Right or the given argument if Left.
      * @since 1.17.0
+     * @obsolete
      */
     getOrElse(a: A): Task<A>;
     /**
      * @since 1.17.0
+     * @obsolete
      */
     getOrElseL(f: (l: L) => A): Task<A>;
+    /** @obsolete */
     mapLeft<M>(f: (l: L) => M): TaskEither<M, A>;
     /**
      * Transforms the failure value of the `TaskEither` into a new `TaskEither`
+     * @obsolete
      */
     orElse<M>(f: (l: L) => TaskEither<M, A>): TaskEither<M, A>;
     /**
      * @since 1.6.0
+     * @obsolete
      */
     alt(fy: TaskEither<L, A>): TaskEither<L, A>;
     /**
      * @since 1.2.0
+     * @obsolete
      */
     bimap<V, B>(f: (l: L) => V, g: (a: A) => B): TaskEither<V, B>;
     /**
      * Return `Right` if the given action succeeds, `Left` if it throws
      * @since 1.10.0
+     * @obsolete
      */
     attempt<M = L>(): TaskEither<M, Either<L, A>>;
     /**
      * @since 1.11.0
+     * @obsolete
      */
     filterOrElse<B extends A>(p: Refinement<A, B>, zero: L): TaskEither<L, B>;
     filterOrElse(p: Predicate<A>, zero: L): TaskEither<L, A>;
     /**
      * @since 1.11.0
+     * @obsolete
      */
     filterOrElseL<B extends A>(p: Refinement<A, B>, zero: (a: A) => L): TaskEither<L, B>;
     filterOrElseL(p: Predicate<A>, zero: (a: A) => L): TaskEither<L, A>;

@@ -22,14 +22,20 @@ export declare class Identity<A> {
     readonly _A: A;
     readonly _URI: URI;
     constructor(value: A);
+    /** @obsolete */
     map<B>(f: (a: A) => B): Identity<B>;
+    /** @obsolete */
     ap<B>(fab: Identity<(a: A) => B>): Identity<B>;
     /**
      * Flipped version of `ap`
+     * @obsolete
      */
     ap_<B, C>(this: Identity<(b: B) => C>, fb: Identity<B>): Identity<C>;
+    /** @obsolete */
     chain<B>(f: (a: A) => Identity<B>): Identity<B>;
+    /** @obsolete */
     reduce<B>(b: B, f: (b: B, a: A) => B): B;
+    /** @obsolete */
     alt(fx: Identity<A>): Identity<A>;
     /**
      * Lazy version of `alt`
@@ -41,10 +47,14 @@ export declare class Identity<A> {
      * assert.deepStrictEqual(a.orElse(() => new Identity(2)), a)
      *
      * @since 1.6.0
+     * @obsolete
      */
     orElse(fx: Lazy<Identity<A>>): Identity<A>;
+    /** @obsolete */
     extract(): A;
+    /** @obsolete */
     extend<B>(f: (ea: Identity<A>) => B): Identity<B>;
+    /** @obsolete */
     fold<B>(f: (a: A) => B): B;
     inspect(): string;
     toString(): string;
