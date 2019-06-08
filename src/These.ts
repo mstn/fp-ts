@@ -53,16 +53,22 @@ export class This<L, A> {
   readonly _L!: L
   readonly _URI!: URI
   constructor(readonly value: L) {}
+  /** @obsolete */
   map<B>(f: (a: A) => B): These<L, B> {
     return this as any
   }
+  /** @obsolete */
   bimap<M, B>(f: (l: L) => M, g: (a: A) => B): These<M, B> {
     return new This(f(this.value))
   }
+  /** @obsolete */
   reduce<B>(b: B, f: (b: B, a: A) => B): B {
     return b
   }
-  /** Applies a function to each case in the data structure */
+  /**
+   * Applies a function to each case in the data structure
+   * @obsolete
+   */
   fold<B>(onLeft: (l: L) => B, onRight: (a: A) => B, onBoth: (l: L, a: A) => B): B {
     return onLeft(this.value)
   }
@@ -73,15 +79,24 @@ export class This<L, A> {
     // tslint:disable-next-line: deprecation
     return `left(${toString(this.value)})`
   }
-  /** Returns `true` if the these is `This`, `false` otherwise */
+  /**
+   * Returns `true` if the these is `This`, `false` otherwise
+   * @obsolete
+   */
   isThis(): this is This<L, A> {
     return true
   }
-  /** Returns `true` if the these is `That`, `false` otherwise */
+  /**
+   * Returns `true` if the these is `That`, `false` otherwise
+   * @obsolete
+   */
   isThat(): this is That<L, A> {
     return false
   }
-  /** Returns `true` if the these is `Both`, `false` otherwise */
+  /**
+   * Returns `true` if the these is `Both`, `false` otherwise
+   * @obsolete
+   */
   isBoth(): this is Both<L, A> {
     return false
   }
@@ -511,26 +526,30 @@ export const getRight: <E, A>(fa: These<E, A>) => Option<A> = theseRight
  * import { leftOrBoth, left, both } from 'fp-ts/lib/These'
  * import { none, some } from 'fp-ts/lib/Option'
  *
- * assert.deepStrictEqual(leftOrBoth('a', none), left('a'))
- * assert.deepStrictEqual(leftOrBoth('a', some(1)), both('a', 1))
+ * assert.deepStrictEqual(leftOrBoth('a')(none), left('a'))
+ * assert.deepStrictEqual(leftOrBoth('a')(some(1)), both('a', 1))
  *
  * @since 1.19.0
  */
-// tslint:disable-next-line: deprecation
-export const leftOrBoth: <E, A>(defaultLeft: E, ma: Option<A>) => These<E, A> = thisOrBoth
+export function leftOrBoth<E>(defaultLeft: E): <A>(ma: Option<A>) => These<E, A> {
+  // tslint:disable-next-line: deprecation
+  return ma => thisOrBoth(defaultLeft, ma)
+}
 
 /**
  * @example
  * import { rightOrBoth, right, both } from 'fp-ts/lib/These'
  * import { none, some } from 'fp-ts/lib/Option'
  *
- * assert.deepStrictEqual(rightOrBoth(1, none), right(1))
- * assert.deepStrictEqual(rightOrBoth(1, some('a')), both('a', 1))
+ * assert.deepStrictEqual(rightOrBoth(1)(none), right(1))
+ * assert.deepStrictEqual(rightOrBoth(1)(some('a')), both('a', 1))
  *
  * @since 1.19.0
  */
-// tslint:disable-next-line: deprecation
-export const rightOrBoth: <E, A>(defaultRight: A, me: Option<E>) => These<E, A> = thatOrBoth
+export function rightOrBoth<A>(defaultRight: A): <E>(me: Option<E>) => These<E, A> {
+  // tslint:disable-next-line: deprecation
+  return me => thatOrBoth(defaultRight, me)
+}
 
 /**
  * Returns the `L` value if and only if the value is constructed with `Left`
