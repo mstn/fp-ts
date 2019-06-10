@@ -101,6 +101,6 @@ export declare const never: Task<never>;
 /**
  * @since 1.19.0
  */
-export declare function delay2v<A>(millis: number, ma: Task<A>): Task<A>;
+export declare function delay2v(millis: number): <A>(ma: Task<A>) => Task<A>;
 declare const ap: <A>(fa: Task<A>) => <B>(fab: Task<(a: A) => B>) => Task<B>, apFirst: <B>(fb: Task<B>) => <A>(fa: Task<A>) => Task<A>, apSecond: <B>(fb: Task<B>) => <A>(fa: Task<A>) => Task<B>, chain: <A, B>(f: (a: A) => Task<B>) => (ma: Task<A>) => Task<B>, chainFirst: <A, B>(f: (a: A) => Task<B>) => (ma: Task<A>) => Task<A>, flatten: <A>(mma: Task<Task<A>>) => Task<A>, map: <A, B>(f: (a: A) => B) => (fa: Task<A>) => Task<B>;
 export { ap, apFirst, apSecond, chain, chainFirst, flatten, map };
