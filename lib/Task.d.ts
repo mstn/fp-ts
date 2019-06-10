@@ -46,7 +46,7 @@ export declare function getRaceMonoid<A = never>(): Monoid<Task<A>>;
 /**
  * @since 2.0.0
  */
-export declare function delay<A>(millis: number, ma: Task<A>): Task<A>;
+export declare function delay(millis: number): <A>(ma: Task<A>) => Task<A>;
 /**
  * @since 2.0.0
  */
